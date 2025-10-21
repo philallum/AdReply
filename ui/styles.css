@@ -1,0 +1,406 @@
+/* AdReply Side Panel Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+    background: #f8f9fa;
+    width: 320px;
+    min-height: 100vh;
+}
+
+.adreply-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header */
+.adreply-header {
+    background: #1877f2;
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adreply-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.license-status .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.free {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.status-badge.pro {
+    background: #42b883;
+    color: white;
+}
+
+/* Tabs */
+.adreply-tabs {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid #e4e6ea;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #65676b;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    background: #f2f3f5;
+}
+
+.tab-button.active {
+    color: #1877f2;
+    border-bottom-color: #1877f2;
+}
+
+/* Content */
+.adreply-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tab-content {
+    display: none;
+    padding: 16px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Sections */
+section {
+    margin-bottom: 24px;
+}
+
+section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1c1e21;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #1877f2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #166fe5;
+}
+
+.btn-upgrade {
+    background: #42b883;
+    color: white;
+}
+
+.btn-upgrade:hover {
+    background: #369870;
+}
+
+.btn-large {
+    padding: 12px 24px;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* Suggestions */
+.suggestions-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e4e6ea;
+    min-height: 120px;
+}
+
+.no-suggestions {
+    padding: 24px;
+    text-align: center;
+    color: #65676b;
+}
+
+.suggestion-item {
+    padding: 12px;
+    border-bottom: 1px solid #e4e6ea;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: #f2f3f5;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-text {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.suggestion-meta {
+    font-size: 12px;
+    color: #65676b;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Templates */
+.templates-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e4e6ea;
+    min-height: 100px;
+}
+
+.no-templates {
+    padding: 24px;
+    text-align: center;
+    color: #65676b;
+}
+
+.template-item {
+    padding: 12px;
+    border-bottom: 1px solid #e4e6ea;
+}
+
+.template-item:last-child {
+    border-bottom: none;
+}
+
+.template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.template-label {
+    font-weight: 500;
+    color: #1c1e21;
+}
+
+.template-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.template-actions button {
+    padding: 4px 8px;
+    font-size: 12px;
+    border: 1px solid #e4e6ea;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.template-actions button:hover {
+    background: #f2f3f5;
+}
+
+.template-content {
+    font-size: 13px;
+    color: #65676b;
+    margin-bottom: 8px;
+}
+
+.template-keywords {
+    font-size: 12px;
+    color: #65676b;
+}
+
+/* Pro Features */
+.pro-feature-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.pro-feature-notice p {
+    margin-bottom: 8px;
+    color: #856404;
+}
+
+/* Form Elements */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #1c1e21;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e4e6ea;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.input-group input:disabled,
+.input-group select:disabled {
+    background: #f2f3f5;
+    color: #65676b;
+    cursor: not-allowed;
+}
+
+/* License Section */
+.license-info {
+    background: white;
+    border: 1px solid #e4e6ea;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.license-tier {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1c1e21;
+    margin-bottom: 8px;
+}
+
+.license-features ul,
+.pro-features ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.license-features li,
+.pro-features li {
+    padding: 4px 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.license-features li:before,
+.pro-features li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #42b883;
+    font-weight: bold;
+}
+
+.pro-upgrade {
+    background: white;
+    border: 1px solid #e4e6ea;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.pro-upgrade h3 {
+    color: #1c1e21;
+    margin-bottom: 12px;
+}
+
+.license-input {
+    background: white;
+    border: 1px solid #e4e6ea;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.license-input h3 {
+    color: #1c1e21;
+    margin-bottom: 12px;
+}
+
+.license-input .input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.license-input input {
+    flex: 1;
+}
+
+.license-input button {
+    flex-shrink: 0;
+}
+
+/* Scrollbar */
+.adreply-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.adreply-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.adreply-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.adreply-content::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

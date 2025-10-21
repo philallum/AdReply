@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdReply</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="adreply-container">
+        <header class="adreply-header">
+            <h1>AdReply</h1>
+            <div class="license-status" id="licenseStatus">
+                <span class="status-badge free">Free</span>
+            </div>
+        </header>
+        
+        <nav class="adreply-tabs">
+            <button class="tab-button active" data-tab="adverts">Adverts</button>
+            <button class="tab-button" data-tab="ai-settings">AI Settings</button>
+            <button class="tab-button" data-tab="license">License</button>
+        </nav>
+        
+        <main class="adreply-content">
+            <!-- Adverts Tab -->
+            <div class="tab-content active" id="adverts-tab">
+                <section class="suggestions-section">
+                    <h2>Comment Suggestions</h2>
+                    <div class="suggestions-container" id="suggestionsContainer">
+                        <div class="no-suggestions">
+                            <p>No suggestions available. Navigate to a Facebook group post to see relevant comment suggestions.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="templates-section">
+                    <div class="section-header">
+                        <h2>Templates</h2>
+                        <button class="btn btn-primary" id="addTemplateBtn">Add Template</button>
+                    </div>
+                    <div class="templates-container" id="templatesContainer">
+                        <div class="no-templates">
+                            <p>No templates created yet. Create your first template to get started.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- AI Settings Tab -->
+            <div class="tab-content" id="ai-settings-tab">
+                <section class="ai-settings-section">
+                    <h2>AI Settings</h2>
+                    <div class="pro-feature-notice">
+                        <p>AI features are available with Pro license</p>
+                        <button class="btn btn-upgrade">Upgrade to Pro</button>
+                    </div>
+                    
+                    <div class="ai-provider-selection">
+                        <label for="aiProvider">AI Provider:</label>
+                        <select id="aiProvider" disabled>
+                            <option value="off">Disabled</option>
+                            <option value="gemini">Google Gemini</option>
+                            <option value="openai">OpenAI</option>
+                        </select>
+                    </div>
+                    
+                    <div class="api-key-inputs">
+                        <div class="input-group">
+                            <label for="geminiApiKey">Gemini API Key:</label>
+                            <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key" disabled>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="openaiApiKey">OpenAI API Key:</label>
+                            <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key" disabled>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- License Tab -->
+            <div class="tab-content" id="license-tab">
+                <section class="license-section">
+                    <h2>License Management</h2>
+                    
+                    <div class="current-license">
+                        <h3>Current License</h3>
+                        <div class="license-info">
+                            <div class="license-tier">Free Tier</div>
+                            <div class="license-features">
+                                <ul>
+                                    <li>Up to 10 templates</li>
+                                    <li>Basic template matching</li>
+                                    <li>Template rotation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pro-upgrade">
+                        <h3>Upgrade to Pro</h3>
+                        <div class="pro-features">
+                            <ul>
+                                <li>Unlimited templates</li>
+                                <li>AI-powered rephrasing</li>
+                                <li>AI template generation</li>
+                                <li>Enhanced matching</li>
+                                <li>Ad Pack import/export</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-upgrade btn-large">Upgrade to Pro</button>
+                    </div>
+                    
+                    <div class="license-input">
+                        <h3>Enter License Key</h3>
+                        <div class="input-group">
+                            <input type="text" id="licenseKey" placeholder="Enter your Pro license key">
+                            <button class="btn btn-primary" id="validateLicenseBtn">Validate</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <script src="sidepanel.js"></script>
+</body>
+</html>
