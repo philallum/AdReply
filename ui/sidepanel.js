@@ -52,24 +52,82 @@ function setupTabNavigation() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
     
-    tabButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+    // Add keyboard navigation class to body when using keyboard
+    document.addEventListener('keydown', () => {
+        document.body.classList.add('keyboard-navigation');
+    });
+    
+    document.addEventListener('mousedown', () => {
+        document.body.classList.remove('keyboard-navigation');
+    });
+    
+    tabButtons.forEach((button, index) => {
+        button.addEventListener('click', async (e) => {
             e.preventDefault();
             const targetTab = button.dataset.tab;
             
-            // Remove active class from all tabs and contents
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
+            // Prevent double-clicking
+            if (button.classList.contains('active')) return;
             
-            // Add active class to clicked tab and corresponding content
+            // Update ARIA attributes
+            tabButtons.forEach((btn, btnIndex) => {
+                btn.setAttribute('aria-selected', btnIndex === index ? 'true' : 'false');
+                btn.setAttribute('tabindex', btnIndex === index ? '0' : '-1');
+            });
+            
+            // Add loading state to button
+            button.classList.add('loading');
+            button.setAttribute('aria-busy', 'true');
+            
+            // Announce tab change to screen readers
+            announceToScreenReader(`Switching to ${targetTab.replace('-', ' ')} tab`);
+            
+            // Fade out current content
+            const currentContent = document.querySelector('.tab-content.active');
+            if (currentContent) {
+                currentContent.setAttribute('aria-hidden', 'true');
+                currentContent.style.opacity = '0';
+                currentContent.style.transform = 'translateY(10px)';
+            }
+            
+            // Wait for fade out animation
+            await new Promise(resolve => setTimeout(resolve, 150));
+            
+            // Remove active class from all tabs and contents
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'loading');
+                btn.setAttribute('aria-busy', 'false');
+            });
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                content.setAttribute('aria-hidden', 'true');
+                content.style.opacity = '';
+                content.style.transform = '';
+            });
+            
+            // Add active class to clicked tab
             button.classList.add('active');
+            
+            // Show target content with animation
             const targetContent = document.getElementById(`${targetTab}-tab`);
             if (targetContent) {
                 targetContent.classList.add('active');
+                targetContent.setAttribute('aria-hidden', 'false');
+                targetContent.focus();
+                
+                // Trigger reflow for animation
+                targetContent.offsetHeight;
+                
+                // Animate in
+                targetContent.style.opacity = '1';
+                targetContent.style.transform = 'translateY(0)';
             }
             
             // Track tab usage for analytics (privacy-compliant)
             console.log(`AdReply: Switched to ${targetTab} tab`);
+            
+            // Show contextual help for first-time users
+            showTabContextualHelp(targetTab);
         });
         
         // Add keyboard navigation support
@@ -78,8 +136,82 @@ function setupTabNavigation() {
                 e.preventDefault();
                 button.click();
             }
+            
+            // Arrow key navigation
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const buttons = Array.from(tabButtons);
+                const currentIndex = buttons.indexOf(button);
+                let nextIndex;
+                
+                if (e.key === 'ArrowLeft') {
+                    nextIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+                } else {
+                    nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+                }
+                
+                buttons[nextIndex].focus();
+                buttons[nextIndex].click();
+            }
+            
+            // Home/End key navigation
+            if (e.key === 'Home') {
+                e.preventDefault();
+                tabButtons[0].focus();
+                tabButtons[0].click();
+            }
+            
+            if (e.key === 'End') {
+                e.preventDefault();
+                tabButtons[tabButtons.length - 1].focus();
+                tabButtons[tabButtons.length - 1].click();
+            }
         });
     });
+}
+
+// Screen reader announcement function
+function announceToScreenReader(message) {
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'polite');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.className = 'status-announcement';
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    
+    // Remove after announcement
+    setTimeout(() => {
+        if (announcement.parentNode) {
+            announcement.parentNode.removeChild(announcement);
+        }
+    }, 1000);
+}
+
+function showTabContextualHelp(tabName) {
+    // Show contextual help for first-time users (can be disabled in settings)
+    const helpShown = localStorage.getItem(`adreply_help_${tabName}_shown`);
+    if (helpShown) return;
+    
+    let helpMessage = '';
+    switch (tabName) {
+        case 'adverts':
+            helpMessage = 'Create and manage your advertisement templates here. Templates will automatically suggest relevant comments based on Facebook posts.';
+            break;
+        case 'ai-settings':
+            helpMessage = 'Configure AI features to enhance your templates with rephrasing and generation capabilities (Pro feature).';
+            break;
+        case 'license':
+            helpMessage = 'Manage your AdReply license and upgrade to Pro for unlimited templates and AI features.';
+            break;
+    }
+    
+    if (helpMessage) {
+        setTimeout(() => {
+            showInfoMessage(helpMessage);
+            localStorage.setItem(`adreply_help_${tabName}_shown`, 'true');
+        }, 500);
+    }
 }
 
 function setupEventListeners() {
@@ -340,8 +472,13 @@ function updateLicenseTabInfo(license) {
 
 async function loadTemplates() {
     try {
-        // This will be implemented in later tasks
         console.log('Loading templates...');
+        
+        // Show loading skeleton
+        showTemplateLoadingSkeleton();
+        
+        // Simulate loading delay for better UX feedback
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Check template limits and show appropriate UI
         await updateTemplateLimitDisplay();
@@ -349,19 +486,81 @@ async function loadTemplates() {
         // For now, show no templates message with enhanced styling
         const templatesContainer = document.getElementById('templatesContainer');
         templatesContainer.innerHTML = `
-            <div class="no-templates p-6 text-center text-facebook-gray">
-                <div class="mb-2">
-                    <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
+            <div class="no-templates p-6 text-center text-facebook-gray empty-state">
+                <div class="mb-4">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
                 </div>
-                <p class="text-sm">No templates created yet. Create your first template to get started.</p>
+                <h3 class="text-sm font-medium text-gray-900 mb-2">No templates yet</h3>
+                <p class="text-sm text-gray-600 mb-4">Create your first advertisement template to get started with AdReply.</p>
+                <button onclick="document.getElementById('addTemplateBtn').click()" class="inline-flex items-center px-4 py-2 bg-facebook-blue text-white text-sm font-medium rounded-md hover:bg-facebook-hover transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create Template
+                </button>
             </div>
         `;
     } catch (error) {
         console.error('Failed to load templates:', error);
         showErrorMessage('Failed to load templates');
+        showTemplateErrorState();
     }
+}
+
+function showTemplateLoadingSkeleton() {
+    const templatesContainer = document.getElementById('templatesContainer');
+    templatesContainer.innerHTML = `
+        <div class="loading-skeleton p-4 space-y-4">
+            ${Array.from({ length: 3 }, (_, i) => `
+                <div class="skeleton-template-item p-3 border border-gray-200 rounded-lg">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex-1">
+                            <div class="skeleton-template skeleton-line medium mb-2"></div>
+                            <div class="skeleton-template skeleton-line short"></div>
+                        </div>
+                        <div class="flex space-x-1">
+                            <div class="skeleton-template w-6 h-6 rounded"></div>
+                            <div class="skeleton-template w-6 h-6 rounded"></div>
+                            <div class="skeleton-template w-6 h-6 rounded"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-template skeleton-line long mb-2"></div>
+                    <div class="flex space-x-2">
+                        <div class="skeleton-template w-16 h-5 rounded-full"></div>
+                        <div class="skeleton-template w-20 h-5 rounded-full"></div>
+                        <div class="skeleton-template w-12 h-5 rounded-full"></div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function showTemplateErrorState() {
+    const templatesContainer = document.getElementById('templatesContainer');
+    templatesContainer.innerHTML = `
+        <div class="error-state p-6 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="text-sm font-medium text-gray-900 mb-2">Failed to load templates</h3>
+            <p class="text-sm text-gray-600 mb-4">There was an error loading your templates. Please try again.</p>
+            <button onclick="loadTemplates()" class="inline-flex items-center px-4 py-2 bg-facebook-blue text-white text-sm font-medium rounded-md hover:bg-facebook-hover transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Retry
+            </button>
+        </div>
+    `;
 }
 
 // Function to render comment suggestions with enhanced UI and ranking indicators
@@ -426,17 +625,22 @@ function renderCommentSuggestions(suggestions) {
     // Add click handlers for suggestions
     suggestionsContainer.querySelectorAll('.suggestion-item').forEach((item, index) => {
         item.addEventListener('click', () => {
-            // Remove previous selection
-            suggestionsContainer.querySelectorAll('.suggestion-item').forEach(el => 
-                el.classList.remove('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue')
-            );
+            // Remove previous selection and update ARIA
+            suggestionsContainer.querySelectorAll('.suggestion-item').forEach(el => {
+                el.classList.remove('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue');
+                el.setAttribute('aria-selected', 'false');
+            });
             
-            // Add selection styling
+            // Add selection styling and ARIA
             item.classList.add('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue');
+            item.setAttribute('aria-selected', 'true');
             
             const suggestionId = item.dataset.suggestionId;
             const templateId = item.dataset.templateId;
             const score = parseFloat(item.dataset.score);
+            
+            // Announce selection to screen readers
+            announceToScreenReader(`Selected suggestion ${index + 1} with ${Math.round(score * 100)}% match`);
             
             selectSuggestion(suggestionId, templateId, score);
         });
@@ -447,21 +651,59 @@ function renderCommentSuggestions(suggestions) {
                 e.preventDefault();
                 item.click();
             }
+            
+            // Arrow key navigation between suggestions
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const items = Array.from(suggestionsContainer.querySelectorAll('.suggestion-item'));
+                const currentIndex = items.indexOf(item);
+                let nextIndex;
+                
+                if (e.key === 'ArrowUp') {
+                    nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+                } else {
+                    nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+                }
+                
+                items[nextIndex].focus();
+            }
         });
         
         // Make focusable for accessibility
         item.setAttribute('tabindex', '0');
-        item.setAttribute('role', 'button');
-        item.setAttribute('aria-label', `Suggestion ${index + 1}: ${suggestions[index].text.substring(0, 50)}...`);
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', 'false');
+        item.setAttribute('aria-label', `Suggestion ${index + 1}: ${suggestions[index].text.substring(0, 50)}... Match score: ${Math.round(suggestions[index].score * 100)}%`);
+        item.setAttribute('aria-describedby', `suggestion-${index}-details`);
+        
+        // Add hidden description for screen readers
+        const description = document.createElement('div');
+        description.id = `suggestion-${index}-details`;
+        description.className = 'sr-only';
+        description.textContent = `Template: ${suggestions[index].templateLabel || 'Unknown'}. Full text: ${suggestions[index].text}`;
+        item.appendChild(description);
     });
+    
+    // Set container role for suggestions list
+    suggestionsContainer.setAttribute('role', 'listbox');
+    suggestionsContainer.setAttribute('aria-label', 'Comment suggestions');
 }
 
 // Enhanced suggestion interaction functions
 function selectSuggestion(suggestionId, templateId, score) {
     console.log('Selected suggestion:', { suggestionId, templateId, score });
     
-    // Show feedback to user
-    showSuccessMessage('Suggestion selected! Click to insert into Facebook comment.');
+    // Add visual feedback
+    const suggestionElement = document.querySelector(`[data-suggestion-id="${suggestionId}"]`);
+    if (suggestionElement) {
+        suggestionElement.classList.add('success-feedback');
+        setTimeout(() => {
+            suggestionElement.classList.remove('success-feedback');
+        }, 600);
+    }
+    
+    // Show feedback to user with enhanced notification
+    showSuccessMessage('Suggestion selected! Ready to insert into Facebook comment.');
     
     // This will be implemented in later tasks to actually insert the comment
     // For now, we'll just track the selection
@@ -505,24 +747,49 @@ function showErrorMessage(message) {
     showNotification(message, 'error');
 }
 
+function showInfoMessage(message) {
+    showNotification(message, 'info');
+}
+
 function showNotification(message, type = 'info') {
-    // Create notification element
+    // Create notification element with enhanced styling
     const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 px-4 py-2 rounded-md text-sm font-medium z-50 transition-all duration-300 transform translate-x-full`;
+    notification.className = `notification fixed top-4 right-4 px-4 py-3 rounded-lg text-sm font-medium z-50 shadow-lg transform translate-x-full transition-all duration-300 max-w-sm`;
     
-    // Style based on type
+    // Add icon based on type
+    let icon = '';
     switch (type) {
         case 'success':
-            notification.className += ' bg-green-100 text-green-800 border border-green-200';
+            notification.className += ' bg-green-500 text-white';
+            icon = '✓';
             break;
         case 'error':
-            notification.className += ' bg-red-100 text-red-800 border border-red-200';
+            notification.className += ' bg-red-500 text-white';
+            icon = '✕';
+            break;
+        case 'warning':
+            notification.className += ' bg-yellow-500 text-white';
+            icon = '⚠';
             break;
         default:
-            notification.className += ' bg-blue-100 text-blue-800 border border-blue-200';
+            notification.className += ' bg-blue-500 text-white';
+            icon = 'ℹ';
     }
     
-    notification.textContent = message;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <span class="flex-shrink-0 w-5 h-5 flex items-center justify-center bg-white bg-opacity-20 rounded-full text-xs font-bold">
+                ${icon}
+            </span>
+            <span class="flex-1">${escapeHtml(message)}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 ml-2 text-white hover:text-gray-200 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    `;
+    
     document.body.appendChild(notification);
     
     // Animate in
@@ -530,15 +797,29 @@ function showNotification(message, type = 'info') {
         notification.classList.remove('translate-x-full');
     }, 100);
     
-    // Auto remove after 3 seconds
+    // Auto remove after 4 seconds (longer for better UX)
     setTimeout(() => {
-        notification.classList.add('translate-x-full');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
+        if (notification.parentNode) {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 4000);
+    
+    // Add click to dismiss
+    notification.addEventListener('click', () => {
+        if (notification.parentNode) {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
+    });
 }
 
 // Function to render templates with enhanced UI and interaction
@@ -695,15 +976,20 @@ function renderTemplates(templates) {
 function selectTemplate(templateId) {
     console.log('Selected template:', templateId);
     
-    // Remove previous selection
-    document.querySelectorAll('.template-item').forEach(item => 
-        item.classList.remove('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue')
-    );
+    // Remove previous selection with animation
+    document.querySelectorAll('.template-item.selected').forEach(item => {
+        item.classList.add('animate-out');
+        setTimeout(() => {
+            item.classList.remove('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue', 'animate-out');
+        }, 150);
+    });
     
-    // Add selection styling
+    // Add selection styling with animation
     const selectedItem = document.querySelector(`[data-template-id="${templateId}"]`);
     if (selectedItem) {
-        selectedItem.classList.add('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue');
+        setTimeout(() => {
+            selectedItem.classList.add('selected', 'bg-blue-50', 'border-l-4', 'border-facebook-blue');
+        }, 150);
     }
     
     showSuccessMessage('Template selected! This will be used for generating suggestions.');
@@ -1083,32 +1369,69 @@ function validateTemplateForm(data) {
 }
 
 function showFormErrors(errors) {
-    Object.keys(errors).forEach(fieldId => {
+    let firstErrorField = null;
+    
+    Object.keys(errors).forEach((fieldId, index) => {
         const field = document.getElementById(fieldId);
         const errorMessage = errors[fieldId];
         
         if (field) {
-            field.classList.add('error');
+            const formGroup = field.closest('.form-group');
             
-            // Remove existing error message
+            // Set ARIA attributes
+            field.classList.add('error');
+            field.setAttribute('aria-invalid', 'true');
+            
+            if (formGroup) {
+                formGroup.setAttribute('aria-invalid', 'true');
+            }
+            
+            // Remove existing error message and ARIA attributes
             const existingError = field.parentNode.querySelector('.form-error');
             if (existingError) {
                 existingError.remove();
             }
             
+            // Create unique error ID
+            const errorId = `${fieldId}-error`;
+            
             // Add new error message
             const errorElement = document.createElement('div');
             errorElement.className = 'form-error';
+            errorElement.id = errorId;
+            errorElement.setAttribute('role', 'alert');
+            errorElement.setAttribute('aria-live', 'polite');
             errorElement.textContent = errorMessage;
             field.parentNode.appendChild(errorElement);
+            
+            // Link field to error message
+            field.setAttribute('aria-describedby', errorId);
+            
+            // Remember first error field for focus
+            if (index === 0) {
+                firstErrorField = field;
+            }
         }
     });
+    
+    // Focus first error field and announce errors
+    if (firstErrorField) {
+        firstErrorField.focus();
+        announceToScreenReader(`Form has ${Object.keys(errors).length} error${Object.keys(errors).length > 1 ? 's' : ''}. Please correct and try again.`);
+    }
 }
 
 function clearFormErrors() {
-    // Remove error classes
+    // Remove error classes and ARIA attributes
     document.querySelectorAll('.form-input.error').forEach(input => {
         input.classList.remove('error');
+        input.setAttribute('aria-invalid', 'false');
+        input.removeAttribute('aria-describedby');
+        
+        const formGroup = input.closest('.form-group');
+        if (formGroup) {
+            formGroup.setAttribute('aria-invalid', 'false');
+        }
     });
     
     // Remove error messages
@@ -1389,58 +1712,72 @@ async function validateLicense(licenseKey) {
 async function handleTemplateFormSubmit(e) {
     e.preventDefault();
     
-    // Check if user can add templates
-    if (!currentEditingTemplateId) {
-        const canAdd = await LicenseUtils.canAddTemplate();
-        if (!canAdd) {
-            showErrorMessage('Template limit reached. Upgrade to Pro for unlimited templates.');
-            
-            // Show upgrade prompt
-            const formContainer = document.querySelector('.modal-content');
-            await LicenseUtils.showUpgradePromptIfNeeded('unlimited_templates', formContainer);
-            return;
-        }
-    }
-    
-    // Continue with original form submission logic
-    // Clear previous errors
-    clearFormErrors();
-    
-    // Get form data
-    const formData = {
-        label: document.getElementById('templateLabel').value.trim(),
-        template: document.getElementById('templateContent').value.trim(),
-        keywords: document.getElementById('templateKeywords').value.trim(),
-        verticals: document.getElementById('templateVerticals').value.trim(),
-        variants: document.getElementById('templateVariants').value.trim()
-    };
-    
-    // Validate form
-    const validation = validateTemplateForm(formData);
-    if (!validation.isValid) {
-        showFormErrors(validation.errors);
-        return;
-    }
-    
-    // Process form data
-    const templateData = {
-        id: currentEditingTemplateId || generateTemplateId(),
-        label: formData.label,
-        template: formData.template,
-        keywords: formData.keywords.split(',').map(k => k.trim()).filter(k => k),
-        verticals: formData.verticals ? formData.verticals.split(',').map(v => v.trim()).filter(v => v) : [],
-        variants: formData.variants ? formData.variants.split('\n').map(v => v.trim()).filter(v => v) : [],
-        createdAt: currentEditingTemplateId ? undefined : new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        usageCount: currentEditingTemplateId ? undefined : 0
-    };
-    
-    // Show loading state
-    setFormLoading(true);
+    const submitBtn = document.querySelector('#templateForm button[type="submit"]');
+    const originalText = submitBtn.textContent;
     
     try {
+        // Check if user can add templates
+        if (!currentEditingTemplateId) {
+            const canAdd = await LicenseUtils.canAddTemplate();
+            if (!canAdd) {
+                showErrorMessage('Template limit reached. Upgrade to Pro for unlimited templates.');
+                
+                // Show upgrade prompt
+                const formContainer = document.querySelector('.modal-content');
+                await LicenseUtils.showUpgradePromptIfNeeded('unlimited_templates', formContainer);
+                return;
+            }
+        }
+        
+        // Clear previous errors
+        clearFormErrors();
+        
+        // Get form data
+        const formData = {
+            label: document.getElementById('templateLabel').value.trim(),
+            template: document.getElementById('templateContent').value.trim(),
+            keywords: document.getElementById('templateKeywords').value.trim(),
+            verticals: document.getElementById('templateVerticals').value.trim(),
+            variants: document.getElementById('templateVariants').value.trim()
+        };
+        
+        // Validate form
+        const validation = validateTemplateForm(formData);
+        if (!validation.isValid) {
+            showFormErrors(validation.errors);
+            // Add error shake animation
+            document.getElementById('templateForm').classList.add('error-feedback');
+            setTimeout(() => {
+                document.getElementById('templateForm').classList.remove('error-feedback');
+            }, 500);
+            return;
+        }
+        
+        // Show loading state
+        setFormLoading(true);
+        setButtonLoading(submitBtn, currentEditingTemplateId ? 'Updating...' : 'Creating...');
+        
+        // Process form data
+        const templateData = {
+            id: currentEditingTemplateId || generateTemplateId(),
+            label: formData.label,
+            template: formData.template,
+            keywords: formData.keywords.split(',').map(k => k.trim()).filter(k => k),
+            verticals: formData.verticals ? formData.verticals.split(',').map(v => v.trim()).filter(v => v) : [],
+            variants: formData.variants ? formData.variants.split('\n').map(v => v.trim()).filter(v => v) : [],
+            createdAt: currentEditingTemplateId ? undefined : new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            usageCount: currentEditingTemplateId ? undefined : 0
+        };
+        
+        // Simulate save delay for better UX feedback
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
         // Save template (this will be implemented with storage in later tasks)
         await saveTemplate(templateData);
+        
+        // Show success state
+        setButtonSuccess(submitBtn, currentEditingTemplateId ? 'Updated!' : 'Created!');
         
         // Update UI
         if (currentEditingTemplateId) {
@@ -1448,6 +1785,9 @@ async function handleTemplateFormSubmit(e) {
         } else {
             showSuccessMessage('Template created successfully!');
         }
+        
+        // Wait a moment to show success state
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Close modal
         closeTemplateModal();
@@ -1459,9 +1799,46 @@ async function handleTemplateFormSubmit(e) {
     } catch (error) {
         console.error('Failed to save template:', error);
         showErrorMessage('Failed to save template. Please try again.');
+        
+        // Add error feedback to form
+        document.getElementById('templateForm').classList.add('error-feedback');
+        setTimeout(() => {
+            document.getElementById('templateForm').classList.remove('error-feedback');
+        }, 500);
     } finally {
         setFormLoading(false);
+        resetButtonState(submitBtn, originalText);
     }
+}
+
+function setButtonLoading(button, text) {
+    button.classList.add('loading');
+    button.disabled = true;
+    button.innerHTML = `
+        <span class="flex items-center justify-center">
+            <div class="spinner-small mr-2"></div>
+            ${text}
+        </span>
+    `;
+}
+
+function setButtonSuccess(button, text) {
+    button.classList.remove('loading');
+    button.classList.add('success');
+    button.innerHTML = `
+        <span class="flex items-center justify-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            ${text}
+        </span>
+    `;
+}
+
+function resetButtonState(button, originalText) {
+    button.classList.remove('loading', 'success');
+    button.disabled = false;
+    button.innerHTML = originalText;
 }
 
 // Initialize template form handlers when DOM is loaded

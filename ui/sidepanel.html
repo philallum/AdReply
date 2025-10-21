@@ -26,28 +26,52 @@
     </script>
 </head>
 <body class="w-80 min-h-screen bg-gray-50 font-sans text-sm leading-relaxed text-gray-800">
-    <div class="adreply-container flex flex-col h-screen">
-        <header class="adreply-header bg-facebook-blue text-white px-4 py-4 flex justify-between items-center shadow-sm">
-            <h1 class="text-lg font-semibold">AdReply</h1>
-            <div class="license-status" id="licenseStatus">
-                <span class="status-badge free px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-20">Free</span>
+    <!-- Skip link for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="adreply-container flex flex-col h-screen" role="application" aria-label="AdReply Chrome Extension">
+        <header class="adreply-header bg-facebook-blue text-white px-4 py-4 flex justify-between items-center shadow-sm" role="banner">
+            <h1 class="text-lg font-semibold" id="app-title">AdReply</h1>
+            <div class="license-status" id="licenseStatus" role="status" aria-live="polite">
+                <span class="status-badge free px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-20" aria-label="Current license: Free tier">Free</span>
             </div>
         </header>
         
-        <nav class="adreply-tabs flex bg-white border-b border-facebook-border">
-            <button class="tab-button active flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" data-tab="adverts">Adverts</button>
-            <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" data-tab="ai-settings">AI Settings</button>
-            <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" data-tab="license">License</button>
+        <nav class="adreply-tabs flex bg-white border-b border-facebook-border" role="tablist" aria-label="Main navigation">
+            <button class="tab-button active flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" 
+                    data-tab="adverts" 
+                    role="tab" 
+                    aria-selected="true" 
+                    aria-controls="adverts-tab" 
+                    id="tab-adverts"
+                    tabindex="0">Adverts</button>
+            <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" 
+                    data-tab="ai-settings" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="ai-settings-tab" 
+                    id="tab-ai-settings"
+                    tabindex="-1">AI Settings</button>
+            <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" 
+                    data-tab="license" 
+                    role="tab" 
+                    aria-selected="false" 
+                    aria-controls="license-tab" 
+                    id="tab-license"
+                    tabindex="-1">License</button>
         </nav>
         
-        <main class="adreply-content flex-1 overflow-y-auto">
+        <main class="adreply-content flex-1 overflow-y-auto" role="main" aria-labelledby="app-title" id="main-content">
             <!-- Adverts Tab -->
-            <div class="tab-content active p-4 space-y-6" id="adverts-tab">
-                <section class="suggestions-section">
-                    <h2 class="text-base font-semibold mb-3 text-gray-900">Comment Suggestions</h2>
-                    <div class="suggestions-container bg-white rounded-lg border border-facebook-border min-h-32" id="suggestionsContainer">
-                        <div class="no-suggestions p-6 text-center text-facebook-gray">
-                            <div class="mb-2">
+            <div class="tab-content active p-4 space-y-6" id="adverts-tab" role="tabpanel" aria-labelledby="tab-adverts" tabindex="0">
+                <section class="suggestions-section" aria-labelledby="suggestions-heading">
+                    <h2 class="text-base font-semibold mb-3 text-gray-900" id="suggestions-heading">Comment Suggestions</h2>
+                    <div class="suggestions-container bg-white rounded-lg border border-facebook-border min-h-32" 
+                         id="suggestionsContainer" 
+                         role="region" 
+                         aria-label="Comment suggestions list"
+                         aria-live="polite">
+                        <div class="no-suggestions p-6 text-center text-facebook-gray" role="status">
+                            <div class="mb-2" aria-hidden="true">
                                 <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                 </svg>
@@ -57,13 +81,17 @@
                     </div>
                 </section>
                 
-                <section class="templates-section">
+                <section class="templates-section" aria-labelledby="templates-heading">
                     <div class="section-header flex justify-between items-center mb-3">
-                        <h2 class="text-base font-semibold text-gray-900">Templates</h2>
-                        <div class="flex space-x-2">
+                        <h2 class="text-base font-semibold text-gray-900" id="templates-heading">Templates</h2>
+                        <div class="flex space-x-2" role="toolbar" aria-label="Template actions">
                             <div class="relative">
-                                <button class="btn btn-secondary bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-xs font-medium transition-colors duration-200" id="importExportBtn">
-                                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button class="btn btn-secondary bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-xs font-medium transition-colors duration-200" 
+                                        id="importExportBtn"
+                                        aria-label="Import or export templates"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
                                     </svg>
                                     Import/Export
@@ -106,8 +134,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary bg-facebook-blue hover:bg-facebook-hover text-white px-3 py-2 rounded-md text-xs font-medium transition-colors duration-200" id="addTemplateBtn">
-                                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button class="btn btn-primary bg-facebook-blue hover:bg-facebook-hover text-white px-3 py-2 rounded-md text-xs font-medium transition-colors duration-200" 
+                                    id="addTemplateBtn"
+                                    aria-label="Create a new advertisement template">
+                                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
                                 Add Template
@@ -116,23 +146,33 @@
                     </div>
                     
                     <!-- Search and Filter Controls -->
-                    <div class="template-controls mb-3">
+                    <div class="template-controls mb-3" role="search" aria-label="Template search and filters">
                         <div class="search-container">
-                            <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <label for="templateSearch" class="sr-only">Search templates</label>
+                            <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                            <input type="text" class="search-input" id="templateSearch" placeholder="Search templates...">
+                            <input type="text" 
+                                   class="search-input" 
+                                   id="templateSearch" 
+                                   placeholder="Search templates..."
+                                   aria-label="Search templates by name, content, or keywords"
+                                   autocomplete="off">
                         </div>
-                        <div class="filter-container" id="templateFilters">
-                            <button class="filter-button active" data-filter="all">All</button>
-                            <button class="filter-button" data-filter="recent">Recent</button>
-                            <button class="filter-button" data-filter="popular">Popular</button>
+                        <div class="filter-container" id="templateFilters" role="group" aria-label="Template filters">
+                            <button class="filter-button active" data-filter="all" aria-pressed="true">All</button>
+                            <button class="filter-button" data-filter="recent" aria-pressed="false">Recent</button>
+                            <button class="filter-button" data-filter="popular" aria-pressed="false">Popular</button>
                         </div>
                     </div>
                     
-                    <div class="templates-container bg-white rounded-lg border border-facebook-border min-h-24" id="templatesContainer">
-                        <div class="no-templates p-6 text-center text-facebook-gray">
-                            <div class="mb-2">
+                    <div class="templates-container bg-white rounded-lg border border-facebook-border min-h-24" 
+                         id="templatesContainer"
+                         role="region"
+                         aria-label="Templates list"
+                         aria-live="polite">
+                        <div class="no-templates p-6 text-center text-facebook-gray" role="status">
+                            <div class="mb-2" aria-hidden="true">
                                 <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
@@ -144,46 +184,69 @@
             </div>
             
             <!-- AI Settings Tab -->
-            <div class="tab-content p-4 space-y-6" id="ai-settings-tab">
-                <section class="ai-settings-section">
-                    <h2 class="text-base font-semibold mb-3 text-gray-900">AI Settings</h2>
-                    <div class="pro-feature-notice bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center mb-4">
-                        <div class="mb-2">
+            <div class="tab-content p-4 space-y-6" id="ai-settings-tab" role="tabpanel" aria-labelledby="tab-ai-settings" tabindex="0">
+                <section class="ai-settings-section" aria-labelledby="ai-settings-heading">
+                    <h2 class="text-base font-semibold mb-3 text-gray-900" id="ai-settings-heading">AI Settings</h2>
+                    <div class="pro-feature-notice bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center mb-4" 
+                         role="alert" 
+                         aria-labelledby="pro-notice-heading">
+                        <div class="mb-2" aria-hidden="true">
                             <svg class="w-6 h-6 mx-auto text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
-                        <p class="text-yellow-800 text-sm mb-2">AI features are available with Pro license</p>
-                        <button class="btn btn-upgrade bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-xs font-medium transition-colors duration-200">Upgrade to Pro</button>
+                        <p class="text-yellow-800 text-sm mb-2" id="pro-notice-heading">AI features are available with Pro license</p>
+                        <button class="btn btn-upgrade bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-xs font-medium transition-colors duration-200"
+                                aria-label="Upgrade to Pro license to access AI features">Upgrade to Pro</button>
                     </div>
                     
                     <div class="ai-provider-selection mb-4">
                         <label for="aiProvider" class="block text-sm font-medium text-gray-700 mb-2">AI Provider:</label>
-                        <select id="aiProvider" disabled class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
+                        <select id="aiProvider" 
+                                disabled 
+                                class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                                aria-describedby="ai-provider-help">
                             <option value="off">Disabled</option>
                             <option value="gemini">Google Gemini</option>
                             <option value="openai">OpenAI</option>
                         </select>
+                        <div id="ai-provider-help" class="text-xs text-gray-500 mt-1">Choose your preferred AI service provider for template enhancement</div>
                     </div>
                     
-                    <div class="api-key-inputs space-y-4">
+                    <fieldset class="api-key-inputs space-y-4" aria-labelledby="api-keys-legend">
+                        <legend id="api-keys-legend" class="text-sm font-medium text-gray-700 mb-3">API Keys</legend>
+                        
                         <div class="input-group">
                             <label for="geminiApiKey" class="block text-sm font-medium text-gray-700 mb-2">Gemini API Key:</label>
-                            <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key" disabled class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
+                            <input type="password" 
+                                   id="geminiApiKey" 
+                                   placeholder="Enter your Gemini API key" 
+                                   disabled 
+                                   class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                                   aria-describedby="gemini-key-help"
+                                   autocomplete="off">
+                            <div id="gemini-key-help" class="text-xs text-gray-500 mt-1">Your API key is stored locally and never shared</div>
                         </div>
                         
                         <div class="input-group">
                             <label for="openaiApiKey" class="block text-sm font-medium text-gray-700 mb-2">OpenAI API Key:</label>
-                            <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key" disabled class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed">
+                            <input type="password" 
+                                   id="openaiApiKey" 
+                                   placeholder="Enter your OpenAI API key" 
+                                   disabled 
+                                   class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+                                   aria-describedby="openai-key-help"
+                                   autocomplete="off">
+                            <div id="openai-key-help" class="text-xs text-gray-500 mt-1">Your API key is stored locally and never shared</div>
                         </div>
-                    </div>
+                    </fieldset>
                 </section>
             </div>
             
             <!-- License Tab -->
-            <div class="tab-content p-4 space-y-6" id="license-tab">
-                <section class="license-section">
-                    <h2 class="text-base font-semibold mb-3 text-gray-900">License Management</h2>
+            <div class="tab-content p-4 space-y-6" id="license-tab" role="tabpanel" aria-labelledby="tab-license" tabindex="0">
+                <section class="license-section" aria-labelledby="license-heading">
+                    <h2 class="text-base font-semibold mb-3 text-gray-900" id="license-heading">License Management</h2>
                     
                     <div class="current-license mb-6">
                         <h3 class="text-sm font-medium text-gray-700 mb-2">Current License</h3>
