@@ -198,7 +198,7 @@
     - Add inline help and tooltips throughout the interface
     - _Requirements: 8.5_
 
-- [ ] 11. Testing and quality assurance
+- [-] 11. Testing and quality assurance
 
   - [ ] 11.1 Write unit tests for core functionality
 
