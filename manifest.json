@@ -35,8 +35,7 @@
   },
   
   "action": {
-    "default_title": "Open AdReply",
-    "default_popup": ""
+    "default_title": "Open AdReply"
   },
   
   "web_accessible_resources": [

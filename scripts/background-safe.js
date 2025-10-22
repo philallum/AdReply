@@ -117,13 +117,21 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 // Handle extension install
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('AdReply: Extension installed/updated:', details.reason);
 
   if (details.reason === 'install') {
     console.log('AdReply: First time installation');
   } else if (details.reason === 'update') {
     console.log('AdReply: Extension updated');
+  }
+
+  // Enable left-click to open side panel
+  try {
+    await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+    console.log('AdReply: Side panel behavior set - left-click will open panel');
+  } catch (error) {
+    console.warn('AdReply: setPanelBehavior failed:', error);
   }
 });
 
@@ -134,77 +142,25 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   console.log('AdReply: Cleaned up posts from closed tab:', tabId);
 });
 
-// Handle extension icon click to open side panel
-chrome.action.onClicked.addListener(async (tab) => {
-  console.log('AdReply: Extension icon clicked, tab info:', {
-    id: tab.id,
-    url: tab.url,
-    windowId: tab.windowId
-  });
-
-  try {
-    // Inject content script if on Facebook and not already injected
-    if (tab.url && tab.url.includes('facebook.com')) {
-      try {
-        // Test if content script is already running
-        await chrome.tabs.sendMessage(tab.id, { type: 'PING' });
-        console.log('AdReply: Content script already running');
-      } catch (error) {
-        // Content script not running, inject it
-        console.log('AdReply: Injecting content script...');
-        try {
-          await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['scripts/content-minimal.js']
-          });
-          console.log('AdReply: Content script injected successfully');
-        } catch (injectError) {
-          console.error('AdReply: Failed to inject content script:', injectError);
-        }
-      }
-    }
-
-    // Try to open the side panel
-    console.log('AdReply: Attempting to open side panel...');
-
+// Handle content script injection when side panel opens
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Inject content script when Facebook pages finish loading
+  if (changeInfo.status === 'complete' && tab.url && tab.url.includes('facebook.com')) {
     try {
-      await chrome.sidePanel.open({ windowId: tab.windowId });
-      console.log('AdReply: Side panel opened successfully with windowId');
-    } catch (windowError) {
-      console.log('AdReply: WindowId method failed, trying tabId method:', windowError.message);
-
+      // Test if content script is already running
+      await chrome.tabs.sendMessage(tabId, { type: 'PING' });
+    } catch (error) {
+      // Content script not running, inject it
       try {
-        await chrome.sidePanel.open({ tabId: tab.id });
-        console.log('AdReply: Side panel opened successfully with tabId');
-      } catch (tabError) {
-        console.log('AdReply: TabId method failed, trying without parameters:', tabError.message);
-
-        try {
-          await chrome.sidePanel.open({});
-          console.log('AdReply: Side panel opened successfully without parameters');
-        } catch (noParamError) {
-          console.error('AdReply: All side panel methods failed:', noParamError.message);
-
-          // Ultimate fallback: try to create a popup window
-          try {
-            const popup = await chrome.windows.create({
-              url: chrome.runtime.getURL('ui/sidepanel-safe.html'),
-              type: 'popup',
-              width: 400,
-              height: 600,
-              left: screen.width - 420,
-              top: 100
-            });
-            console.log('AdReply: Opened as popup window:', popup.id);
-          } catch (popupError) {
-            console.error('AdReply: Popup fallback also failed:', popupError.message);
-          }
-        }
+        await chrome.scripting.executeScript({
+          target: { tabId: tabId },
+          files: ['scripts/content-minimal.js']
+        });
+        console.log('AdReply: Content script auto-injected on Facebook page');
+      } catch (injectError) {
+        console.log('AdReply: Could not inject content script:', injectError.message);
       }
     }
-
-  } catch (error) {
-    console.error('AdReply: Unexpected error in action click handler:', error);
   }
 });
 

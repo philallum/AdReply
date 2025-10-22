@@ -472,26 +472,43 @@ class FacebookSafeIntegration {
 
     insertCommentIntoFacebook(commentText) {
         try {
-            // Facebook comment box selectors (multiple fallbacks)
+            // Facebook comment box selectors (prioritizing overlay/modal comment boxes)
             const commentSelectors = [
+                // Overlay/Modal comment boxes (highest priority)
+                '[role="dialog"] [aria-label*="Write a public comment"] [contenteditable="true"]',
+                '[role="dialog"] .notranslate[contenteditable="true"][role="textbox"]',
+                '[role="dialog"] [data-lexical-editor="true"]',
+                
+                // General overlay comment boxes
+                '.uiLayer [aria-label*="comment" i] [contenteditable="true"]',
+                '.uiLayer .notranslate[contenteditable="true"]',
+                
+                // Standard page comment boxes
                 '[data-testid="comment-composer"] [contenteditable="true"]',
+                '[aria-label*="Write a public comment"] [contenteditable="true"]',
                 '[aria-label*="comment" i] [contenteditable="true"]',
-                '[placeholder*="comment" i]',
+                '.notranslate[contenteditable="true"][role="textbox"]',
+                '[data-lexical-editor="true"]',
                 'div[contenteditable="true"][data-text="Write a comment..."]',
-                'div[contenteditable="true"][data-text*="comment" i]',
-                '.notranslate[contenteditable="true"]',
                 '[role="textbox"][contenteditable="true"]'
             ];
 
             let commentBox = null;
             
-            // Try to find comment box
+            // Try to find comment box, prioritizing visible ones in overlays
             for (const selector of commentSelectors) {
                 const elements = document.querySelectorAll(selector);
                 for (const element of elements) {
                     // Check if element is visible and not disabled
-                    if (element.offsetParent !== null && !element.disabled) {
+                    const rect = element.getBoundingClientRect();
+                    const isVisible = rect.width > 0 && rect.height > 0 && 
+                                    element.offsetParent !== null && 
+                                    !element.disabled &&
+                                    getComputedStyle(element).visibility !== 'hidden';
+                    
+                    if (isVisible) {
                         commentBox = element;
+                        console.log('AdReply: Found comment box with selector:', selector);
                         break;
                     }
                 }
@@ -507,33 +524,71 @@ class FacebookSafeIntegration {
 
             // Focus the comment box
             commentBox.focus();
+            commentBox.click();
             
-            // Clear existing content
-            commentBox.innerHTML = '';
-            
-            // Insert the comment text
-            if (commentBox.tagName.toLowerCase() === 'textarea') {
+            // Handle Facebook's Lexical editor
+            if (commentBox.hasAttribute('data-lexical-editor')) {
+                // For Facebook's Lexical editor
+                
+                // Clear existing content
+                const paragraph = commentBox.querySelector('p');
+                if (paragraph) {
+                    paragraph.innerHTML = '';
+                    paragraph.textContent = commentText;
+                } else {
+                    commentBox.innerHTML = `<p class="xdj266r x14z9mp xat24cr x1lziwak" dir="auto">${commentText}</p>`;
+                }
+                
+                // Trigger comprehensive events for Lexical
+                const events = ['input', 'keydown', 'keyup', 'change', 'blur', 'focus'];
+                events.forEach(eventType => {
+                    commentBox.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }));
+                });
+                
+                // Trigger composition events
+                commentBox.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }));
+                commentBox.dispatchEvent(new CompositionEvent('compositionupdate', { bubbles: true, data: commentText }));
+                commentBox.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: commentText }));
+                
+            } else if (commentBox.tagName.toLowerCase() === 'textarea') {
                 // For textarea elements
                 commentBox.value = commentText;
                 commentBox.dispatchEvent(new Event('input', { bubbles: true }));
                 commentBox.dispatchEvent(new Event('change', { bubbles: true }));
             } else {
-                // For contenteditable divs
+                // For regular contenteditable divs
                 commentBox.textContent = commentText;
                 
-                // Trigger input events to notify Facebook
+                // Trigger input events
                 commentBox.dispatchEvent(new Event('input', { bubbles: true }));
                 commentBox.dispatchEvent(new Event('keyup', { bubbles: true }));
                 commentBox.dispatchEvent(new Event('change', { bubbles: true }));
             }
 
             // Set cursor to end
-            const range = document.createRange();
-            const selection = window.getSelection();
-            range.selectNodeContents(commentBox);
-            range.collapse(false);
-            selection.removeAllRanges();
-            selection.addRange(range);
+            setTimeout(() => {
+                try {
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    
+                    if (commentBox.hasAttribute('data-lexical-editor')) {
+                        const paragraph = commentBox.querySelector('p');
+                        if (paragraph && paragraph.firstChild) {
+                            range.setStart(paragraph.firstChild, paragraph.textContent.length);
+                            range.setEnd(paragraph.firstChild, paragraph.textContent.length);
+                        }
+                    } else {
+                        range.selectNodeContents(commentBox);
+                        range.collapse(false);
+                    }
+                    
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    commentBox.focus();
+                } catch (rangeError) {
+                    console.log('AdReply: Could not set cursor position:', rangeError.message);
+                }
+            }, 100);
 
             console.log('AdReply: Comment inserted successfully:', commentText.substring(0, 50) + '...');
             
