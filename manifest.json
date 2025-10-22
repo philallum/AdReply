@@ -6,10 +6,7 @@
   
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting",
-    "unlimitedStorage",
-    "alarms"
+    "activeTab"
   ],
   
   "host_permissions": [
@@ -17,24 +14,22 @@
   ],
   
   "background": {
-    "service_worker": "scripts/background.js"
+    "service_worker": "scripts/background-safe.js"
   },
   
   "content_scripts": [
     {
       "matches": ["https://www.facebook.com/groups/*"],
       "js": [
-        "scripts/error-handler.js",
-        "scripts/logger.js", 
-        "scripts/error-integration.js",
-        "scripts/content.js"
+        "scripts/content-minimal.js"
       ],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
   
   "side_panel": {
-    "default_path": "ui/sidepanel.html"
+    "default_path": "ui/sidepanel-safe.html"
   },
   
   "action": {

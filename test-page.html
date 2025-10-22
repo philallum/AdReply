@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AdReply Extension Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>AdReply Extension Diagnostic Tool</h1>
+    
+    <div class="step info">
+        <h3>Step 1: Check Extension Status</h3>
+        <p>Go to <code>chrome://extensions/</code> and verify:</p>
+        <ul>
+            <li>AdReply extension is listed</li>
+            <li>Extension is enabled (toggle is blue/on)</li>
+            <li>No error messages in red</li>
+        </ul>
+        <button onclick="window.open('chrome://extensions/', '_blank')">Open Extensions Page</button>
+    </div>
+
+    <div class="step">
+        <h3>Step 2: Test Extension Loading</h3>
+        <button onclick="testExtensionLoading()">Test Extension Loading</button>
+        <div id="loadingResults"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 3: Test on Facebook</h3>
+        <p>Open a Facebook group and run this test in the console:</p>
+        <pre id="facebookTest">// Copy and paste this in Facebook console
+console.log('=== AdReply Test ===');
+console.log('Extension loaded:', typeof window.adReplyLoaded !== 'undefined');
+console.log('Extension active:', typeof window.adReplyActive !== 'undefined');
+console.log('Stealth integration:', typeof window.stealthIntegration !== 'undefined');
+console.log('On group page:', window.location.pathname.includes('/groups/'));
+console.log('=== End Test ===');</pre>
+        <button onclick="copyToClipboard()">Copy Test Code</button>
+        <button onclick="window.open('https://www.facebook.com/groups/', '_blank')">Open Facebook Groups</button>
+    </div>
+
+    <div class="step">
+        <h3>Step 4: Reload Extension</h3>
+        <p>If tests fail:</p>
+        <ol>
+            <li>Go to <code>chrome://extensions/</code></li>
+            <li>Find AdReply extension</li>
+            <li>Click the reload/refresh icon</li>
+            <li>Refresh Facebook page</li>
+            <li>Run test again</li>
+        </ol>
+    </div>
+
+    <script>
+        function testExtensionLoading() {
+            const results = document.getElementById('loadingResults');
+            results.innerHTML = '<h4>Extension Loading Test Results:</h4>';
+            
+            // Test Chrome API
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                results.innerHTML += '<div class="success">✅ Chrome Extension API Available</div>';
+                results.innerHTML += `<div class="info">Extension ID: ${chrome.runtime.id}</div>`;
+                
+                // Test background communication
+                chrome.runtime.sendMessage({ type: 'PING' }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        results.innerHTML += `<div class="error">❌ Background Error: ${chrome.runtime.lastError.message}</div>`;
+                    } else if (response) {
+                        results.innerHTML += `<div class="success">✅ Background Response: ${JSON.stringify(response)}</div>`;
+                    } else {
+                        results.innerHTML += '<div class="error">❌ No Background Response</div>';
+                    }
+                });
+            } else {
+                results.innerHTML += '<div class="error">❌ Chrome Extension API Not Available</div>';
+                results.innerHTML += '<div class="info">This test page needs to be opened as an extension page to access Chrome APIs.</div>';
+            }
+        }
+        
+        function copyToClipboard() {
+            const testCode = document.getElementById('facebookTest').textContent;
+            navigator.clipboard.writeText(testCode).then(() => {
+                alert('Test code copied to clipboard! Paste it in Facebook console.');
+            });
+        }
+    </script>
+</body>
+</html>

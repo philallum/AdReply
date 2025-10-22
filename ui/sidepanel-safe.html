@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdReply - Safe Mode</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .status.active {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .post-content {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .post-content h3 {
+            margin: 0 0 12px 0;
+            color: #495057;
+        }
+
+        .post-text {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        .suggestions {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .suggestion {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .suggestion:hover {
+            background: #e9ecef;
+        }
+
+        .suggestion:last-child {
+            margin-bottom: 0;
+        }
+
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        .notice {
+            background: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ffeaa7;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .refresh-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AdReply</h1>
+        <p>Safe Mode - Facebook Compatible</p>
+    </div>
+
+    <div class="notice">
+        <strong>Safe Mode Active:</strong> This version uses minimal Facebook interaction to avoid detection. Copy suggestions manually to comment boxes.
+    </div>
+
+    <button class="refresh-btn" onclick="refreshData()">Refresh Post Data</button>
+
+    <div id="status" class="status inactive">
+        Not connected to Facebook group
+    </div>
+
+    <div id="postContent" class="post-content" style="display: none;">
+        <h3>Latest Post Detected</h3>
+        <div id="postText" class="post-text">
+            No post content available
+        </div>
+    </div>
+
+    <div id="suggestions" class="suggestions" style="display: none;">
+        <h3>Suggested Responses</h3>
+        <div id="suggestionsList">
+            <!-- Suggestions will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        let port = null;
+        let currentPost = null;
+
+        // Connect to background script
+        function connectToBackground() {
+            try {
+                port = chrome.runtime.connect({ name: 'sidepanel' });
+                
+                port.onMessage.addListener((message) => {
+                    handleBackgroundMessage(message);
+                });
+
+                port.onDisconnect.addListener(() => {
+                    console.log('Disconnected from background');
+                    setTimeout(connectToBackground, 2000); // Reconnect after 2 seconds
+                });
+
+                // Request initial status
+                port.postMessage({ type: 'GET_STATUS' });
+            } catch (error) {
+                console.error('Failed to connect to background:', error);
+                setTimeout(connectToBackground, 2000);
+            }
+        }
+
+        function handleBackgroundMessage(message) {
+            switch (message.type) {
+                case 'STATUS':
+                    updateStatus(message.data);
+                    break;
+                case 'LATEST_POST':
+                    updatePostContent(message.data);
+                    break;
+            }
+        }
+
+        function updateStatus(data) {
+            const statusEl = document.getElementById('status');
+            
+            if (data.active && data.tab && data.tab.url.includes('facebook.com/groups/')) {
+                statusEl.className = 'status active';
+                statusEl.textContent = 'Connected to Facebook group';
+            } else {
+                statusEl.className = 'status inactive';
+                statusEl.textContent = 'Not connected to Facebook group';
+            }
+        }
+
+        function updatePostContent(postData) {
+            const postContentEl = document.getElementById('postContent');
+            const postTextEl = document.getElementById('postText');
+            
+            if (postData && postData.content) {
+                currentPost = postData;
+                postTextEl.textContent = postData.content;
+                postContentEl.style.display = 'block';
+                
+                // Generate suggestions
+                generateSuggestions(postData.content);
+            } else {
+                postContentEl.style.display = 'none';
+            }
+        }
+
+        function generateSuggestions(postContent) {
+            // Simple keyword-based suggestions (replace with your template engine logic)
+            const suggestions = [];
+            
+            if (postContent.toLowerCase().includes('car') || postContent.toLowerCase().includes('auto')) {
+                suggestions.push("Great car! For automotive services, check us out!");
+            }
+            
+            if (postContent.toLowerCase().includes('fitness') || postContent.toLowerCase().includes('gym')) {
+                suggestions.push("Looking strong! Need a personal trainer? We can help!");
+            }
+            
+            if (postContent.toLowerCase().includes('food') || postContent.toLowerCase().includes('restaurant')) {
+                suggestions.push("Looks delicious! For catering services, contact us!");
+            }
+            
+            // Default suggestion
+            if (suggestions.length === 0) {
+                suggestions.push("Great post! Check out our services if you need help with this!");
+            }
+            
+            displaySuggestions(suggestions);
+        }
+
+        function displaySuggestions(suggestions) {
+            const suggestionsEl = document.getElementById('suggestions');
+            const listEl = document.getElementById('suggestionsList');
+            
+            listEl.innerHTML = '';
+            
+            suggestions.forEach((suggestion, index) => {
+                const suggestionEl = document.createElement('div');
+                suggestionEl.className = 'suggestion';
+                suggestionEl.innerHTML = `
+                    <div>${suggestion}</div>
+                    <button class="copy-btn" onclick="copySuggestion('${suggestion.replace(/'/g, "\\'")}')">
+                        Copy to Clipboard
+                    </button>
+                `;
+                listEl.appendChild(suggestionEl);
+            });
+            
+            suggestionsEl.style.display = 'block';
+        }
+
+        function copySuggestion(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show temporary feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#007bff';
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy text:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        function refreshData() {
+            if (port) {
+                port.postMessage({ type: 'GET_LATEST_POST' });
+                port.postMessage({ type: 'GET_STATUS' });
+            }
+        }
+
+        // Initialize connection
+        connectToBackground();
+
+        // Refresh data every 5 seconds
+        setInterval(refreshData, 5000);
+    </script>
+</body>
+</html>
