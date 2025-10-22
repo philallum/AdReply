@@ -179,8 +179,16 @@ if (document.readyState === 'loading') {
 // Also try delayed initialization as backup
 setTimeout(initializeSafely, 2000);
 
-// Clean up on page unload
-window.addEventListener('beforeunload', () => {
+// Use visibilitychange instead of beforeunload (Facebook blocks beforeunload)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && stealthIntegration) {
+        // Page is being hidden, clean up
+        stealthIntegration.cleanup();
+    }
+});
+
+// Also clean up on page navigation (using pagehide which is more reliable)
+window.addEventListener('pagehide', () => {
     if (stealthIntegration) {
         stealthIntegration.cleanup();
     }

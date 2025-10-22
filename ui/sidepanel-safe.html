@@ -8,25 +8,73 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            padding: 16px;
+            padding: 0;
             background-color: #f8f9fa;
             min-height: 100vh;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 24px;
             padding: 16px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .header h1 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            color: #495057;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 11px;
+            color: #6c757d;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            background: #f8f9fa;
+        }
+
+        .tab:hover {
+            background: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 16px;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .status {
-            padding: 12px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 4px;
             margin-bottom: 16px;
             font-weight: 500;
+            font-size: 12px;
         }
 
         .status.active {
@@ -43,44 +91,48 @@
 
         .post-content {
             background: white;
-            padding: 16px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 6px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .post-content h3 {
-            margin: 0 0 12px 0;
+            margin: 0 0 8px 0;
+            font-size: 14px;
             color: #495057;
         }
 
         .post-text {
             background: #f8f9fa;
-            padding: 12px;
+            padding: 8px;
             border-radius: 4px;
-            border-left: 4px solid #007bff;
-            font-style: italic;
+            border-left: 3px solid #007bff;
+            font-size: 12px;
             color: #6c757d;
+            max-height: 100px;
+            overflow-y: auto;
         }
 
         .suggestions {
             background: white;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .suggestions h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            color: #495057;
         }
 
         .suggestion {
             background: #f8f9fa;
-            padding: 12px;
+            padding: 8px;
             border-radius: 4px;
             margin-bottom: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .suggestion:hover {
-            background: #e9ecef;
+            font-size: 12px;
         }
 
         .suggestion:last-child {
@@ -91,213 +143,482 @@
             background: #007bff;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 4px 8px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 10px;
+            margin-top: 6px;
         }
 
         .copy-btn:hover {
             background: #0056b3;
         }
 
-        .notice {
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .license-info {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .license-status {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .license-status.valid {
+            color: #28a745;
+        }
+
+        .license-status.invalid {
+            color: #dc3545;
+        }
+
+        .current-group {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .current-group h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .current-group #groupName {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .no-suggestions {
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .template-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #495057;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+
+        .templates-list {
+            margin-bottom: 16px;
+        }
+
+        .template-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .template-item h4 {
+            margin: 0 0 4px 0;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .template-keywords {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .template-content {
+            font-size: 12px;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .template-url {
+            font-size: 11px;
+            color: #007bff;
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .template-form {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .template-form h4 {
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .template-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .pro-notice {
             background: #fff3cd;
             color: #856404;
             padding: 12px;
             border-radius: 6px;
             border: 1px solid #ffeaa7;
             margin-bottom: 16px;
+            font-size: 12px;
+        }
+
+        .pro-features {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-features {
+            margin-top: 16px;
+        }
+
+        .ai-features h4 {
+            margin: 0 0 12px 0;
             font-size: 14px;
+            color: #495057;
         }
 
-        .refresh-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .feature-item input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .feature-item label {
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        .license-features {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
             margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .refresh-btn:hover {
-            background: #218838;
+        .license-features h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .license-features ul {
+            margin: 0;
+            padding-left: 16px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .license-features li {
+            margin-bottom: 4px;
+        }
+
+        .upgrade-section {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .upgrade-btn {
+            background: #28a745 !important;
+        }
+
+        .upgrade-btn:hover {
+            background: #218838 !important;
+        }
+
+        .debug-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>AdReply</h1>
-        <p>Safe Mode - Facebook Compatible</p>
+        <p>Facebook Comment Assistant</p>
     </div>
 
-    <div class="notice">
-        <strong>Safe Mode Active:</strong> This version uses minimal Facebook interaction to avoid detection. Copy suggestions manually to comment boxes.
+    <div class="tabs">
+        <button class="tab active" data-tab="adverts">Adverts</button>
+        <button class="tab" data-tab="templates">Templates</button>
+        <button class="tab" data-tab="ai-settings">AI Settings</button>
+        <button class="tab" data-tab="license">License</button>
     </div>
 
-    <button class="refresh-btn" onclick="refreshData()">Refresh Post Data</button>
+    <!-- Adverts Tab - Main comment suggestions -->
+    <div id="adverts" class="tab-content active">
+        <div id="status" class="status inactive">
+            Navigate to a Facebook group to start
+        </div>
 
-    <div id="status" class="status inactive">
-        Not connected to Facebook group
-    </div>
+        <div id="currentGroup" class="current-group" style="display: none;">
+            <h3>Current Group</h3>
+            <div id="groupName">No group detected</div>
+        </div>
 
-    <div id="postContent" class="post-content" style="display: none;">
-        <h3>Latest Post Detected</h3>
-        <div id="postText" class="post-text">
-            No post content available
+        <div id="postContent" class="post-content" style="display: none;">
+            <h3>Detected Post</h3>
+            <div id="postText" class="post-text">
+                No post content available
+            </div>
+        </div>
+
+        <div id="suggestions" class="suggestions">
+            <h3>Comment Suggestions</h3>
+            <div id="suggestionsList">
+                <div class="no-suggestions">
+                    No suggestions available. Navigate to a Facebook group and view posts to get started.
+                </div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <button class="btn secondary btn-small" id="refreshDataBtn">Refresh Data</button>
+            <button class="btn secondary btn-small" id="injectScriptBtn">Inject Script</button>
+            <button class="btn secondary btn-small" id="testContentScriptBtn">Test Content Script</button>
+            <button class="btn secondary btn-small" id="debugBtn">Debug Overlays</button>
+            <button class="btn secondary btn-small" id="forceCheckBtn">Force Check</button>
         </div>
     </div>
 
-    <div id="suggestions" class="suggestions" style="display: none;">
-        <h3>Suggested Responses</h3>
-        <div id="suggestionsList">
-            <!-- Suggestions will be populated here -->
+    <!-- Templates Tab - Template management -->
+    <div id="templates" class="tab-content">
+        <div class="template-header">
+            <h3>Advertisement Templates</h3>
+            <button class="btn btn-small" id="addTemplateBtn">+ Add Template</button>
+        </div>
+
+        <div id="templatesList" class="templates-list">
+            <!-- Templates will be populated here -->
+        </div>
+
+        <div id="templateForm" class="template-form" style="display: none;">
+            <h4>Create New Template</h4>
+            
+            <div class="form-group">
+                <label for="templateLabel">Template Label</label>
+                <input type="text" id="templateLabel" placeholder="e.g., Garage | Exhaust offer">
+            </div>
+
+            <div class="form-group">
+                <label for="templateKeywords">Keywords (comma separated)</label>
+                <input type="text" id="templateKeywords" placeholder="e.g., exhaust, garage, performance">
+            </div>
+
+            <div class="form-group">
+                <label for="templateContent">Template Content</label>
+                <textarea id="templateContent" placeholder="Great build! If you need custom exhaust work, we do same-day fitting — {site}."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="templateVariants">Variants (one per line)</label>
+                <textarea id="templateVariants" placeholder="Looks ace. We do performance exhaust installs same day — {site}.&#10;Nice work! If you want a quick exhaust swap, we can fit it today — {site}."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="templateUrl">Website URL (automatically added to comments)</label>
+                <input type="url" id="templateUrl" placeholder="https://yourwebsite.com">
+            </div>
+
+            <div class="form-actions">
+                <button class="btn" id="saveTemplateBtn">Save Template</button>
+                <button class="btn secondary" id="cancelTemplateBtn">Cancel</button>
+            </div>
+        </div>
+
+        <div class="template-stats">
+            <div id="templateCount">0 templates</div>
+            <div class="pro-features" style="display: none;">
+                <button class="btn secondary btn-small" id="importAdPackBtn">Import Ad Pack</button>
+                <button class="btn secondary btn-small" id="exportTemplatesBtn">Export Templates</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        let port = null;
-        let currentPost = null;
+    <!-- AI Settings Tab -->
+    <div id="ai-settings" class="tab-content">
+        <div class="pro-notice" id="aiProNotice">
+            <strong>Pro Feature:</strong> AI-powered template enhancement and generation requires a Pro license.
+            <button class="btn btn-small upgrade-btn">Upgrade to Pro</button>
+        </div>
 
-        // Connect to background script
-        function connectToBackground() {
-            try {
-                port = chrome.runtime.connect({ name: 'sidepanel' });
-                
-                port.onMessage.addListener((message) => {
-                    handleBackgroundMessage(message);
-                });
+        <div class="form-group">
+            <label for="aiProvider">AI Provider</label>
+            <select id="aiProvider">
+                <option value="off">Disabled</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="openai">OpenAI GPT</option>
+            </select>
+        </div>
 
-                port.onDisconnect.addListener(() => {
-                    console.log('Disconnected from background');
-                    setTimeout(connectToBackground, 2000); // Reconnect after 2 seconds
-                });
+        <div class="form-group" id="geminiKeyGroup" style="display: none;">
+            <label for="geminiApiKey">Gemini API Key</label>
+            <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key">
+        </div>
 
-                // Request initial status
-                port.postMessage({ type: 'GET_STATUS' });
-            } catch (error) {
-                console.error('Failed to connect to background:', error);
-                setTimeout(connectToBackground, 2000);
-            }
-        }
+        <div class="form-group" id="openaiKeyGroup" style="display: none;">
+            <label for="openaiApiKey">OpenAI API Key</label>
+            <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key">
+        </div>
 
-        function handleBackgroundMessage(message) {
-            switch (message.type) {
-                case 'STATUS':
-                    updateStatus(message.data);
-                    break;
-                case 'LATEST_POST':
-                    updatePostContent(message.data);
-                    break;
-            }
-        }
+        <div class="ai-features" id="aiFeatures" style="display: none;">
+            <h4>AI Features</h4>
+            <div class="feature-item">
+                <input type="checkbox" id="enableRephrasing">
+                <label for="enableRephrasing">Template rephrasing</label>
+            </div>
+            <div class="feature-item">
+                <input type="checkbox" id="enableGeneration">
+                <label for="enableGeneration">Template generation from niche</label>
+            </div>
+            <div class="feature-item">
+                <input type="checkbox" id="enableEnhancedMatching">
+                <label for="enableEnhancedMatching">Enhanced template matching</label>
+            </div>
+        </div>
 
-        function updateStatus(data) {
-            const statusEl = document.getElementById('status');
-            
-            if (data.active && data.tab && data.tab.url.includes('facebook.com/groups/')) {
-                statusEl.className = 'status active';
-                statusEl.textContent = 'Connected to Facebook group';
-            } else {
-                statusEl.className = 'status inactive';
-                statusEl.textContent = 'Not connected to Facebook group';
-            }
-        }
+        <div class="form-group">
+            <label for="defaultUrl">Default Website URL (for fallback suggestions)</label>
+            <input type="url" id="defaultUrl" placeholder="https://yourwebsite.com">
+        </div>
 
-        function updatePostContent(postData) {
-            const postContentEl = document.getElementById('postContent');
-            const postTextEl = document.getElementById('postText');
-            
-            if (postData && postData.content) {
-                currentPost = postData;
-                postTextEl.textContent = postData.content;
-                postContentEl.style.display = 'block';
-                
-                // Generate suggestions
-                generateSuggestions(postData.content);
-            } else {
-                postContentEl.style.display = 'none';
-            }
-        }
+        <button class="btn" id="saveAISettings">Save AI Settings</button>
+    </div>
 
-        function generateSuggestions(postContent) {
-            // Simple keyword-based suggestions (replace with your template engine logic)
-            const suggestions = [];
-            
-            if (postContent.toLowerCase().includes('car') || postContent.toLowerCase().includes('auto')) {
-                suggestions.push("Great car! For automotive services, check us out!");
-            }
-            
-            if (postContent.toLowerCase().includes('fitness') || postContent.toLowerCase().includes('gym')) {
-                suggestions.push("Looking strong! Need a personal trainer? We can help!");
-            }
-            
-            if (postContent.toLowerCase().includes('food') || postContent.toLowerCase().includes('restaurant')) {
-                suggestions.push("Looks delicious! For catering services, contact us!");
-            }
-            
-            // Default suggestion
-            if (suggestions.length === 0) {
-                suggestions.push("Great post! Check out our services if you need help with this!");
-            }
-            
-            displaySuggestions(suggestions);
-        }
+    <!-- License Tab -->
+    <div id="license" class="tab-content">
+        <div class="license-info">
+            <div id="licenseStatus" class="license-status invalid">
+                License Status: Free
+            </div>
+            <div id="licenseDetails" style="font-size: 11px; color: #6c757d;">
+                Free license: 10 templates maximum, no AI features
+            </div>
+        </div>
 
-        function displaySuggestions(suggestions) {
-            const suggestionsEl = document.getElementById('suggestions');
-            const listEl = document.getElementById('suggestionsList');
-            
-            listEl.innerHTML = '';
-            
-            suggestions.forEach((suggestion, index) => {
-                const suggestionEl = document.createElement('div');
-                suggestionEl.className = 'suggestion';
-                suggestionEl.innerHTML = `
-                    <div>${suggestion}</div>
-                    <button class="copy-btn" onclick="copySuggestion('${suggestion.replace(/'/g, "\\'")}')">
-                        Copy to Clipboard
-                    </button>
-                `;
-                listEl.appendChild(suggestionEl);
-            });
-            
-            suggestionsEl.style.display = 'block';
-        }
+        <div class="license-features">
+            <h4>Pro Features</h4>
+            <ul>
+                <li>Unlimited templates</li>
+                <li>AI-powered template enhancement</li>
+                <li>Template generation from niche descriptions</li>
+                <li>Ad Pack import/export</li>
+                <li>Enhanced template matching</li>
+            </ul>
+        </div>
 
-        function copySuggestion(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                // Show temporary feedback
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.style.background = '#28a745';
-                
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '#007bff';
-                }, 1000);
-            }).catch(err => {
-                console.error('Failed to copy text:', err);
-                alert('Failed to copy to clipboard');
-            });
-        }
+        <div class="form-group">
+            <label for="licenseKey">License Key</label>
+            <input type="text" id="licenseKey" placeholder="Enter your Pro license key">
+        </div>
 
-        function refreshData() {
-            if (port) {
-                port.postMessage({ type: 'GET_LATEST_POST' });
-                port.postMessage({ type: 'GET_STATUS' });
-            }
-        }
+        <button class="btn" id="activateLicense">Activate Pro License</button>
+        <button class="btn secondary" id="checkLicense">Check License Status</button>
+        
+        <div class="upgrade-section">
+            <button class="btn upgrade-btn" id="upgradeBtn">Upgrade to Pro</button>
+        </div>
+    </div>
 
-        // Initialize connection
-        connectToBackground();
-
-        // Refresh data every 5 seconds
-        setInterval(refreshData, 5000);
-    </script>
+    <script src="sidepanel-safe.js"></script>
 </body>
 </html>

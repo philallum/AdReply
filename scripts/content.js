@@ -1,15 +1,20 @@
 // AdReply Content Script
 // Integrates with Facebook's DOM to detect posts and enable comment insertion
 
-// Initialize logging and error handling for content script
-const logging = initializeLogging({
-  component: 'ContentScript',
-  debugMode: false // Set to true for development
-});
+// Simple logging for content script
+const logger = {
+  info: (msg, data) => console.log(`[AdReply] ${msg}`, data || ''),
+  error: (msg, data) => console.error(`[AdReply] ${msg}`, data || ''),
+  warn: (msg, data) => console.warn(`[AdReply] ${msg}`, data || ''),
+  debug: (msg, data) => console.debug(`[AdReply] ${msg}`, data || '')
+};
 
-const logger = logging.logger;
-const errorHandler = new ErrorHandler();
-const debug = logging.debug;
+// Simple error handler
+const errorHandler = {
+  handleError: (error, context) => {
+    logger.error(`Error in ${context}:`, error.message);
+  }
+};
 
 logger.info('AdReply content script loaded on Facebook');
 
@@ -696,7 +701,7 @@ function initializeFacebookIntegration() {
       logger.info('Facebook group detected, initializing integration');
       
       if (!facebookIntegration) {
-        facebookIntegration = new EnhancedFacebookIntegration();
+        facebookIntegration = new FacebookIntegration();
       }
       
       facebookIntegration.initialize();
@@ -717,12 +722,30 @@ function initializeFacebookIntegration() {
 // Initialize on page load
 initializeFacebookIntegration();
 
-// Handle page unload
-window.addEventListener('beforeunload', () => {
+// Handle page unload - Facebook blocks beforeunload, so use pagehide and visibilitychange
+window.addEventListener('pagehide', () => {
   if (facebookIntegration) {
     facebookIntegration.cleanup();
   }
 });
+
+// Handle visibility changes for better cleanup (when tab becomes hidden)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && facebookIntegration) {
+    facebookIntegration.cleanup();
+  }
+});
+
+// Handle page navigation in SPA (Facebook uses pushState/replaceState)
+let lastUrl = location.href;
+new MutationObserver(() => {
+  const url = location.href;
+  if (url !== lastUrl) {
+    lastUrl = url;
+    // Page navigation detected, reinitialize if needed
+    setTimeout(initializeFacebookIntegration, 100);
+  }
+}).observe(document, { subtree: true, childList: true });
 
 // Re-check initialization periodically (Facebook is a SPA)
 setInterval(() => {
