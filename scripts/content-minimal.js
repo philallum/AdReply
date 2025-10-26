@@ -1003,22 +1003,57 @@ class FacebookSafeIntegration {
             let postElement = null;
             let groupId = this.currentGroupId;
             
-            // Method 1: Look for posts in overlays/modals first
+            // Method 1: Look for posts in overlays/modals first (ENHANCED)
             const overlaySelectors = [
+                // Facebook modal/overlay containers with posts
                 '[role="dialog"] [role="article"]',
                 '[aria-modal="true"] [role="article"]',
-                '.uiLayer [role="article"]'
+                '.uiLayer [role="article"]',
+                
+                // Facebook photo viewer and post overlays
+                '.fbPhotoSnowlift [role="article"]',
+                '[data-testid="photo-viewer"] [role="article"]',
+                '[data-testid="modal-dialog"] [role="article"]',
+                
+                // Specific Facebook overlay classes
+                '.uiContextualLayerPositioner [role="article"]',
+                '.uiLayer .userContentWrapper',
+                '[role="dialog"] .userContentWrapper',
+                
+                // Facebook's newer overlay structures
+                'div[style*="position: fixed"] [role="article"]',
+                'div[style*="z-index"] [role="article"]',
+                
+                // Fallback: any modal-like container with post content
+                '[data-testid*="overlay"] [role="article"]',
+                '[data-testid*="modal"] [role="article"]'
             ];
             
             for (const selector of overlaySelectors) {
                 const overlayPosts = document.querySelectorAll(selector);
+                console.log(`AdReply: Checking overlay selector "${selector}" - found ${overlayPosts.length} elements`);
+                
                 if (overlayPosts.length > 0) {
-                    postElement = overlayPosts[0];
-                    content = this.extractContentPassively(postElement);
-                    if (content && content.length > 20) {
-                        console.log('AdReply: Found content in overlay:', content.substring(0, 50) + '...');
-                        break;
+                    // Try each overlay post until we find content
+                    for (const post of overlayPosts) {
+                        postElement = post;
+                        content = this.extractContentPassively(postElement);
+                        
+                        // Also try extracting from the overlay container itself
+                        if (!content || content.length < 20) {
+                            const overlayContainer = post.closest('[role="dialog"], .uiLayer, .fbPhotoSnowlift');
+                            if (overlayContainer) {
+                                content = this.extractAnyTextFromOverlay(overlayContainer);
+                            }
+                        }
+                        
+                        if (content && content.length > 20) {
+                            console.log('AdReply: Found content in overlay:', content.substring(0, 50) + '...');
+                            console.log('AdReply: Overlay selector used:', selector);
+                            break;
+                        }
                     }
+                    if (content && content.length > 20) break;
                 }
             }
             
@@ -1031,6 +1066,27 @@ class FacebookSafeIntegration {
                         postElement = post;
                         content = postContent;
                         console.log('AdReply: Found content in regular post:', content.substring(0, 50) + '...');
+                        break;
+                    }
+                }
+            }
+            
+            // Method 2.5: Debug overlay detection
+            if (!content) {
+                console.log('AdReply: No content found in overlays, debugging overlay detection...');
+                const debugInfo = this.debugOverlays();
+                console.log('AdReply: Overlay debug results:', debugInfo);
+                
+                // Try to extract from any visible overlay
+                const allOverlays = document.querySelectorAll('[role="dialog"], .uiLayer, .fbPhotoSnowlift, [aria-modal="true"]');
+                console.log('AdReply: Found', allOverlays.length, 'potential overlay containers');
+                
+                for (const overlay of allOverlays) {
+                    const overlayText = this.extractAnyTextFromOverlay(overlay);
+                    if (overlayText && overlayText.length > 20) {
+                        content = overlayText;
+                        postElement = overlay;
+                        console.log('AdReply: Extracted text from overlay container:', content.substring(0, 50) + '...');
                         break;
                     }
                 }
