@@ -17,6 +17,9 @@ class FacebookSafeIntegration {
         this.observers = [];
         this.lastPostContent = '';
         this.uiContainer = null;
+        this.currentUser = null;
+        this.userProfileCache = null;
+        this.usageTracker = null;
         
         // Safe selectors that don't interfere with Facebook's React
         this.selectors = {
@@ -51,10 +54,11 @@ class FacebookSafeIntegration {
         // Set up passive observation
         this.setupPassiveObserver();
         
-        // Do an immediate check for posts
-        setTimeout(() => {
-            this.checkForNewContent();
-        }, 3000);
+        // Content script is now ready for manual analysis requests
+        console.log('AdReply: Ready for manual post analysis');
+
+        // Initialize usage tracker
+        this.initializeUsageTracker();
 
         // Set up message handling
         this.setupMessageHandler();
@@ -210,6 +214,7 @@ class FacebookSafeIntegration {
     checkPosts() {
         // Use passive, read-only operations
         const posts = document.querySelectorAll(this.selectors.posts);
+        console.log('AdReply: Checking posts, found:', posts.length, 'elements');
 
         if (posts.length > 0) {
             // Get the most recent post that we haven't processed
@@ -219,6 +224,7 @@ class FacebookSafeIntegration {
                     post.dataset.adreplyChecked = 'true';
                     
                     const content = this.extractContentPassively(post);
+                    console.log('AdReply: Extracted content from post:', content ? content.substring(0, 50) + '...' : 'none');
                     
                     if (content && content !== this.lastPostContent && content.length > 20) {
                         this.lastPostContent = content;
@@ -233,6 +239,8 @@ class FacebookSafeIntegration {
                     }
                 }
             }
+        } else {
+            console.log('AdReply: No posts found with selectors:', this.selectors.posts);
         }
     }
 
@@ -247,8 +255,15 @@ class FacebookSafeIntegration {
             '[data-testid="photo-viewer"]'
         ];
 
+        console.log('AdReply: Checking for overlays...');
+        let totalOverlays = 0;
+
         for (const containerSelector of overlayContainers) {
             const containers = document.querySelectorAll(containerSelector);
+            totalOverlays += containers.length;
+            if (containers.length > 0) {
+                console.log('AdReply: Found', containers.length, 'containers for selector:', containerSelector);
+            }
             
             for (const container of containers) {
                 if (!container.dataset.adreplyOverlayContainer) {
@@ -343,8 +358,9 @@ class FacebookSafeIntegration {
                 const contentEl = postElement.querySelector(selector);
                 if (contentEl) {
                     const text = contentEl.textContent || contentEl.innerText || '';
-                    if (text.trim().length > 0) {
-                        return text.trim();
+                    const cleanText = this.cleanExtractedText(text);
+                    if (cleanText && cleanText.length > 0) {
+                        return cleanText;
                     }
                 }
             }
@@ -352,6 +368,41 @@ class FacebookSafeIntegration {
         } catch (error) {
             return '';
         }
+    }
+
+    cleanExtractedText(text) {
+        if (!text) return '';
+        
+        const trimmed = text.trim();
+        
+        // Filter out Facebook's technical data
+        if (trimmed.startsWith('{"require":[') || 
+            trimmed.startsWith('{"__bbox"') ||
+            trimmed.startsWith('{"__ar":') ||
+            trimmed.includes('qplTagServerJS') ||
+            trimmed.includes('makehaste_min_rc') ||
+            trimmed.includes('comet_preloader') ||
+            trimmed.length < 10 ||
+            trimmed.length > 2000) {
+            return '';
+        }
+        
+        // Filter out common Facebook UI elements
+        const uiElements = [
+            'Like', 'Comment', 'Share', 'React', 'Reply',
+            'See more', 'See less', 'Show more', 'Show less',
+            'Translate', 'Edit', 'Delete', 'Report',
+            'minutes ago', 'hours ago', 'days ago', 'weeks ago',
+            'Just now', 'Yesterday', 'Sponsored'
+        ];
+        
+        // If text is only UI elements, skip it
+        if (uiElements.some(element => trimmed === element)) {
+            return '';
+        }
+        
+        // Return clean text if it looks like actual content
+        return trimmed;
     }
 
     setupMessageHandler() {
@@ -380,14 +431,31 @@ class FacebookSafeIntegration {
                         const overlays = this.debugOverlays();
                         sendResponse({ success: true, overlays });
                         break;
+                    case 'DEBUG_COMMENTS':
+                        this.debugCommentDetection().then(debugInfo => {
+                            sendResponse({ success: true, debugInfo });
+                        }).catch(error => {
+                            sendResponse({ success: false, error: error.message });
+                        });
+                        return true; // Keep message channel open for async response
+                        break;
                     case 'FORCE_CHECK':
                         this.checkForNewContent();
                         this.checkForOverlays();
                         sendResponse({ success: true, message: 'Force check completed' });
                         break;
-                    case 'INSERT_COMMENT':
-                        const insertResult = this.insertCommentIntoFacebook(message.text);
-                        sendResponse(insertResult);
+
+                    case 'ANALYZE_CURRENT_POST':
+                        console.log('AdReply: Manual post analysis requested');
+                        this.analyzeCurrentPost().then(analysisResult => {
+                            sendResponse(analysisResult);
+                        }).catch(error => {
+                            sendResponse({
+                                success: false,
+                                error: 'Analysis failed: ' + error.message
+                            });
+                        });
+                        return true; // Keep message channel open for async response
                         break;
                     default:
                         sendResponse({ success: false, error: 'Unknown message type' });
@@ -470,6 +538,591 @@ class FacebookSafeIntegration {
         return overlayInfo;
     }
 
+    async debugCommentDetection() {
+        console.log('AdReply: Running comment detection debug...');
+        
+        const debugInfo = {
+            timestamp: new Date().toISOString(),
+            userProfile: null,
+            posts: [],
+            comments: [],
+            errors: []
+        };
+
+        try {
+            // Get user profile
+            debugInfo.userProfile = await this.getCurrentUser();
+            
+            // Find all posts on page
+            const postSelectors = ['[role="article"]', '[data-testid="post"]'];
+            for (const selector of postSelectors) {
+                const posts = document.querySelectorAll(selector);
+                debugInfo.posts.push({
+                    selector,
+                    count: posts.length,
+                    elements: Array.from(posts).map(post => ({
+                        hasContent: !!this.extractContentPassively(post),
+                        contentPreview: this.extractContentPassively(post)?.substring(0, 50) + '...'
+                    }))
+                });
+            }
+
+            // Check comments on first post if available
+            const firstPost = document.querySelector('[role="article"]');
+            if (firstPost) {
+                const commentCheck = await this.checkForUserComments(firstPost);
+                debugInfo.comments = {
+                    hasUserComments: commentCheck.hasUserComments,
+                    commentCount: commentCheck.commentCount,
+                    userCommentTexts: commentCheck.userCommentTexts,
+                    skipReason: commentCheck.skipReason
+                };
+            }
+
+        } catch (error) {
+            debugInfo.errors.push(error.message);
+        }
+
+        console.log('AdReply: Comment detection debug info:', debugInfo);
+        return debugInfo;
+    }
+
+    initializeUsageTracker() {
+        // Usage tracker will be handled by the sidebar
+        console.log('AdReply: Usage tracking will be handled by sidebar');
+    }
+
+    async getCurrentUser() {
+        // Return cached user if available and recent (within 5 minutes)
+        if (this.userProfileCache && 
+            Date.now() - this.userProfileCache.timestamp < 300000) {
+            return this.userProfileCache;
+        }
+
+        console.log('AdReply: Detecting current Facebook user...');
+
+        // Facebook user profile selectors (priority order)
+        const userSelectors = [
+            // Account switcher (most reliable)
+            '[data-testid="nav_account_switcher"] [role="button"]',
+            '[aria-label*="Your profile"] img',
+            
+            // Profile links in navigation
+            'a[href*="/me/"]',
+            '[data-testid="blue_bar_profile_link"]',
+            
+            // Account name in navigation
+            'div[data-testid="nav_account_switcher"] span',
+            '[aria-label*="Account"] span',
+            
+            // Profile image in top bar
+            '[data-testid="nav_account_switcher"] img',
+            'img[alt*="profile"]',
+            
+            // Fallback selectors
+            '[role="banner"] a[href*="facebook.com/profile"]',
+            '[role="banner"] a[href*="facebook.com/me"]'
+        ];
+
+        let userProfile = {
+            name: null,
+            profileUrl: null,
+            profileId: null,
+            avatarUrl: null,
+            cached: true,
+            timestamp: Date.now()
+        };
+
+        try {
+            for (const selector of userSelectors) {
+                const elements = document.querySelectorAll(selector);
+                
+                for (const element of elements) {
+                    // Extract name from various sources
+                    if (!userProfile.name) {
+                        userProfile.name = element.getAttribute('aria-label') ||
+                                         element.textContent?.trim() ||
+                                         element.getAttribute('alt') ||
+                                         element.getAttribute('title');
+                        
+                        // Clean up common Facebook UI text
+                        if (userProfile.name) {
+                            userProfile.name = userProfile.name
+                                .replace(/Your profile|Account|Profile|Menu/gi, '')
+                                .replace(/\s+/g, ' ')
+                                .trim();
+                            
+                            // Skip if it's just generic text
+                            if (userProfile.name.length < 2 || 
+                                ['Menu', 'Profile', 'Account'].includes(userProfile.name)) {
+                                userProfile.name = null;
+                            }
+                        }
+                    }
+
+                    // Extract profile URL
+                    if (!userProfile.profileUrl && element.href) {
+                        if (element.href.includes('/me/') || 
+                            element.href.includes('/profile/') ||
+                            element.href.includes('facebook.com/')) {
+                            userProfile.profileUrl = element.href;
+                            
+                            // Extract profile ID from URL
+                            const profileMatch = element.href.match(/\/profile\/(\d+)/);
+                            const userMatch = element.href.match(/facebook\.com\/([^\/\?]+)/);
+                            
+                            if (profileMatch) {
+                                userProfile.profileId = profileMatch[1];
+                            } else if (userMatch && !userMatch[1].includes('me')) {
+                                userProfile.profileId = userMatch[1];
+                            }
+                        }
+                    }
+
+                    // Extract avatar URL
+                    if (!userProfile.avatarUrl && element.tagName === 'IMG' && element.src) {
+                        userProfile.avatarUrl = element.src;
+                    }
+
+                    // If we have enough info, break
+                    if (userProfile.name && (userProfile.profileUrl || userProfile.profileId)) {
+                        break;
+                    }
+                }
+
+                if (userProfile.name && (userProfile.profileUrl || userProfile.profileId)) {
+                    break;
+                }
+            }
+
+            // Additional extraction from page metadata
+            if (!userProfile.name || !userProfile.profileId) {
+                // Try to get user info from page scripts or meta tags
+                const scripts = document.querySelectorAll('script');
+                for (const script of scripts) {
+                    const content = script.textContent || '';
+                    
+                    // Look for user data in Facebook's page data
+                    const userMatch = content.match(/"USER_ID":"(\d+)"/);
+                    const nameMatch = content.match(/"name":"([^"]+)"/);
+                    
+                    if (userMatch && !userProfile.profileId) {
+                        userProfile.profileId = userMatch[1];
+                    }
+                    
+                    if (nameMatch && !userProfile.name) {
+                        userProfile.name = nameMatch[1];
+                    }
+                    
+                    if (userProfile.name && userProfile.profileId) break;
+                }
+            }
+
+            // Cache the result
+            this.userProfileCache = userProfile;
+            this.currentUser = userProfile;
+
+            console.log('AdReply: User profile detected:', {
+                name: userProfile.name,
+                hasProfileUrl: !!userProfile.profileUrl,
+                hasProfileId: !!userProfile.profileId,
+                hasAvatar: !!userProfile.avatarUrl
+            });
+
+            return userProfile;
+
+        } catch (error) {
+            console.warn('AdReply: Error detecting user profile:', error);
+            
+            // Return cached profile if available
+            if (this.userProfileCache) {
+                return this.userProfileCache;
+            }
+            
+            // Return empty profile
+            return {
+                name: null,
+                profileUrl: null,
+                profileId: null,
+                avatarUrl: null,
+                cached: false,
+                timestamp: Date.now()
+            };
+        }
+    }
+
+    async checkForUserComments(postElement) {
+        console.log('AdReply: Checking for existing user comments...');
+        
+        try {
+            // Get current user profile
+            const currentUser = await this.getCurrentUser();
+            
+            if (!currentUser.name && !currentUser.profileId) {
+                console.log('AdReply: Cannot check comments - user profile not detected');
+                return {
+                    hasUserComments: false,
+                    commentCount: 0,
+                    userCommentTexts: [],
+                    skipReason: 'User profile not detected'
+                };
+            }
+
+            // Facebook comment selectors for different contexts
+            const commentSelectors = [
+                // Regular post comments
+                '[role="article"] [data-testid="comment"]',
+                '[role="article"] .UFIComment',
+                '[role="article"] [aria-label*="Comment"]',
+                
+                // Overlay/modal comments  
+                '[role="dialog"] [data-testid="comment"]',
+                '[role="dialog"] .UFIComment',
+                '[role="dialog"] [aria-label*="Comment"]',
+                
+                // Alternative comment structures
+                '[data-testid="UFI2Comment/root"]',
+                '.UFIComment',
+                '[role="article"] div[dir="auto"]'
+            ];
+
+            let allComments = [];
+            
+            // Find the post container (could be the element itself or a parent)
+            let searchContainer = postElement;
+            
+            // If we're in an overlay, search within the overlay
+            const overlay = document.querySelector('[role="dialog"], .uiLayer');
+            if (overlay && overlay.contains(postElement)) {
+                searchContainer = overlay;
+            }
+
+            // Collect all comments from different selectors
+            for (const selector of commentSelectors) {
+                const comments = searchContainer.querySelectorAll(selector);
+                allComments.push(...Array.from(comments));
+            }
+
+            // Remove duplicates
+            allComments = [...new Set(allComments)];
+            
+            console.log(`AdReply: Found ${allComments.length} total comments to check`);
+
+            let userComments = [];
+            let userCommentTexts = [];
+
+            for (const comment of allComments) {
+                try {
+                    // Look for comment author information
+                    const authorSelectors = [
+                        'a[role="link"][href*="/profile/"]',
+                        'a[role="link"][href*="/user/"]',
+                        'a[href*="facebook.com/profile"]',
+                        'a[href*="facebook.com/"]',
+                        'strong a',
+                        'h3 a',
+                        '[data-testid="comment_author_name"]'
+                    ];
+
+                    let isUserComment = false;
+                    let commentAuthor = null;
+
+                    for (const authorSelector of authorSelectors) {
+                        const authorElements = comment.querySelectorAll(authorSelector);
+                        
+                        for (const authorElement of authorElements) {
+                            const authorName = authorElement.textContent?.trim();
+                            const authorHref = authorElement.href;
+
+                            // Check if this matches the current user
+                            if (authorName && currentUser.name) {
+                                // Normalize names for comparison
+                                const normalizedAuthor = authorName.toLowerCase().trim();
+                                const normalizedUser = currentUser.name.toLowerCase().trim();
+                                
+                                if (normalizedAuthor === normalizedUser) {
+                                    isUserComment = true;
+                                    commentAuthor = authorName;
+                                    break;
+                                }
+                            }
+
+                            // Check profile URL/ID match
+                            if (authorHref && currentUser.profileId) {
+                                if (authorHref.includes(currentUser.profileId) ||
+                                    (currentUser.profileUrl && authorHref === currentUser.profileUrl)) {
+                                    isUserComment = true;
+                                    commentAuthor = authorName || 'You';
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (isUserComment) break;
+                    }
+
+                    if (isUserComment) {
+                        userComments.push(comment);
+                        
+                        // Extract comment text for debugging
+                        const commentText = comment.textContent?.trim() || '';
+                        if (commentText.length > 0 && commentText.length < 500) {
+                            userCommentTexts.push(commentText.substring(0, 100) + '...');
+                        }
+                        
+                        console.log('AdReply: Found user comment by:', commentAuthor);
+                    }
+                } catch (commentError) {
+                    console.debug('AdReply: Error checking individual comment:', commentError);
+                }
+            }
+
+            const result = {
+                hasUserComments: userComments.length > 0,
+                commentCount: userComments.length,
+                userCommentTexts: userCommentTexts,
+                skipReason: userComments.length > 0 ? 
+                    `You have already commented on this post (${userComments.length} comment${userComments.length > 1 ? 's' : ''})` : 
+                    null
+            };
+
+            console.log('AdReply: Comment check result:', {
+                hasUserComments: result.hasUserComments,
+                commentCount: result.commentCount,
+                userProfile: currentUser.name || currentUser.profileId
+            });
+
+            return result;
+
+        } catch (error) {
+            console.warn('AdReply: Error checking for user comments:', error);
+            
+            // Conservative approach: if we can't check, allow analysis to proceed
+            return {
+                hasUserComments: false,
+                commentCount: 0,
+                userCommentTexts: [],
+                skipReason: 'Comment detection failed'
+            };
+        }
+    }
+
+    simulateRealisticTyping(commentBox, text) {
+        return new Promise((resolve) => {
+            let currentIndex = 0;
+            const paragraph = commentBox.querySelector('p');
+            
+            const typeNextCharacter = () => {
+                if (currentIndex >= text.length) {
+                    resolve();
+                    return;
+                }
+                
+                const char = text[currentIndex];
+                const currentText = text.substring(0, currentIndex + 1);
+                
+                // Update the paragraph content
+                if (paragraph) {
+                    paragraph.textContent = currentText;
+                }
+                
+                // Create realistic keyboard events
+                const keydownEvent = new KeyboardEvent('keydown', {
+                    key: char,
+                    char: char,
+                    charCode: char.charCodeAt(0),
+                    keyCode: char.charCodeAt(0),
+                    which: char.charCodeAt(0),
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                const keypressEvent = new KeyboardEvent('keypress', {
+                    key: char,
+                    char: char,
+                    charCode: char.charCodeAt(0),
+                    keyCode: char.charCodeAt(0),
+                    which: char.charCodeAt(0),
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                const inputEvent = new InputEvent('input', {
+                    inputType: 'insertText',
+                    data: char,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                const keyupEvent = new KeyboardEvent('keyup', {
+                    key: char,
+                    char: char,
+                    charCode: char.charCodeAt(0),
+                    keyCode: char.charCodeAt(0),
+                    which: char.charCodeAt(0),
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                // Dispatch events in order
+                commentBox.dispatchEvent(keydownEvent);
+                commentBox.dispatchEvent(keypressEvent);
+                commentBox.dispatchEvent(inputEvent);
+                commentBox.dispatchEvent(keyupEvent);
+                
+                currentIndex++;
+                
+                // Continue with next character after a small delay
+                setTimeout(typeNextCharacter, 50); // 50ms delay between characters
+            };
+            
+            typeNextCharacter();
+        });
+    }
+
+    async analyzeCurrentPost() {
+        console.log('AdReply: Analyzing current post...');
+        
+        // Clear previous content to force fresh analysis
+        this.lastPostContent = '';
+        
+        // Reset all checked flags to allow re-scanning
+        document.querySelectorAll('[data-adreply-checked]').forEach(el => {
+            delete el.dataset.adreplyChecked;
+        });
+        document.querySelectorAll('[data-adreply-overlay-checked]').forEach(el => {
+            delete el.dataset.adreplyOverlayChecked;
+        });
+        document.querySelectorAll('[data-adreply-overlay-container]').forEach(el => {
+            delete el.dataset.adreplyOverlayContainer;
+        });
+        
+        try {
+            // Try multiple methods to find post content and the post element
+            let content = null;
+            let postElement = null;
+            let groupId = this.currentGroupId;
+            
+            // Method 1: Look for posts in overlays/modals first
+            const overlaySelectors = [
+                '[role="dialog"] [role="article"]',
+                '[aria-modal="true"] [role="article"]',
+                '.uiLayer [role="article"]'
+            ];
+            
+            for (const selector of overlaySelectors) {
+                const overlayPosts = document.querySelectorAll(selector);
+                if (overlayPosts.length > 0) {
+                    postElement = overlayPosts[0];
+                    content = this.extractContentPassively(postElement);
+                    if (content && content.length > 20) {
+                        console.log('AdReply: Found content in overlay:', content.substring(0, 50) + '...');
+                        break;
+                    }
+                }
+            }
+            
+            // Method 2: Look for regular posts on the page
+            if (!content) {
+                const posts = document.querySelectorAll('[role="article"]');
+                for (const post of posts) {
+                    const postContent = this.extractContentPassively(post);
+                    if (postContent && postContent.length > 20) {
+                        postElement = post;
+                        content = postContent;
+                        console.log('AdReply: Found content in regular post:', content.substring(0, 50) + '...');
+                        break;
+                    }
+                }
+            }
+            
+            // Method 3: Extract meaningful text from visible elements
+            if (!content) {
+                // Look for specific text-containing elements that are likely to be posts
+                const textSelectors = [
+                    '[data-testid="post_message"]',
+                    '.userContent',
+                    '[data-ad-preview="message"]',
+                    '.text_exposed_root',
+                    'div[dir="auto"]',
+                    'span[dir="auto"]'
+                ];
+                
+                for (const selector of textSelectors) {
+                    const elements = document.querySelectorAll(selector);
+                    for (const element of elements) {
+                        const text = this.cleanExtractedText(element.textContent || element.innerText || '');
+                        if (text && text.length > 20 && text.length < 1000) {
+                            // Find the closest article element
+                            postElement = element.closest('[role="article"]') || element;
+                            content = text;
+                            console.log('AdReply: Found content from text selector:', content.substring(0, 50) + '...');
+                            break;
+                        }
+                    }
+                    if (content) break;
+                }
+                
+                // Final fallback: look for any meaningful text blocks
+                if (!content) {
+                    const allText = document.body.textContent || '';
+                    const lines = allText.split('\n')
+                        .map(line => this.cleanExtractedText(line))
+                        .filter(line => line && line.length > 30 && line.length < 500)
+                        .slice(0, 5);
+                    
+                    if (lines.length > 0) {
+                        content = lines.reduce((longest, current) => 
+                            current.length > longest.length ? current : longest
+                        );
+                        postElement = document.body; // Fallback container
+                        console.log('AdReply: Found content from page text:', content.substring(0, 50) + '...');
+                    }
+                }
+            }
+            
+            if (content && postElement) {
+                // NEW: Check for existing user comments before proceeding
+                console.log('AdReply: Checking for existing user comments...');
+                const commentCheck = await this.checkForUserComments(postElement);
+                
+                if (commentCheck.hasUserComments) {
+                    console.log('AdReply: Skipping analysis - user has already commented');
+                    return {
+                        success: true,
+                        skipped: true,
+                        skipReason: commentCheck.skipReason,
+                        userComments: commentCheck.userCommentTexts,
+                        content: content,
+                        groupId: groupId || 'manual',
+                        method: 'manual_analysis_skipped'
+                    };
+                }
+                
+                // Proceed with normal analysis if no user comments found
+                console.log('AdReply: No user comments found, proceeding with analysis');
+                return {
+                    success: true,
+                    content: content,
+                    groupId: groupId || 'manual',
+                    method: 'manual_analysis'
+                };
+            } else {
+                return {
+                    success: false,
+                    error: 'No post content found on current page'
+                };
+            }
+            
+        } catch (error) {
+            console.error('AdReply: Error analyzing post:', error);
+            return {
+                success: false,
+                error: 'Analysis failed: ' + error.message
+            };
+        }
+    }
+
     insertCommentIntoFacebook(commentText) {
         try {
             // Facebook comment box selectors (prioritizing overlay/modal comment boxes)
@@ -526,29 +1179,24 @@ class FacebookSafeIntegration {
             commentBox.focus();
             commentBox.click();
             
-            // Handle Facebook's Lexical editor
+            console.log('AdReply: Comment box found, attempting insertion...');
+            console.log('AdReply: Comment box type:', commentBox.tagName, 'has lexical:', commentBox.hasAttribute('data-lexical-editor'));
+            
+            // Handle Facebook's Lexical editor with realistic typing simulation
             if (commentBox.hasAttribute('data-lexical-editor')) {
-                // For Facebook's Lexical editor
+                console.log('AdReply: Using realistic typing simulation for Lexical editor');
+                
+                commentBox.focus();
+                commentBox.click();
                 
                 // Clear existing content
                 const paragraph = commentBox.querySelector('p');
                 if (paragraph) {
-                    paragraph.innerHTML = '';
-                    paragraph.textContent = commentText;
-                } else {
-                    commentBox.innerHTML = `<p class="xdj266r x14z9mp xat24cr x1lziwak" dir="auto">${commentText}</p>`;
+                    paragraph.innerHTML = '<br>';
                 }
                 
-                // Trigger comprehensive events for Lexical
-                const events = ['input', 'keydown', 'keyup', 'change', 'blur', 'focus'];
-                events.forEach(eventType => {
-                    commentBox.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }));
-                });
-                
-                // Trigger composition events
-                commentBox.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true }));
-                commentBox.dispatchEvent(new CompositionEvent('compositionupdate', { bubbles: true, data: commentText }));
-                commentBox.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, data: commentText }));
+                // Use a more realistic typing approach
+                this.simulateRealisticTyping(commentBox, commentText);
                 
             } else if (commentBox.tagName.toLowerCase() === 'textarea') {
                 // For textarea elements
@@ -556,6 +1204,8 @@ class FacebookSafeIntegration {
                 commentBox.dispatchEvent(new Event('input', { bubbles: true }));
                 commentBox.dispatchEvent(new Event('change', { bubbles: true }));
             } else {
+                console.log('AdReply: Using contenteditable method');
+                
                 // For regular contenteditable divs
                 commentBox.textContent = commentText;
                 
@@ -564,6 +1214,59 @@ class FacebookSafeIntegration {
                 commentBox.dispatchEvent(new Event('keyup', { bubbles: true }));
                 commentBox.dispatchEvent(new Event('change', { bubbles: true }));
             }
+            
+            // Method 2: Try Selection API approach
+            setTimeout(() => {
+                const currentContent = commentBox.textContent || commentBox.value || '';
+                if (!currentContent.includes(commentText)) {
+                    console.log('AdReply: Trying Selection API approach...');
+                    
+                    try {
+                        commentBox.focus();
+                        
+                        // Use Selection API to insert text
+                        const selection = window.getSelection();
+                        const range = document.createRange();
+                        
+                        if (commentBox.hasAttribute('data-lexical-editor')) {
+                            const paragraph = commentBox.querySelector('p');
+                            if (paragraph) {
+                                // Clear paragraph
+                                paragraph.innerHTML = '';
+                                
+                                // Create text node
+                                const textNode = document.createTextNode(commentText);
+                                paragraph.appendChild(textNode);
+                                
+                                // Set selection
+                                range.setStart(textNode, 0);
+                                range.setEnd(textNode, commentText.length);
+                                selection.removeAllRanges();
+                                selection.addRange(range);
+                                
+                                // Trigger events
+                                const inputEvent = new InputEvent('input', {
+                                    inputType: 'insertText',
+                                    data: commentText,
+                                    bubbles: true
+                                });
+                                commentBox.dispatchEvent(inputEvent);
+                                
+                                console.log('AdReply: Selection API method completed');
+                            }
+                        }
+                    } catch (selectionError) {
+                        console.log('AdReply: Selection API failed:', selectionError.message);
+                        
+                        // Final fallback: Just copy to clipboard for manual paste
+                        navigator.clipboard.writeText(commentText).then(() => {
+                            console.log('AdReply: Text copied to clipboard as final fallback');
+                        }).catch(() => {
+                            console.log('AdReply: All methods failed');
+                        });
+                    }
+                }
+            }, 1000); // Longer delay to let typing simulation complete
 
             // Set cursor to end
             setTimeout(() => {
@@ -590,11 +1293,36 @@ class FacebookSafeIntegration {
                 }
             }, 100);
 
-            console.log('AdReply: Comment inserted successfully:', commentText.substring(0, 50) + '...');
+            // Verify insertion worked
+            setTimeout(() => {
+                const finalContent = commentBox.textContent || commentBox.value || '';
+                if (finalContent.includes(commentText)) {
+                    console.log('AdReply: Comment insertion verified successful');
+                } else {
+                    console.log('AdReply: Comment insertion may have failed, trying direct DOM manipulation...');
+                    
+                    // Last resort: direct DOM manipulation
+                    if (commentBox.hasAttribute('data-lexical-editor')) {
+                        const paragraph = commentBox.querySelector('p');
+                        if (paragraph) {
+                            paragraph.innerHTML = commentText;
+                            paragraph.setAttribute('dir', 'auto');
+                        }
+                    } else {
+                        commentBox.innerHTML = commentText;
+                    }
+                    
+                    // Trigger final events
+                    commentBox.dispatchEvent(new Event('input', { bubbles: true }));
+                    commentBox.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }, 500);
+            
+            console.log('AdReply: Comment insertion attempted:', commentText.substring(0, 50) + '...');
             
             return { 
                 success: true, 
-                message: 'Comment inserted successfully' 
+                message: 'Comment insertion attempted' 
             };
 
         } catch (error) {

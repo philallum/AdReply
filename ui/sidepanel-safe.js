@@ -30,6 +30,11 @@ function initializeTabs() {
             // Add active class to clicked tab and corresponding content
             tab.classList.add('active');
             document.getElementById(targetTab).classList.add('active');
+            
+            // Refresh usage stats when templates tab is opened
+            if (targetTab === 'templates') {
+                refreshUsageStats();
+            }
         });
     });
 }
@@ -87,8 +92,36 @@ function updatePostContent(postData) {
         postTextEl.textContent = postData.content;
         postContentEl.style.display = 'block';
         
-        // Generate suggestions
-        generateSuggestions(postData.content);
+        if (postData.skipped) {
+            // Show skip message instead of suggestions
+            const listEl = document.getElementById('suggestionsList');
+            let skipMessage = `<div class="skip-message">
+                <div class="skip-icon">⚠️</div>
+                <div class="skip-text">
+                    <strong>Analysis Skipped</strong><br>
+                    ${postData.skipReason || 'You have already commented on this post'}
+                </div>
+            </div>`;
+            
+            if (postData.userComments && postData.userComments.length > 0) {
+                skipMessage += `<div class="user-comments">
+                    <strong>Your existing comments:</strong>
+                    <ul>`;
+                for (const comment of postData.userComments.slice(0, 3)) {
+                    skipMessage += `<li>${comment}</li>`;
+                }
+                skipMessage += `</ul></div>`;
+            }
+            
+            listEl.innerHTML = skipMessage;
+        } else {
+            // Generate suggestions normally
+            generateSuggestions(postData.content).catch(error => {
+                console.error('AdReply: Error generating suggestions:', error);
+                const listEl = document.getElementById('suggestionsList');
+                listEl.innerHTML = '<div class="no-suggestions">Error generating suggestions. Please try again.</div>';
+            });
+        }
     } else {
         postContentEl.style.display = 'none';
         
@@ -98,11 +131,13 @@ function updatePostContent(postData) {
     }
 }
 
-function generateSuggestions(postContent) {
+async function generateSuggestions(postContent) {
+    console.log('AdReply: Generating suggestions for post:', postContent.substring(0, 50) + '...');
     const suggestions = [];
     
     // Match templates based on keywords
-    const matchedTemplates = matchTemplatesWithPost(postContent);
+    const matchedTemplates = await matchTemplatesWithPost(postContent);
+    console.log('AdReply: Matched templates:', matchedTemplates.length);
     
     if (matchedTemplates.length > 0) {
         // Use matched templates
@@ -124,12 +159,16 @@ function generateSuggestions(postContent) {
             suggestions.push({
                 text: suggestion,
                 templateId: template.id,
-                templateLabel: template.label
+                templateLabel: template.label,
+                variantIndex: match.variantIndex || 0
             });
         }
     } else {
+        console.log('AdReply: No template matches, using fallback suggestions');
+        
         // Fallback suggestions with default URL from settings
-        chrome.storage.local.get(['defaultUrl'], (result) => {
+        try {
+            const result = await chrome.storage.local.get(['defaultUrl']);
             const defaultUrl = result.defaultUrl || '';
             
             if (postContent.toLowerCase().includes('car') || postContent.toLowerCase().includes('auto')) {
@@ -156,7 +195,7 @@ function generateSuggestions(postContent) {
                 });
             }
             
-            // Default suggestion
+            // Default suggestion - always provide at least one
             if (suggestions.length === 0) {
                 suggestions.push({
                     text: `Great post! Check out our services if you need help with this!${defaultUrl ? ' ' + defaultUrl : ''}`,
@@ -165,119 +204,238 @@ function generateSuggestions(postContent) {
                 });
             }
             
-            displaySuggestions(suggestions);
-        });
-        return; // Exit early for async fallback
+            console.log('AdReply: Generated fallback suggestions:', suggestions.length);
+        } catch (error) {
+            console.error('AdReply: Error generating fallback suggestions:', error);
+            // Provide a basic fallback
+            suggestions.push({
+                text: 'Great post! Check out our services if you need help with this!',
+                templateId: 'fallback',
+                templateLabel: 'Basic Fallback'
+            });
+        }
     }
     
     displaySuggestions(suggestions);
 }
 
-function matchTemplatesWithPost(postContent) {
+async function matchTemplatesWithPost(postContent) {
+    console.log('AdReply: Matching templates with post content:', postContent.substring(0, 100) + '...');
+    console.log('AdReply: Available templates:', templates.length);
+    
     const matches = [];
     const postWords = postContent.toLowerCase().split(/\s+/);
+    console.log('AdReply: Post words:', postWords.slice(0, 10)); // Show first 10 words
+    
+    // Get current group ID for usage filtering
+    let currentGroupId = 'facebook.com';
+    try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tab.url.includes('facebook.com')) {
+            const groupMatch = tab.url.match(/\/groups\/([^\/\?]+)/);
+            if (groupMatch) {
+                currentGroupId = `facebook.com/groups/${groupMatch[1]}`;
+            } else {
+                currentGroupId = tab.url.split('?')[0];
+            }
+        }
+    } catch (error) {
+        console.warn('AdReply: Could not get current group ID:', error);
+    }
+    
+    // Get recent usage for this group
+    let recentUsage = [];
+    if (usageTracker) {
+        try {
+            recentUsage = await usageTracker.getGroupUsage(currentGroupId, 24);
+        } catch (error) {
+            console.warn('AdReply: Could not get usage history:', error);
+        }
+    }
     
     for (const template of templates) {
         let score = 0;
         
+        console.log('AdReply: Checking template:', template.label, 'Keywords:', template.keywords);
+        
+        // Safety check for keywords
+        if (!template.keywords || !Array.isArray(template.keywords)) {
+            console.warn('AdReply: Template has invalid keywords:', template);
+            continue;
+        }
+        
         // Calculate relevance score based on keyword matches
         for (const keyword of template.keywords) {
-            if (postWords.some(word => word.includes(keyword.toLowerCase()))) {
+            const keywordLower = keyword.toLowerCase();
+            const hasMatch = postWords.some(word => word.includes(keywordLower));
+            if (hasMatch) {
                 score += 1;
+                console.log('AdReply: Keyword match found:', keyword, 'in post words');
             }
         }
         
+        console.log('AdReply: Template score:', template.label, score);
+        
         if (score > 0) {
-            // Add main template
-            matches.push({
-                template,
-                variant: template.template,
-                score
-            });
+            // Add main template (variant index 0)
+            const isMainUsed = recentUsage.some(usage => 
+                usage.templateId === template.id && usage.variantIndex === 0
+            );
             
-            // Add variants
-            for (const variant of template.variants) {
+            if (!isMainUsed) {
                 matches.push({
                     template,
-                    variant,
-                    score
+                    variant: template.template,
+                    variantIndex: 0,
+                    score,
+                    recentlyUsed: false
+                });
+            } else {
+                // Add to recently used for fallback
+                matches.push({
+                    template,
+                    variant: template.template,
+                    variantIndex: 0,
+                    score,
+                    recentlyUsed: true,
+                    lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === 0)?.timestamp
                 });
             }
+            
+            // Add variants (variant index 1+)
+            template.variants.forEach((variant, index) => {
+                const variantIndex = index + 1;
+                const isVariantUsed = recentUsage.some(usage => 
+                    usage.templateId === template.id && usage.variantIndex === variantIndex
+                );
+                
+                if (!isVariantUsed) {
+                    matches.push({
+                        template,
+                        variant,
+                        variantIndex,
+                        score,
+                        recentlyUsed: false
+                    });
+                } else {
+                    // Add to recently used for fallback
+                    matches.push({
+                        template,
+                        variant,
+                        variantIndex,
+                        score,
+                        recentlyUsed: true,
+                        lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === variantIndex)?.timestamp
+                    });
+                }
+            });
         }
     }
     
-    // Sort by score (highest first) and return top matches
-    return matches.sort((a, b) => b.score - a.score);
+    // Separate unused and recently used
+    const unusedMatches = matches.filter(m => !m.recentlyUsed);
+    const recentlyUsedMatches = matches.filter(m => m.recentlyUsed);
+    
+    // Sort unused by score (highest first)
+    unusedMatches.sort((a, b) => b.score - a.score);
+    
+    // Sort recently used by oldest first (for fallback)
+    recentlyUsedMatches.sort((a, b) => {
+        if (!a.lastUsed) return -1;
+        if (!b.lastUsed) return 1;
+        return new Date(a.lastUsed) - new Date(b.lastUsed);
+    });
+    
+    // Return unused first, then recently used as fallback
+    const result = [...unusedMatches, ...recentlyUsedMatches];
+    
+    console.log('AdReply: Template matching results:', {
+        totalMatches: result.length,
+        unusedMatches: unusedMatches.length,
+        recentlyUsedMatches: recentlyUsedMatches.length,
+        currentGroupId,
+        templatesAvailable: templates.length
+    });
+    
+    return result;
 }
 
 function displaySuggestions(suggestions) {
+    console.log('AdReply: Displaying suggestions:', suggestions.length, suggestions);
+    
     const suggestionsEl = document.getElementById('suggestions');
     const listEl = document.getElementById('suggestionsList');
     
     listEl.innerHTML = '';
     
     if (suggestions.length === 0) {
+        console.log('AdReply: No suggestions to display');
         listEl.innerHTML = '<div class="no-suggestions">No matching templates found for this post.</div>';
         return;
     }
     
     suggestions.forEach((suggestion, index) => {
         const suggestionEl = document.createElement('div');
-        suggestionEl.className = 'suggestion';
+        suggestionEl.className = isRecentlyUsed ? 'suggestion recently-used' : 'suggestion';
         
         // Handle both string suggestions (fallback) and object suggestions (templates)
         const suggestionText = typeof suggestion === 'string' ? suggestion : suggestion.text;
         const templateLabel = typeof suggestion === 'object' ? suggestion.templateLabel : 'Fallback';
+        const isRecentlyUsed = typeof suggestion === 'object' && suggestion.recentlyUsed;
         
         const labelDiv = document.createElement('div');
         labelDiv.className = 'suggestion-label';
-        labelDiv.textContent = templateLabel;
         labelDiv.style.fontSize = '10px';
-        labelDiv.style.color = '#6c757d';
         labelDiv.style.marginBottom = '4px';
+        
+        if (isRecentlyUsed) {
+            labelDiv.innerHTML = `${templateLabel} <span style="color: #ffc107; font-weight: bold;">⚠️ Recently Used</span>`;
+            labelDiv.style.color = '#856404';
+        } else {
+            labelDiv.textContent = templateLabel;
+            labelDiv.style.color = '#6c757d';
+        }
         
         const textDiv = document.createElement('div');
         textDiv.textContent = suggestionText;
         
-        const insertBtn = document.createElement('button');
-        insertBtn.className = 'copy-btn';
-        insertBtn.textContent = 'Insert Comment';
-        insertBtn.addEventListener('click', () => insertComment(suggestionText, insertBtn));
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy to Clipboard';
+        copyBtn.addEventListener('click', () => copyToClipboard(suggestionText, copyBtn, suggestion));
         
         suggestionEl.appendChild(labelDiv);
         suggestionEl.appendChild(textDiv);
-        suggestionEl.appendChild(insertBtn);
+        suggestionEl.appendChild(copyBtn);
         listEl.appendChild(suggestionEl);
     });
     
     suggestionsEl.style.display = 'block';
 }
 
-async function insertComment(text, btnElement) {
+async function copyToClipboard(text, btnElement, suggestion) {
     try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        await navigator.clipboard.writeText(text);
         
-        // Send message to content script to insert comment
-        const response = await chrome.tabs.sendMessage(tab.id, {
-            type: 'INSERT_COMMENT',
-            text: text
-        });
-        
-        if (response && response.success) {
-            // Show success feedback
-            const originalText = btnElement.textContent;
-            btnElement.textContent = 'Inserted!';
-            btnElement.style.background = '#28a745';
-            
-            setTimeout(() => {
-                btnElement.textContent = originalText;
-                btnElement.style.background = '#007bff';
-            }, 2000);
-        } else {
-            throw new Error(response?.error || 'Failed to insert comment');
+        // Record usage if we have a valid template
+        if (suggestion && typeof suggestion === 'object' && suggestion.templateId && suggestion.templateId !== 'fallback') {
+            await recordAdUsage(suggestion.templateId, suggestion.variantIndex || 0, text);
         }
+        
+        // Show success feedback
+        const originalText = btnElement.textContent;
+        const originalBackground = btnElement.style.background;
+        
+        btnElement.textContent = 'Copied!';
+        btnElement.style.background = '#28a745';
+        
+        setTimeout(() => {
+            btnElement.textContent = originalText;
+            btnElement.style.background = originalBackground || '#007bff';
+        }, 1500);
+        
     } catch (error) {
-        console.error('Failed to insert comment:', error);
+        console.error('Failed to copy to clipboard:', error);
         
         // Show error feedback
         const originalText = btnElement.textContent;
@@ -287,14 +445,21 @@ async function insertComment(text, btnElement) {
         setTimeout(() => {
             btnElement.textContent = originalText;
             btnElement.style.background = '#007bff';
-        }, 2000);
+        }, 1500);
         
-        // Fallback to clipboard
+        // Try fallback method
         try {
-            await navigator.clipboard.writeText(text);
-            showNotification('Comment copied to clipboard as fallback');
-        } catch (clipboardError) {
-            showNotification('Failed to insert comment. Please copy manually.', 'error');
+            // Fallback: create temporary textarea
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            showNotification('Text copied using fallback method');
+        } catch (fallbackError) {
+            showNotification('Copy failed. Please copy text manually.', 'error');
         }
     }
 }
@@ -308,83 +473,367 @@ async function refreshData() {
     await getRecentPosts();
 }
 
-// Debug functions
-async function debugOverlays() {
+// Main analysis function
+async function analyzeCurrentPost() {
+    const analyzeBtn = document.getElementById('analyzePostBtn');
+    const originalText = analyzeBtn.textContent;
+    
     try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const response = await chrome.tabs.sendMessage(tab.id, { type: 'DEBUG_OVERLAYS' });
-        console.log('Debug overlays response:', response);
-        showNotification(`Found ${response.overlays?.length || 0} overlay types. Check console for details.`);
-    } catch (error) {
-        showNotification('Debug failed: ' + error.message, 'error');
-    }
-}
-
-async function injectContentScript() {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        console.log('Injecting content script on tab:', tab.url);
         
         if (!tab.url.includes('facebook.com')) {
             showNotification('Please navigate to Facebook first', 'error');
             return;
         }
         
-        await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['scripts/content-minimal.js']
-        });
+        // Show loading state
+        analyzeBtn.textContent = 'Analyzing...';
+        analyzeBtn.disabled = true;
         
-        console.log('Content script injected successfully');
-        showNotification('Content script injected successfully!');
+        // Clear previous post content from UI
+        updatePostContent(null);
         
-        // Test after injection
-        setTimeout(testContentScript, 1000);
+        try {
+            // Ensure content script is injected
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                files: ['scripts/content-minimal.js']
+            });
+        } catch (injectError) {
+            // Content script might already be injected, continue
+        }
+        
+        // Clear previous posts from background
+        await chrome.runtime.sendMessage({ type: 'CLEAR_POSTS' });
+        
+        // Request post analysis
+        const response = await chrome.tabs.sendMessage(tab.id, { type: 'ANALYZE_CURRENT_POST' });
+        
+        if (response && response.success) {
+            if (response.skipped) {
+                // Post was skipped due to existing user comments
+                showNotification(response.skipReason || 'Post skipped - you have already commented', 'info');
+                
+                // Show skip information in the UI
+                updatePostContent({
+                    content: response.content,
+                    groupId: response.groupId,
+                    source: 'manual_analysis_skipped',
+                    skipped: true,
+                    skipReason: response.skipReason,
+                    userComments: response.userComments
+                });
+                
+            } else if (response.content) {
+                // Store the analyzed post
+                await chrome.runtime.sendMessage({
+                    type: 'NEW_POST',
+                    data: {
+                        content: response.content,
+                        groupId: response.groupId || 'manual',
+                        timestamp: Date.now(),
+                        source: 'manual_analysis'
+                    }
+                });
+                
+                // Update UI with the new post
+                updatePostContent({
+                    content: response.content,
+                    groupId: response.groupId,
+                    source: 'manual_analysis'
+                });
+                
+                showNotification('Post analyzed successfully!');
+            } else {
+                showNotification('No post content found on current page', 'error');
+            }
+        } else {
+            showNotification(response?.error || 'No post content found on current page', 'error');
+        }
+        
     } catch (error) {
-        console.log('Content script injection failed:', error);
-        showNotification('Injection failed: ' + error.message, 'error');
-    }
-}
-
-async function testContentScript() {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        console.log('Testing content script on tab:', tab.url);
-        
-        const response = await chrome.tabs.sendMessage(tab.id, { type: 'PING' });
-        console.log('Content script response:', response);
-        showNotification('Content script is running!');
-    } catch (error) {
-        console.log('Content script test failed:', error);
-        showNotification('Content script not running: ' + error.message, 'error');
-    }
-}
-
-async function forceCheck() {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const response = await chrome.tabs.sendMessage(tab.id, { type: 'FORCE_CHECK' });
-        console.log('Force check response:', response);
-        showNotification('Force check completed');
-        
-        // Refresh data after force check
-        setTimeout(refreshData, 1000);
-    } catch (error) {
-        showNotification('Force check failed: ' + error.message, 'error');
+        console.error('Analysis failed:', error);
+        showNotification('Analysis failed: ' + error.message, 'error');
+    } finally {
+        // Reset button state
+        analyzeBtn.textContent = originalText;
+        analyzeBtn.disabled = false;
     }
 }
 
 // Template management
 let templates = [];
 let isProLicense = false;
+let usageTracker = null;
+
+function initializeUsageTracker() {
+    try {
+        if (typeof UsageTracker !== 'undefined') {
+            usageTracker = new UsageTracker();
+            console.log('AdReply: Usage tracker initialized in sidebar');
+        } else {
+            console.warn('AdReply: UsageTracker class not available');
+        }
+    } catch (error) {
+        console.error('AdReply: Error initializing usage tracker:', error);
+    }
+}
+
+async function recordAdUsage(templateId, variantIndex, commentText) {
+    try {
+        if (!usageTracker) {
+            console.warn('AdReply: Usage tracker not initialized');
+            return;
+        }
+
+        // Get current Facebook group ID
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        
+        if (!tab.url.includes('facebook.com')) {
+            console.log('AdReply: Not on Facebook, skipping usage recording');
+            return;
+        }
+
+        // Extract group ID from URL
+        let groupId = 'facebook.com';
+        const groupMatch = tab.url.match(/\/groups\/([^\/\?]+)/);
+        if (groupMatch) {
+            groupId = `facebook.com/groups/${groupMatch[1]}`;
+        } else {
+            // Use page URL as fallback
+            groupId = tab.url.split('?')[0];
+        }
+
+        // Get post content for context
+        const postContent = currentPost?.content || '';
+
+        // Record the usage
+        await usageTracker.recordUsage(
+            templateId,
+            variantIndex,
+            groupId,
+            postContent,
+            {
+                commentText: commentText.substring(0, 100),
+                tabUrl: tab.url
+            }
+        );
+
+        console.log('AdReply: Usage recorded:', {
+            templateId,
+            variantIndex,
+            groupId,
+            timestamp: new Date().toISOString()
+        });
+
+        // Show visual feedback
+        showNotification(`Ad usage recorded for ${groupId}`, 'success');
+
+    } catch (error) {
+        console.error('AdReply: Error recording ad usage:', error);
+    }
+}
+
+async function refreshUsageStats() {
+    try {
+        if (!usageTracker) {
+            document.getElementById('usageStatsContent').innerHTML = 
+                '<div class="loading-message">Usage tracker not available</div>';
+            return;
+        }
+
+        const contentEl = document.getElementById('usageStatsContent');
+        contentEl.innerHTML = '<div class="loading-message">Loading usage statistics...</div>';
+
+        // Get current group ID
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        let currentGroupId = 'facebook.com';
+        
+        if (tab.url.includes('facebook.com')) {
+            const groupMatch = tab.url.match(/\/groups\/([^\/\?]+)/);
+            if (groupMatch) {
+                currentGroupId = `facebook.com/groups/${groupMatch[1]}`;
+            } else {
+                currentGroupId = tab.url.split('?')[0];
+            }
+        }
+
+        // Get usage data
+        const usageData = await usageTracker.getUsageData();
+        const groupSummary = await usageTracker.getGroupSummary(currentGroupId);
+        
+        let html = '';
+        
+        // Current group stats
+        if (groupSummary.totalUsages > 0) {
+            html += `<div class="usage-group">
+                <div class="usage-group-header">Current Group: ${currentGroupId.split('/').pop()}</div>
+                <div style="color: #6c757d; font-size: 10px; margin-bottom: 8px;">
+                    Total: ${groupSummary.totalUsages} uses | Recent (24h): ${groupSummary.recentUsages} uses
+                </div>`;
+            
+            // Show template usage in this group
+            for (const [templateId, stats] of Object.entries(groupSummary.usedTemplates)) {
+                const template = templates.find(t => t.id === templateId);
+                const templateName = template ? template.label : templateId;
+                const isRecentlyUsed = groupSummary.recentUsages > 0;
+                
+                html += `<div class="usage-template ${isRecentlyUsed ? 'recently-used' : ''}">
+                    <div class="usage-template-name">${templateName}</div>
+                    <div class="usage-template-stats">
+                        Used ${stats.totalUsage} times | Last: ${new Date(stats.lastUsed).toLocaleDateString()}
+                    </div>
+                </div>`;
+            }
+            
+            html += '</div>';
+        }
+        
+        // All groups summary
+        const allGroups = Object.keys(usageData);
+        if (allGroups.length > 1) {
+            html += `<div class="usage-group">
+                <div class="usage-group-header">All Groups (${allGroups.length} total)</div>`;
+            
+            for (const groupId of allGroups.slice(0, 5)) { // Show top 5
+                if (groupId === currentGroupId) continue;
+                
+                const groupUsage = usageData[groupId] || [];
+                const recentUsage = groupUsage.filter(usage => {
+                    const usageTime = new Date(usage.timestamp);
+                    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                    return usageTime > dayAgo;
+                });
+                
+                html += `<div style="margin: 4px 0; padding: 4px; background: white; border-radius: 3px;">
+                    <div style="font-size: 10px; font-weight: bold;">${groupId.split('/').pop()}</div>
+                    <div style="font-size: 9px; color: #6c757d;">
+                        Total: ${groupUsage.length} | Recent: ${recentUsage.length}
+                    </div>
+                </div>`;
+            }
+            
+            html += '</div>';
+        }
+        
+        if (html === '') {
+            html = '<div class="loading-message">No usage data found. Start using templates to see statistics.</div>';
+        }
+        
+        contentEl.innerHTML = html;
+        
+    } catch (error) {
+        console.error('AdReply: Error loading usage stats:', error);
+        document.getElementById('usageStatsContent').innerHTML = 
+            '<div class="loading-message">Error loading usage statistics</div>';
+    }
+}
+
+async function exportUsageData() {
+    try {
+        if (!usageTracker) {
+            showNotification('Usage tracker not available', 'error');
+            return;
+        }
+
+        const exportData = await usageTracker.exportUsageData();
+        
+        if (!exportData) {
+            showNotification('No usage data to export', 'error');
+            return;
+        }
+
+        // Create and download file
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `adreply-usage-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        URL.revokeObjectURL(url);
+        
+        showNotification('Usage data exported successfully!', 'success');
+        
+    } catch (error) {
+        console.error('AdReply: Error exporting usage data:', error);
+        showNotification('Error exporting usage data', 'error');
+    }
+}
+
+async function clearUsageHistory() {
+    try {
+        if (!usageTracker) {
+            showNotification('Usage tracker not available', 'error');
+            return;
+        }
+
+        const confirmed = confirm('Are you sure you want to clear all usage history? This cannot be undone.');
+        
+        if (!confirmed) return;
+
+        // Clear all usage data
+        await usageTracker.saveUsageData({});
+        
+        // Refresh the display
+        await refreshUsageStats();
+        
+        showNotification('Usage history cleared successfully!', 'success');
+        
+    } catch (error) {
+        console.error('AdReply: Error clearing usage history:', error);
+        showNotification('Error clearing usage history', 'error');
+    }
+}
+
+// Debug function to check current state
+async function debugTemplateMatching() {
+    console.log('=== AdReply Debug Info ===');
+    console.log('Templates loaded:', templates.length);
+    console.log('Templates:', templates);
+    
+    if (currentPost) {
+        console.log('Current post content:', currentPost.content);
+        console.log('Attempting to match templates...');
+        
+        const matches = await matchTemplatesWithPost(currentPost.content);
+        console.log('Matches found:', matches);
+    } else {
+        console.log('No current post available');
+    }
+    
+    console.log('Usage tracker available:', !!usageTracker);
+    console.log('=== End Debug Info ===');
+}
+
+// Make debug function available globally for testing
+window.debugTemplateMatching = debugTemplateMatching;
+
+// Test function to generate suggestions with dummy content
+async function testSuggestions() {
+    console.log('AdReply: Testing suggestion generation...');
+    
+    // Test with dummy content that should trigger fallbacks
+    const testContent = "This is a test post about cars and automotive services";
+    
+    console.log('AdReply: Testing with content:', testContent);
+    await generateSuggestions(testContent);
+}
+
+window.testSuggestions = testSuggestions;
 
 async function loadTemplates() {
     try {
         const result = await chrome.storage.local.get(['templates']);
         templates = result.templates || [];
+        console.log('AdReply: Loaded templates:', templates.length, templates);
         renderTemplatesList();
         updateTemplateCount();
     } catch (error) {
+        console.error('AdReply: Error loading templates:', error);
         templates = [];
     }
 }
@@ -734,11 +1183,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('saveAISettings').addEventListener('click', saveAISettings);
     document.getElementById('activateLicense').addEventListener('click', activateLicense);
     document.getElementById('checkLicense').addEventListener('click', checkLicense);
-    document.getElementById('refreshDataBtn').addEventListener('click', refreshData);
-    document.getElementById('injectScriptBtn').addEventListener('click', injectContentScript);
-    document.getElementById('testContentScriptBtn').addEventListener('click', testContentScript);
-    document.getElementById('debugBtn').addEventListener('click', debugOverlays);
-    document.getElementById('forceCheckBtn').addEventListener('click', forceCheck);
+    document.getElementById('analyzePostBtn').addEventListener('click', analyzeCurrentPost);
+    document.getElementById('debugBtn').addEventListener('click', debugTemplateMatching);
+    document.getElementById('exportUsageBtn').addEventListener('click', exportUsageData);
+    document.getElementById('refreshUsageBtn').addEventListener('click', refreshUsageStats);
+    document.getElementById('clearUsageBtn').addEventListener('click', clearUsageHistory);
+    
+    // Initialize usage tracker
+    initializeUsageTracker();
     
     // Load saved data
     await loadTemplates();

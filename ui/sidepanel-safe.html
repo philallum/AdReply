@@ -252,6 +252,117 @@
             font-style: italic;
         }
 
+        .skip-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .skip-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .skip-text {
+            flex: 1;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .skip-text strong {
+            color: #856404;
+        }
+
+        .user-comments {
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        .user-comments strong {
+            color: #495057;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .user-comments ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .user-comments li {
+            margin-bottom: 2px;
+            color: #6c757d;
+        }
+
+        .suggestion.recently-used {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+        }
+
+        .suggestion.recently-used .copy-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .suggestion.recently-used .copy-btn:hover {
+            background: #e0a800;
+        }
+
+        .usage-stats-section {
+            font-size: 12px;
+        }
+
+        .usage-group {
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #007bff;
+        }
+
+        .usage-group-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+
+        .usage-template {
+            background: white;
+            padding: 6px;
+            margin: 4px 0;
+            border-radius: 3px;
+            border-left: 2px solid #28a745;
+        }
+
+        .usage-template.recently-used {
+            border-left-color: #ffc107;
+        }
+
+        .usage-template-name {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .usage-template-stats {
+            color: #6c757d;
+            font-size: 10px;
+        }
+
+        .loading-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
         .template-header {
             display: flex;
             justify-content: space-between;
@@ -422,16 +533,25 @@
             background: #218838 !important;
         }
 
-        .debug-section {
+        .action-section {
             margin-top: 16px;
             padding-top: 16px;
             border-top: 1px solid #dee2e6;
-            display: flex;
-            gap: 8px;
+        }
+
+        .action-section .btn {
+            width: 100%;
+            background: #28a745;
+            font-weight: 600;
+        }
+
+        .action-section .btn:hover {
+            background: #218838;
         }
     </style>
 </head>
 <body>
+    <script src="../scripts/usage-tracker.js"></script>
     <div class="header">
         <h1>AdReply</h1>
         <p>Facebook Comment Assistant</p>
@@ -471,12 +591,9 @@
             </div>
         </div>
 
-        <div class="debug-section">
-            <button class="btn secondary btn-small" id="refreshDataBtn">Refresh Data</button>
-            <button class="btn secondary btn-small" id="injectScriptBtn">Inject Script</button>
-            <button class="btn secondary btn-small" id="testContentScriptBtn">Test Content Script</button>
-            <button class="btn secondary btn-small" id="debugBtn">Debug Overlays</button>
-            <button class="btn secondary btn-small" id="forceCheckBtn">Force Check</button>
+        <div class="action-section">
+            <button class="btn" id="analyzePostBtn">Analyze Current Post</button>
+            <button class="btn btn-small" id="debugBtn" style="background: #6c757d; margin-top: 8px;">Debug Templates</button>
         </div>
     </div>
 
@@ -530,6 +647,23 @@
             <div class="pro-features" style="display: none;">
                 <button class="btn secondary btn-small" id="importAdPackBtn">Import Ad Pack</button>
                 <button class="btn secondary btn-small" id="exportTemplatesBtn">Export Templates</button>
+            </div>
+        </div>
+
+        <!-- Usage Statistics Section -->
+        <div class="usage-stats-section" style="margin-top: 24px; border-top: 1px solid #dee2e6; padding-top: 16px;">
+            <div class="template-header">
+                <h3>Usage Statistics</h3>
+                <button id="clearUsageBtn" class="btn btn-small" style="background: #dc3545; color: white;">Clear History</button>
+            </div>
+            
+            <div id="usageStatsContent">
+                <div class="loading-message">Loading usage statistics...</div>
+            </div>
+            
+            <div style="margin-top: 12px;">
+                <button id="exportUsageBtn" class="btn btn-small">Export Usage Data</button>
+                <button id="refreshUsageBtn" class="btn btn-small">Refresh</button>
             </div>
         </div>
     </div>
