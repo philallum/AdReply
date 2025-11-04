@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "real-estate",
+    "name": "Real Estate",
+    "description": "Property sales, rentals, and real estate management"
+  },
+  "templates": [
+  {
+    "id": "real_001",
+    "label": "Home for Sale",
+    "keywords": ["home","house","for sale","listing","open house","viewing","tour","neighbourhood","garden","garage","move-in ready","-rent-only","-wanted-to-rent","-roommate","-swap","-trade","-fsbo-argue","-price-argument","-politics","-spam","-job-post","-hiring","-scam"],
+    "template": "Looking to buy or sell? Book a viewing and get expert help from offer to keys. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_002",
+    "label": "First Time Buyer",
+    "keywords": ["first time buyer","ftb","starter home","deposit","mortgage advice","help to buy","viewing","offer","solicitor","completion","-investor-only","-cash-only-argue","-rent-only","-room-wanted","-price-argue","-politics","-scam","-job-post","-hiring","-spam"],
+    "template": "First place, made simple—clear steps, smart search, and guidance all the way home. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_003",
+    "label": "Investment Property",
+    "keywords": ["investment","rental","yield","roi","cash flow","buy to let","portfolio","tenant","lease","management","-owner-occupier-only","-room-wanted","-rent-only","-politics","-price-argue","-scam","-job-post","-hiring","-spam","-short-let-only"],
+    "template": "Build your portfolio—sourcing, analysis, and management options for solid rental returns. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_004",
+    "label": "Market Analysis",
+    "keywords": ["market analysis","valuation","cma","comparables","price","days on market","trend","area","report","-opinion-only-argue","-politics","-rant","-spam","-scam","-job-post","-hiring","-mortgage-only","-solicitor-only","-insurance-only"],
+    "template": "What’s your home worth? Get a clear, data-led valuation and market strategy. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_005",
+    "label": "Luxury Homes",
+    "keywords": ["luxury","premium","high end","exclusive","gated","pool","chef kitchen","view","suite","smart home","architect","-rent-only","-price-argue","-politics","-scam","-job-post","-hiring","-spam","-roomshare","-budget-only","-auction-only"],
+    "template": "Elevate your lifestyle—curated access to luxury listings and private viewings. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_006",
+    "label": "Commercial Real Estate",
+    "keywords": ["commercial","office","retail","industrial","warehouse","unit","lease","fit-out","traffic","footfall","zoning","-residential-only","-room-wanted","-rent-a-room","-politics","-scam","-job-post","-hiring","-spam","-price-argue"],
+    "template": "Right space, real results—offices, retail, and industrial units with smart lease terms. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_007",
+    "label": "Property Management",
+    "keywords": ["property management","tenant","rent collection","maintenance","inspection","compliance","eviction","voids","portfolio","-owner-occupier-only","-airbnb-only","-politics","-scam","-job-post","-hiring","-spam","-rent-seeking","-room-wanted","-advice-only"],
+    "template": "Hands-off, hassle-free—professional management that protects income and property. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_008",
+    "label": "Home Staging",
+    "keywords": ["staging","presentation","declutter","style","photography","showing","buyer appeal","faster sale","-rent-only","-price-argue","-politics","-scam","-job-post","-hiring","-spam","-diy-only","-howto","-tutorial"],
+    "template": "Stage to sell—professional styling and photos that help your listing stand out. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_009",
+    "label": "Relocation Services",
+    "keywords": ["relocation","move","transfer","corporate","temporary housing","neighbourhood tour","schools","settling in","-local-only-argue","-politics","-scam","-job-post","-hiring","-spam","-visa-only","-immigration-argue","-price-argue"],
+    "template": "New city, no stress—home search, area tours, and smooth move-in support. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_010",
+    "label": "Foreclosure Help",
+    "keywords": ["foreclosure","distressed","short sale","late payments","options","hardship","assistance","sell fast","timeline","-investor-spam","-politics","-scam","-job-post","-hiring","-spam","-loan-only","-advice-argument","-price-argue"],
+    "template": "Behind on payments? Explore respectful options before foreclosure—confidential chat. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_011",
+    "label": "New Construction",
+    "keywords": ["new construction","builder","spec","custom","warranty","upgrade","lot","phase","development","-renovation-only","-rent-only","-price-argue","-politics","-scam","-job-post","-hiring","-spam","-diy-only"],
+    "template": "Build new with confidence—tour developments, compare builders, and secure incentives. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_012",
+    "label": "Condo Sales",
+    "keywords": ["condo","condominium","apartment","unit","hoa","amenities","elevator","parking","downtown","view","-house-only","-rent-only","-roomshare","-price-argue","-politics","-scam","-job-post","-hiring","-spam"],
+    "template": "City living, simplified—condos with great amenities and walkable locations. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_013",
+    "label": "Land Sales",
+    "keywords": ["land","acreage","lot","parcel","zoning","utilities","septic","survey","build","rural","-rent-only","-house-only","-price-argue","-politics","-scam","-job-post","-hiring","-spam","-camp-only"],
+    "template": "Start from the ground up—lots and acreage with clear zoning and utility info. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_014",
+    "label": "Mortgage Services",
+    "keywords": ["mortgage","loan","pre-approval","rate","fixed","variable","offset","broker","closing costs","-cash-buyer-only","-politics","-scam","-job-post","-hiring","-spam","-crypto-only","-argument","-rent-only"],
+    "template": "Smarter financing—compare rates, get pre-approved, and shop with confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_015",
+    "label": "Home Inspection",
+    "keywords": ["home inspection","survey","report","foundation","roof","electrical","plumbing","hvac","moisture","thermal","-valuation-only","-opinion-argue","-politics","-scam","-job-post","-hiring","-spam","-diy-only","-howto"],
+    "template": "Buy with eyes open—independent inspections and photo-rich reports before you commit. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_016",
+    "label": "Real Estate Photography",
+    "keywords": ["photography","photos","wide angle","twilight","drone","floor plan","virtual tour","staging","editing","-phone-only","-free-exposure","-politics","-scam","-job-post","-hiring","-spam","-diy-only","-howto"],
+    "template": "Make every click count—pro photos, floor plans, and aerials that sell the story. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_017",
+    "label": "Vacation Rentals",
+    "keywords": ["vacation rental","short let","airbnb","holiday home","management","cleaning","turnover","calendar","pricing","-long-term-only","-roomshare","-politics","-scam","-job-post","-hiring","-spam","-party-only","-complaints-thread"],
+    "template": "Host without the hassle—setup, pricing, and full management for your short-term rental. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_018",
+    "label": "Senior Housing",
+    "keywords": ["senior","retirement","55+","accessible","single level","community","care nearby","quiet","amenities","-student-only","-roomshare","-politics","-scam","-job-post","-hiring","-spam","-price-argue","-rent-only"],
+    "template": "Right-size with comfort—senior-friendly homes and communities with thoughtful amenities. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "real_019",
+    "label": "Real Estate Investing",
+    "keywords": ["investing","investor","portfolio","roi","cap rate","cash flow","value add","flip","refi","-get-rich-quick","-scam","-politics","-job-post","-hiring","-spam","-betting","-crypto-only","-argument"],
+    "template": "Buy smart, hold smarter—deal sourcing and analysis to grow a resilient portfolio. {url}",
+    "isPrebuilt": true  },
+  {
+    "id": "real_020",
+    "label": "Home Appraisal",
+    "keywords": ["appraisal","valuation","value","market","comparables","report","refinance","sale","neutral","-estate-agent-only","-politics","-scam","-job-post","-hiring","-spam","-opinion-only","-argument","-rent-only"],
+    "template": "Independent valuations you can trust—clear reports for sale, refinance, or estate needs. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

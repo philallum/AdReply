@@ -2,6 +2,7 @@
 class UIManager {
     constructor() {
         this.currentPost = null;
+        this.lastProcessedPostContent = null;
     }
 
     initializeTabs() {
@@ -56,12 +57,17 @@ class UIManager {
             
             if (postData.skipped) {
                 this.showSkipMessage(postData);
+                this.lastProcessedPostContent = postData.content; // Update to prevent reprocessing
             } else {
-                // Will be handled by suggestion generation
-                return { needsSuggestions: true };
+                // Only generate suggestions if this is new content
+                if (this.lastProcessedPostContent !== postData.content) {
+                    this.lastProcessedPostContent = postData.content;
+                    return { needsSuggestions: true };
+                }
             }
         } else {
             postContentEl.style.display = 'none';
+            this.lastProcessedPostContent = null; // Reset when no post
             this.clearSuggestions();
         }
         

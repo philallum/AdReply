@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "legal",
+    "name": "Legal Services",
+    "description": "Lawyers, legal consultants, and legal advice services"
+  },
+  "templates": [
+  {
+    "id": "legal_001",
+    "label": "Legal Services 1",
+    "keywords": ["legal", "lawyer", "attorney", "law", "legal advice", "counsel", "representation", "consultation", "law firm", "case", "justice", "legal help", "court", "defense", "expertise", "-cheap", "-fake", "-scam", "-unlicensed", "-miracle", "-quick fix", "-illegal", "-unverified", "-bot", "-template"],
+    "template": "Expert legal counsel when it matters most — professional lawyers you can trust. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_002",
+    "label": "Legal Services 2",
+    "keywords": ["divorce", "family", "custody", "marriage", "separation", "child support", "legal advice", "family lawyer", "mediation", "spousal support", "court", "family law", "legal case", "rights", "settlement", "-cheap", "-fake", "-unlicensed", "-scam", "-quick fix", "-template", "-bot", "-illegal", "-unverified", "-mass"],
+    "template": "Caring family law attorneys who help you resolve divorce and custody matters with respect. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_003",
+    "label": "Legal Services 3",
+    "keywords": ["business", "contract", "corporate", "startup", "compliance", "merger", "legal", "attorney", "corporate law", "agreements", "employment law", "consulting", "business structure", "intellectual property", "advice", "-fake", "-scam", "-unlicensed", "-illegal", "-template", "-quick fix", "-bot", "-mass", "-cheap", "-unverified"],
+    "template": "Protect your business with expert legal guidance on contracts, compliance, and corporate law. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_004",
+    "label": "Legal Services 4",
+    "keywords": ["personal", "injury", "accident", "claim", "compensation", "attorney", "lawsuit", "legal case", "auto accident", "workplace injury", "liability", "rights", "settlement", "justice", "trial", "-fake", "-quick cash", "-unlicensed", "-scam", "-miracle", "-bot", "-illegal", "-template", "-unverified", "-mass"],
+    "template": "Injured? Our personal injury attorneys fight to get you the compensation you deserve. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_005",
+    "label": "Legal Services 5",
+    "keywords": ["estate", "will", "planning", "trust", "inheritance", "probate", "executor", "wealth", "attorney", "legacy", "legal documents", "beneficiaries", "estate lawyer", "tax planning", "consultation", "-cheap", "-fake", "-template", "-unlicensed", "-illegal", "-bot", "-mass", "-scam", "-quick fix", "-unverified"],
+    "template": "Plan for tomorrow — secure your legacy with professional estate and will services. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_006",
+    "label": "Legal Services 6",
+    "keywords": ["legal", "lawyer", "attorney", "law", "legal help", "case", "justice", "representation", "law firm", "consultation", "rights", "advice", "court", "defense", "counsel", "-cheap", "-fake", "-illegal", "-unverified", "-bot", "-template", "-scam", "-quick fix", "-unlicensed", "-mass"],
+    "template": "Professional legal advice and representation from experienced attorneys. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_007",
+    "label": "Legal Services 7",
+    "keywords": ["divorce", "family", "custody", "child support", "separation", "family lawyer", "mediation", "spousal support", "court", "legal rights", "settlement", "legal case", "parental rights", "advice", "consultation", "-cheap", "-fake", "-unlicensed", "-template", "-illegal", "-bot", "-scam", "-mass", "-unverified", "-quick fix"],
+    "template": "Trusted family lawyers dedicated to resolving sensitive matters with care and experience. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_008",
+    "label": "Legal Services 8",
+    "keywords": ["business", "contract", "corporate", "startup", "compliance", "legal advice", "company law", "agreements", "business formation", "employment", "policy", "law firm", "corporate lawyer", "protection", "consulting", "-fake", "-unlicensed", "-illegal", "-template", "-mass", "-bot", "-cheap", "-scam", "-unverified", "-quick fix"],
+    "template": "From startups to corporations — reliable legal support for your business growth. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_009",
+    "label": "Legal Services 9",
+    "keywords": ["personal", "injury", "accident", "claim", "compensation", "attorney", "car crash", "lawsuit", "rights", "settlement", "liability", "justice", "representation", "trial", "insurance", "-fake", "-quick cash", "-bot", "-unlicensed", "-scam", "-illegal", "-mass", "-unverified", "-template", "-cheap"],
+    "template": "If you’ve been injured, our legal team stands ready to protect your rights. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_010",
+    "label": "Legal Services 10",
+    "keywords": ["estate", "will", "planning", "trust", "inheritance", "probate", "executor", "tax", "attorney", "consultation", "wealth", "assets", "beneficiary", "legal documents", "advice", "-cheap", "-fake", "-scam", "-unlicensed", "-template", "-mass", "-illegal", "-bot", "-quick fix", "-unverified"],
+    "template": "Protect your family’s future with expert estate planning and will preparation. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_011",
+    "label": "Legal Services 11",
+    "keywords": ["legal", "lawyer", "attorney", "law", "consultation", "case", "representation", "justice", "rights", "court", "defense", "legal advice", "counsel", "legal help", "law firm", "-fake", "-cheap", "-unlicensed", "-bot", "-template", "-mass", "-scam", "-illegal", "-unverified", "-quick fix"],
+    "template": "Comprehensive legal services — professional guidance for every situation. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_012",
+    "label": "Legal Services 12",
+    "keywords": ["divorce", "family", "custody", "lawyer", "family law", "child support", "separation", "spousal support", "court", "rights", "settlement", "advice", "consultation", "legal case", "mediation", "-fake", "-cheap", "-scam", "-unlicensed", "-illegal", "-template", "-bot", "-mass", "-unverified", "-quick fix"],
+    "template": "Resolve family disputes with skilled legal representation and understanding counsel. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_013",
+    "label": "Legal Services 13",
+    "keywords": ["business", "contract", "corporate", "startup", "company law", "compliance", "employment", "agreements", "advice", "corporate lawyer", "partnership", "policy", "law firm", "protection", "legal counsel", "-fake", "-cheap", "-unlicensed", "-mass", "-illegal", "-template", "-bot", "-quick fix", "-scam", "-unverified"],
+    "template": "Secure your business interests with our trusted corporate legal advisors. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_014",
+    "label": "Legal Services 14",
+    "keywords": ["personal", "injury", "accident", "claim", "compensation", "rights", "liability", "attorney", "justice", "lawsuit", "insurance", "trial", "representation", "court", "settlement", "-cheap", "-fake", "-unlicensed", "-illegal", "-mass", "-bot", "-scam", "-quick fix", "-template", "-unverified"],
+    "template": "Personal injury lawyers who fight for justice and fair compensation. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_015",
+    "label": "Legal Services 15",
+    "keywords": ["estate", "will", "planning", "trust", "probate", "inheritance", "executor", "wealth", "attorney", "tax", "beneficiaries", "consultation", "assets", "lawyer", "advice", "-cheap", "-fake", "-scam", "-template", "-unlicensed", "-illegal", "-mass", "-quick fix", "-bot", "-unverified"],
+    "template": "Estate planning made simple — expert attorneys helping you secure your legacy. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_016",
+    "label": "Legal Services 16",
+    "keywords": ["legal", "lawyer", "attorney", "law", "advice", "consultation", "justice", "case", "representation", "court", "rights", "legal counsel", "expert", "firm", "professional", "-fake", "-cheap", "-unlicensed", "-bot", "-mass", "-scam", "-illegal", "-unverified", "-quick fix", "-template"],
+    "template": "Trusted legal professionals providing expert advice and dedicated representation. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_017",
+    "label": "Legal Services 17",
+    "keywords": ["divorce", "family", "custody", "lawyer", "family law", "child support", "rights", "mediation", "court", "settlement", "legal counsel", "advice", "consultation", "spousal support", "separation", "-cheap", "-fake", "-scam", "-unlicensed", "-illegal", "-template", "-mass", "-quick fix", "-bot", "-unverified"],
+    "template": "Compassionate family law attorneys helping you through every step with care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_018",
+    "label": "Legal Services 18",
+    "keywords": ["business", "contract", "corporate", "startup", "company", "agreements", "compliance", "consulting", "employment", "lawyer", "policy", "corporate law", "legal protection", "advice", "firm", "-fake", "-cheap", "-unlicensed", "-mass", "-illegal", "-bot", "-scam", "-template", "-quick fix", "-unverified"],
+    "template": "Corporate law solutions for growing businesses — compliance, contracts, and beyond. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_019",
+    "label": "Legal Services 19",
+    "keywords": ["personal", "injury", "accident", "claim", "compensation", "liability", "rights", "attorney", "justice", "trial", "lawsuit", "insurance", "legal help", "court", "representation", "-fake", "-cheap", "-unlicensed", "-illegal", "-mass", "-bot", "-scam", "-template", "-quick fix", "-unverified"],
+    "template": "Experienced injury lawyers committed to securing justice for every client. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "legal_020",
+    "label": "Legal Services 20",
+    "keywords": ["estate", "will", "planning", "trust", "probate", "inheritance", "executor", "wealth", "attorney", "tax", "beneficiaries", "legal advice", "consultation", "law firm", "protection", "-fake", "-cheap", "-unlicensed", "-mass", "-illegal", "-bot", "-scam", "-quick fix", "-template", "-unverified"],
+    "template": "Safeguard your estate with expert legal planning and trusted advice. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

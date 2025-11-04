@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "events",
+    "name": "Event Planning",
+    "description": "Weddings, parties, corporate events, and event management"
+  },
+  "templates": [
+  {
+    "id": "events_001",
+    "label": "Event Planning 1",
+    "keywords": ["wedding", "bride", "marriage", "ceremony", "event planner", "wedding planning", "decor", "venue", "reception", "bridal", "couple", "love", "celebration", "luxury wedding", "special day", "-cheap", "-generic", "-unlicensed", "-amateur", "-mass", "-template", "-fake", "-budget", "-unverified", "-noisy"],
+    "template": "Your dream wedding, perfectly planned — every detail handled with care and creativity! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_002",
+    "label": "Event Planning 2",
+    "keywords": ["party", "celebration", "birthday", "planner", "event", "fun", "decor", "venue", "music", "entertainment", "cake", "theme", "special day", "memorable", "friends", "-cheap", "-generic", "-last minute", "-amateur", "-template", "-unverified", "-random", "-messy", "-budget", "-noisy"],
+    "template": "Plan the perfect party — we create unforgettable celebrations full of fun and flair! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_003",
+    "label": "Event Planning 3",
+    "keywords": ["corporate", "business", "conference", "meeting", "networking", "launch", "expo", "seminar", "team event", "planner", "professional", "executive", "brand", "presentation", "event management", "-cheap", "-amateur", "-unverified", "-template", "-unorganized", "-mass", "-random", "-generic", "-noisy", "-fake"],
+    "template": "Professional corporate events that impress, inspire, and deliver real impact. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_004",
+    "label": "Event Planning 4",
+    "keywords": ["catering", "food", "service", "menu", "chef", "buffet", "event catering", "wedding catering", "corporate catering", "fine dining", "delicious", "fresh", "professional service", "taste", "culinary", "-cheap", "-fast food", "-mass", "-takeaway", "-generic", "-unhygienic", "-amateur", "-unlicensed", "-low quality", "-random"],
+    "template": "Delight your guests with exceptional catering and flawless service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_005",
+    "label": "Event Planning 5",
+    "keywords": ["venue", "location", "space", "booking", "event hall", "outdoor venue", "wedding location", "conference room", "banquet", "function hall", "event space", "scenic view", "luxury", "exclusive", "private", "-cheap", "-noisy", "-unlicensed", "-unsafe", "-dirty", "-shared", "-temporary", "-mass", "-random", "-unverified"],
+    "template": "Find the perfect venue for your special event — elegant, flexible, and unforgettable. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_006",
+    "label": "Event Planning 6",
+    "keywords": ["wedding", "bride", "marriage", "ceremony", "decor", "reception", "planner", "event design", "love", "venue", "floral", "special day", "romantic", "photography", "luxury", "-cheap", "-amateur", "-generic", "-mass", "-unlicensed", "-template", "-random", "-unverified", "-noisy", "-budget"],
+    "template": "Say ‘I do’ to stress-free wedding planning — let us bring your vision to life. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_007",
+    "label": "Event Planning 7",
+    "keywords": ["party", "celebration", "birthday", "anniversary", "event planner", "decor", "entertainment", "fun", "theme", "friends", "venue", "cake", "family", "special moment", "gathering", "-cheap", "-generic", "-messy", "-unverified", "-amateur", "-random", "-last minute", "-budget", "-noisy", "-template"],
+    "template": "From birthdays to anniversaries — we plan parties that bring people together! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_008",
+    "label": "Event Planning 8",
+    "keywords": ["corporate", "business", "conference", "networking", "meeting", "expo", "launch", "event", "professional", "planning", "speaker", "brand event", "strategy", "venue", "execution", "-cheap", "-amateur", "-random", "-unverified", "-mass", "-generic", "-unorganized", "-fake", "-template", "-background"],
+    "template": "Deliver professional experiences with seamless corporate event planning. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_009",
+    "label": "Event Planning 9",
+    "keywords": ["catering", "food", "service", "chef", "menu", "wedding catering", "corporate catering", "buffet", "banquet", "event food", "taste", "culinary", "delight", "drinks", "presentation", "-cheap", "-fast food", "-unlicensed", "-generic", "-amateur", "-dirty", "-random", "-mass", "-poor quality", "-budget"],
+    "template": "Exceptional catering for every event — fresh flavors, flawless service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_010",
+    "label": "Event Planning 10",
+    "keywords": ["venue", "location", "space", "booking", "event", "banquet", "outdoor", "hall", "reception", "function", "exclusive", "wedding venue", "corporate space", "event planner", "luxury", "-cheap", "-unverified", "-unsafe", "-dirty", "-shared", "-mass", "-temporary", "-generic", "-noisy", "-budget"],
+    "template": "Your perfect venue awaits — discover beautiful spaces for any celebration. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_011",
+    "label": "Event Planning 11",
+    "keywords": ["wedding", "bride", "marriage", "ceremony", "decor", "planner", "reception", "bridal", "love", "floral", "special moment", "luxury", "venue", "romantic", "celebration", "-cheap", "-generic", "-amateur", "-unverified", "-mass", "-template", "-noisy", "-random", "-budget", "-fake"],
+    "template": "Elegant weddings, perfectly planned — let us handle every unforgettable detail. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_012",
+    "label": "Event Planning 12",
+    "keywords": ["party", "celebration", "birthday", "event", "planner", "fun", "theme", "decor", "entertainment", "venue", "friends", "memories", "family", "special day", "cake", "-cheap", "-generic", "-unverified", "-random", "-amateur", "-noisy", "-budget", "-messy", "-template", "-last minute"],
+    "template": "Celebrate in style — we plan memorable parties for every occasion. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_013",
+    "label": "Event Planning 13",
+    "keywords": ["corporate", "business", "conference", "meeting", "networking", "seminar", "expo", "planner", "event", "brand", "professional", "team event", "strategy", "execution", "gala", "-cheap", "-amateur", "-unverified", "-template", "-mass", "-random", "-noisy", "-fake", "-background", "-generic"],
+    "template": "Smart, seamless corporate events that keep your business in the spotlight. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_014",
+    "label": "Event Planning 14",
+    "keywords": ["catering", "food", "service", "chef", "menu", "event", "presentation", "fine dining", "taste", "banquet", "professional", "delicious", "fresh", "wedding", "corporate", "-cheap", "-fast food", "-generic", "-unlicensed", "-dirty", "-mass", "-random", "-amateur", "-budget", "-low quality"],
+    "template": "Deliciously designed catering that complements every event perfectly. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_015",
+    "label": "Event Planning 15",
+    "keywords": ["venue", "location", "space", "booking", "function", "banquet", "outdoor", "reception", "conference room", "hall", "event venue", "exclusive", "wedding location", "luxury", "planner", "-cheap", "-unverified", "-mass", "-unsafe", "-shared", "-temporary", "-noisy", "-dirty", "-generic", "-budget"],
+    "template": "Plan your event in the perfect setting — we’ll find the ideal venue for you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_016",
+    "label": "Event Planning 16",
+    "keywords": ["wedding", "planner", "ceremony", "event", "reception", "floral", "love", "decor", "celebration", "venue", "bridal", "luxury", "romantic", "photography", "bride", "-cheap", "-generic", "-amateur", "-template", "-mass", "-random", "-budget", "-noisy", "-unverified", "-fake"],
+    "template": "From concept to ceremony — flawless wedding planning made personal. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_017",
+    "label": "Event Planning 17",
+    "keywords": ["party", "celebration", "birthday", "planner", "decor", "entertainment", "fun", "theme", "venue", "music", "friends", "cake", "memories", "family", "special event", "-cheap", "-generic", "-amateur", "-template", "-random", "-noisy", "-budget", "-unverified", "-last minute", "-messy"],
+    "template": "Party perfection — creative planning that turns any event into a hit! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_018",
+    "label": "Event Planning 18",
+    "keywords": ["corporate", "event", "conference", "business", "launch", "networking", "meeting", "team", "planning", "execution", "strategy", "venue", "presentation", "speaker", "brand", "-cheap", "-mass", "-amateur", "-generic", "-template", "-background", "-random", "-fake", "-noisy", "-unverified"],
+    "template": "Corporate events done right — strategic planning with flawless execution. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_019",
+    "label": "Event Planning 19",
+    "keywords": ["catering", "food", "service", "chef", "menu", "drinks", "presentation", "banquet", "event", "wedding catering", "corporate food", "fresh", "taste", "culinary", "luxury", "-cheap", "-mass", "-generic", "-fast food", "-unlicensed", "-dirty", "-amateur", "-random", "-poor quality", "-budget"],
+    "template": "Taste the difference — expert catering for weddings, parties, and corporate events. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "events_020",
+    "label": "Event Planning 20",
+    "keywords": ["venue", "space", "event", "wedding", "conference", "location", "banquet", "exclusive", "luxury", "planner", "booking", "outdoor", "indoor", "function", "celebration", "-cheap", "-generic", "-unverified", "-shared", "-unsafe", "-temporary", "-mass", "-noisy", "-dirty", "-budget"],
+    "template": "Discover elegant venues tailored to your event — from weddings to conferences. {url}",
+    "isPrebuilt": true
+  }
+]
+}

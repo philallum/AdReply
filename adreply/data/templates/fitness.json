@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "fitness",
+    "name": "Fitness & Health",
+    "description": "Gyms, personal training, nutrition, and wellness services"
+  },
+  "templates": [
+  {
+    "id": "fit_001",
+    "label": "Personal Training",
+    "keywords": ["fitness","workout","exercise","training","coach","personal trainer","program","plan","form","technique","gym","strength","accountability","results","transform","-pills","-steroids","-cycle","-scam","-cheap","-free","-giveaway","-diet-fad","-mlm","-challenge-spam","-injury-advice-only","-diy","-howto","-tutorial"],
+    "template": "Want faster results with fewer guesswork reps? 1-to-1 personal training tailored to you—let’s start strong. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_002",
+    "label": "Weight Loss Program",
+    "keywords": ["weight","fat loss","weight loss","cut","calorie deficit","meal plan","accountability","check-in","progress","metrics","habit","nutrition","coach","-pills","-fat-burner","-detox","-tea","-waist-trainer","-steroids","-scam","-free","-cheap","-giveaway","-mlm","-miracle","-before-after-only","-diy","-howto"],
+    "template": "Lose weight the right way—structured coaching, simple habits, and weekly check-ins that keep you on track. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_003",
+    "label": "Nutrition Coaching",
+    "keywords": ["nutrition","diet","macros","protein","meal","plan","grocery","habit","coach","fuel","performance","healthy eating","recipes","-pills","-detox","-tea","-fad","-keto-only","-supp-only","-mlm","-cheap","-free","-giveaway","-scam","-miracle","-extreme","-diy","-howto","-tutorial"],
+    "template": "Eat for your goals—practical nutrition coaching with easy meal plans and grocery guides. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_004",
+    "label": "Yoga Classes",
+    "keywords": ["yoga","vinyasa","hatha","flow","stretch","mobility","mindfulness","breath","flexibility","balance","calm","studio","class","-acro-only","-circus","-spiritual-debate","-religion-argue","-free","-cheap","-giveaway","-diy","-howto","-tutorial","-equipment-sale","-injury-ask-only","-spam"],
+    "template": "Find your flow—calming yoga classes that build strength, mobility, and headspace. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_005",
+    "label": "CrossFit Training",
+    "keywords": ["crossfit","wod","metcon","functional","strength","olympic lifts","conditioning","community","box","coach","scalable","intensity","-injury-advice-only","-form-argument","-equipment-sale","-cheap","-free","-giveaway","-steroids","-cycle","-peds","-spam","-diy","-howto","-tutorial"],
+    "template": "Ready to level up? Scalable CrossFit coaching—stronger lifts, better engine, supportive community. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_006",
+    "label": "Marathon Training",
+    "keywords": ["running","runner","marathon","half marathon","10k","5k","plan","pace","long run","intervals","taper","race day","coach","-shoe-sale-only","-injury-diagnosis","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-miracle","-hack","-gimmick","-betting"],
+    "template": "Training for a race? Personalized run plans, pacing strategy, and coach feedback to finish strong. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_007",
+    "label": "Strength Training",
+    "keywords": ["strength","hypertrophy","muscle","compound","progressive overload","program","coach","deadlift","squat","bench","accessories","recovery","-steroids","-peds","-cycle","-cheap","-free","-giveaway","-equipment-sale","-injury-diagnosis","-diy","-howto","-tutorial","-spam","-challenge-spam"],
+    "template": "Build real strength with smart programming and technique coaching—no fluff, just progress. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_008",
+    "label": "Group Fitness Classes",
+    "keywords": ["group","class","bootcamp","zumba","circuit","hiit","community","fun","coach","schedule","beginner friendly","all levels","-online-argue","-equipment-sale","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-location-mismatch","-private-event-only"],
+    "template": "Fitness is more fun together—high-energy group classes for all levels. Try a session this week. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_009",
+    "label": "Senior Fitness",
+    "keywords": ["senior","older adult","balance","mobility","low impact","bone health","falls prevention","gentle","safe","coach","community","-high-intensity-only","-powerlifting-only","-crossfit-elite","-steroids","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-politics"],
+    "template": "Stay active, steady, and strong—safe, low-impact fitness designed for older adults. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_010",
+    "label": "Kids Fitness",
+    "keywords": ["kids","children","youth","sports","games","agility","fun","confidence","coach","after school","class","-adult-only","-nutrition-argue","-equipment-sale","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-politics","-controversy"],
+    "template": "Active kids are confident kids—fun, coach-led classes that build skills and smiles. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_011",
+    "label": "Rehabilitation Fitness",
+    "keywords": ["rehab","post injury","recovery","physio informed","mobility","stability","return to sport","low impact","progressions","coach","-diagnosis-only","-surgery-advice","-medical-claims","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-extreme","-challenge"],
+    "template": "Coming back from injury? Gentle, coach-guided progressions to rebuild strength and confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_012",
+    "label": "Pilates Classes",
+    "keywords": ["pilates","core","stability","posture","mobility","control","mat","reformer","class","studio","coach","-equipment-sale","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-extreme-weightloss","-steroids","-peds"],
+    "template": "Stronger core, better posture—Pilates classes that improve control and mobility. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_013",
+    "label": "Boxing Training",
+    "keywords": ["boxing","pads","bag work","footwork","conditioning","coach","technique","sparring (optional)","fitness boxing","gloves","wraps","-street-fight","-violence","-weapons","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-mma-debate","-injury-diagnosis"],
+    "template": "Hit pads, not plateaus—boxing workouts that sharpen technique and torch calories. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_014",
+    "label": "Swimming Lessons",
+    "keywords": ["swimming","lessons","coach","stroke","breathing","confidence","lane","pool","beginner","improver","triathlon","-open-water-only","-equipment-sale","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-facility-closed","-politics"],
+    "template": "Learn to swim or polish your stroke—patient coaching for beginners to triathletes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_015",
+    "label": "Outdoor Bootcamp",
+    "keywords": ["bootcamp","outdoor","park","fresh air","circuits","hiit","team vibe","coach","schedule","all levels","-weather-cancellation-argue","-permit-issue","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-equipment-sale","-politics"],
+    "template": "Train hard in the fresh air—outdoor bootcamps that energize your body and headspace. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_016",
+    "label": "Wellness Coaching",
+    "keywords": ["wellness","habits","sleep","stress","routine","movement","nutrition basics","mindset","coach","check-ins","-supp-only","-pills","-detox","-tea","-mlm","-scam","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial"],
+    "template": "Simple habits, big wins—wellness coaching that fits your life and sticks. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_017",
+    "label": "Sports Performance",
+    "keywords": ["sports","performance","speed","power","agility","strength","conditioning","testing","program","coach","athlete","-betting","-tickets","-merch","-cheap","-free","-giveaway","-spam","-steroids","-peds","-diy","-howto","-tutorial","-injury-diagnosis"],
+    "template": "Train like an athlete—speed, power, and conditioning programs tailored to your sport. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_018",
+    "label": "Dance Fitness",
+    "keywords": ["dance","zumba","rhythm","music","fun","cardio","group","class","beginner friendly","confidence","-auditions-only","-tickets","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-politics","-controversy","-equipment-sale"],
+    "template": "Cardio that feels like a party—dance fitness classes for every level. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_019",
+    "label": "Flexibility Training",
+    "keywords": ["flexibility","mobility","range of motion","stretch","hips","hamstrings","shoulders","posture","recovery","coach","routine","-contortion-only","-pain-diagnosis","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-equipment-sale","-extreme"],
+    "template": "Move better, feel better—guided flexibility and mobility sessions built around you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "fit_020",
+    "label": "Fitness Assessment",
+    "keywords": ["assessment","evaluation","testing","baseline","body comp","movement screen","goals","program start","coach","report","-medical-diagnosis","-cheap","-free","-giveaway","-spam","-diy","-howto","-tutorial","-argument","-equipment-sale","-politics"],
+    "template": "Start with clarity—complete fitness assessment and a plan you can actually follow. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

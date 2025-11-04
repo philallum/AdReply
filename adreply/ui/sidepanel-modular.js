@@ -67,7 +67,8 @@ class AdReplySidePanel {
         document.getElementById('refreshUsageBtn').addEventListener('click', () => this.refreshUsageStats());
         document.getElementById('clearUsageBtn').addEventListener('click', () => this.clearUsageHistory());
         
-        // Debug functionality removed for production
+        // Debug
+        document.getElementById('debugBtn').addEventListener('click', () => this.debugTemplateMatching());
         
         // Default URL
         document.getElementById('saveDefaultUrlBtn').addEventListener('click', () => this.saveDefaultUrl());
@@ -89,7 +90,7 @@ class AdReplySidePanel {
     }
 
     async refreshData() {
-        // Initialize connection
+        // Test connection
         await this.connectionManager.testConnection();
         
         // Get current group info and recent posts
@@ -356,7 +357,26 @@ class AdReplySidePanel {
         }
     }
 
-    // Debug methods removed for production
+    // Debug Methods
+    async debugTemplateMatching() {
+        console.log('=== AdReply Debug Info ===');
+        console.log('Templates loaded:', this.templateManager.getTemplateCount());
+        console.log('Templates:', this.templateManager.getTemplates());
+        
+        const currentPost = this.uiManager.getCurrentPost();
+        if (currentPost) {
+            console.log('Current post content:', currentPost.content);
+            console.log('Attempting to match templates...');
+            
+            const matches = await this.postAnalyzer.matchTemplatesWithPost(currentPost.content);
+            console.log('Matches found:', matches);
+        } else {
+            console.log('No current post available');
+        }
+        
+        console.log('Usage tracker available:', !!this.usageTrackerManager.getUsageTracker());
+        console.log('=== End Debug Info ===');
+    }
 
     // Default URL Management
     async saveDefaultUrl() {
@@ -400,7 +420,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const app = new AdReplySidePanel();
     await app.initialize();
     
-    // Debug functions removed for production
+    // Make debug function available globally for testing
+    window.debugTemplateMatching = () => app.debugTemplateMatching();
+    window.testSuggestions = async () => {
+        console.log('AdReply: Testing suggestion generation...');
+        const testContent = "This is a test post about cars and automotive services";
+        console.log('AdReply: Testing with content:', testContent);
         const suggestions = await app.postAnalyzer.generateSuggestions(testContent);
         app.uiManager.displaySuggestions(suggestions);
     };

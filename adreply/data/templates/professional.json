@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "professional",
+    "name": "Professional Services",
+    "description": "Consulting, marketing, design, and professional services"
+  },
+  "templates": [
+  {
+    "id": "professional_001",
+    "label": "Professional Services 1",
+    "keywords": ["consulting", "consultant", "advice", "expert", "strategy", "operations", "process improvement", "roadmap", "workshop", "assessment", "implementation", "change management", "best practices", "business outcomes", "ROI", "-cheap", "-free", "-unlicensed", "-template only", "-get rich quick", "-spam", "-scam", "-random gigs", "-unsafe", "-unverified"],
+    "template": "Get clear answers faster — senior consultants delivering practical strategies and measurable ROI. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_002",
+    "label": "Professional Services 2",
+    "keywords": ["marketing", "advertising", "promotion", "campaigns", "brand strategy", "digital marketing", "content", "paid social", "PPC", "SEO", "email", "funnel", "lead gen", "analytics", "CRO", "-cheap clicks", "-spam", "-bot traffic", "-fake followers", "-link farms", "-black hat", "-get rich quick", "-unverified", "-template only", "-random gigs"],
+    "template": "Smarter marketing that grows revenue — strategy, creative, and performance under one roof. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_003",
+    "label": "Professional Services 3",
+    "keywords": ["design", "graphic", "creative", "brand identity", "logo", "visual system", "layout", "packaging", "art direction", "style guide", "print", "digital assets", "UI", "creative brief", "mockups", "-spec work", "-cheap", "-template only", "-logo contest", "-copycat", "-plagiarized", "-unlicensed", "-random gigs", "-unsafe", "-low res"],
+    "template": "Brand design that stands apart — strategic visuals crafted to clarify and convert. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_004",
+    "label": "Professional Services 4",
+    "keywords": ["business", "strategy", "planning", "OKRs", "roadmap", "market analysis", "positioning", "pricing", "go to market", "growth", "competitive analysis", "forecast", "board ready", "execution plan", "PMO", "-guesswork", "-get rich quick", "-unlicensed", "-template only", "-random tips", "-spam", "-scam", "-unsafe", "-unverified", "-copycat"],
+    "template": "From vision to execution — data-backed strategy and an actionable plan your team can own. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_005",
+    "label": "Professional Services 5",
+    "keywords": ["professional", "service", "expert", "consultancy", "advisory", "audit", "assessment", "implementation", "project", "governance", "delivery", "frameworks", "playbooks", "best practice", "results", "-cheap", "-free", "-template only", "-unlicensed", "-spam", "-scam", "-random gigs", "-unsafe", "-unverified", "-guesswork"],
+    "template": "Professional services tailored to your goals — expert delivery, clear communication, real results. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_006",
+    "label": "Professional Services 6",
+    "keywords": ["consulting", "consultant", "advice", "expert", "diagnostic", "roadmap", "workshop", "facilitation", "stakeholders", "change", "enablement", "training", "playbook", "execution", "impact", "-cheap", "-free", "-unlicensed", "-random gigs", "-template only", "-scam", "-spam", "-unsafe", "-unverified", "-guesswork"],
+    "template": "Cut through complexity — expert consulting that aligns teams and accelerates outcomes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_007",
+    "label": "Professional Services 7",
+    "keywords": ["marketing", "advertising", "promotion", "brand", "media buying", "creative", "landing pages", "CRO", "SEO", "content", "automation", "CRM", "attribution", "reporting", "growth", "-spam", "-click farms", "-black hat", "-fake followers", "-cheap traffic", "-template only", "-scam", "-unverified", "-random gigs", "-unsafe"],
+    "template": "Performance marketing with brand thinking — creative that converts and data you can trust. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_008",
+    "label": "Professional Services 8",
+    "keywords": ["design", "graphic", "creative", "UX", "UI", "prototype", "wireframe", "design system", "component library", "accessibility", "responsive", "user testing", "heuristics", "iteration", "handoff", "-low res", "-copycat", "-template only", "-spec work", "-unlicensed", "-random gigs", "-unsafe", "-plagiarized", "-scam", "-guesswork"],
+    "template": "Human-centered design and clean UI — ship usable, accessible products faster. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_009",
+    "label": "Professional Services 9",
+    "keywords": ["business", "strategy", "planning", "market sizing", "financial model", "pricing", "GTM", "ICP", "segmentation", "messaging", "enablement", "sales playbook", "rev ops", "forecast", "risk", "-guesswork", "-template only", "-get rich quick", "-spam", "-scam", "-unverified", "-random tips", "-unsafe", "-copycat", "-unlicensed"],
+    "template": "Sharper strategy, stronger pipeline — align GTM, pricing, and messaging to win more deals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_010",
+    "label": "Professional Services 10",
+    "keywords": ["professional", "service", "expert", "implementation", "project management", "delivery", "governance", "QA", "SLA", "runbook", "change control", "documentation", "training", "support", "success metrics", "-cheap", "-free", "-random gigs", "-unlicensed", "-unsafe", "-scam", "-template only", "-no contract", "-guesswork", "-unverified"],
+    "template": "Reliable delivery from kickoff to handover — proven process, tight QA, and clear SLAs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_011",
+    "label": "Professional Services 11",
+    "keywords": ["consulting", "consultant", "advice", "expert", "benchmark", "assessment", "maturity model", "roadmap", "workflow", "automation", "tooling", "enablement", "KPIs", "coaching", "change", "-cheap", "-free", "-unlicensed", "-random gigs", "-scam", "-spam", "-template only", "-guesswork", "-unsafe", "-unverified"],
+    "template": "Independent assessment and a clear roadmap — know where you are and how to improve. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_012",
+    "label": "Professional Services 12",
+    "keywords": ["marketing", "advertising", "promotion", "brand messaging", "content strategy", "thought leadership", "copywriting", "social content", "email nurture", "SEO content", "editorial", "calendar", "distribution", "measurement", "repurposing", "-keyword stuffing", "-AI spam", "-black hat", "-link farm", "-cheap", "-random gigs", "-unverified", "-template only", "-scam", "-unsafe"],
+    "template": "Strategic content that ranks and converts — clear messaging across every channel. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_013",
+    "label": "Professional Services 13",
+    "keywords": ["design", "graphic", "creative", "brand toolkit", "presentation design", "pitch deck", "sales collateral", "infographics", "templates", "iconography", "motion", "storytelling", "visual hierarchy", "production", "print ready", "-copycat", "-low res", "-template only", "-unlicensed", "-spec work", "-random gigs", "-unsafe", "-scam", "-fake portfolio", "-plagiarized"],
+    "template": "Sales-ready creative — decks, collateral, and visuals that tell your story with clarity. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_014",
+    "label": "Professional Services 14",
+    "keywords": ["business", "strategy", "planning", "operations", "process design", "SOPs", "RACI", "capacity planning", "resource management", "rev ops", "service blueprint", "automation", "change", "governance", "scalability", "-guesswork", "-template only", "-random tips", "-unlicensed", "-unsafe", "-scam", "-spam", "-copycat", "-free", "-unverified"],
+    "template": "Operational excellence — streamline processes, improve capacity, and scale with confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_015",
+    "label": "Professional Services 15",
+    "keywords": ["professional", "service", "expert", "HR consulting", "talent strategy", "org design", "role architecture", "hiring process", "interview training", "onboarding", "L&D", "performance", "culture", "policy", "compliance", "-cheap", "-unlicensed", "-random gigs", "-template only", "-unsafe", "-scam", "-spam", "-guesswork", "-fake", "-unverified"],
+    "template": "People-first consulting — talent, org design, and culture programs that scale. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_016",
+    "label": "Professional Services 16",
+    "keywords": ["IT consulting", "cloud", "architecture", "security", "DevOps", "automation", "cost optimization", "monitoring", "SLA", "incident response", "governance", "backup", "disaster recovery", "roadmap", "implementation", "-shadow IT", "-unlicensed", "-unsafe", "-template only", "-guesswork", "-scam", "-spam", "-random gigs", "-cheap hacks", "-unverified"],
+    "template": "Modernize with confidence — secure cloud architecture and DevOps that reduce risk and cost. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_017",
+    "label": "Professional Services 17",
+    "keywords": ["data", "analytics", "BI", "dashboard", "KPI", "data pipeline", "ETL", "warehouse", "governance", "data quality", "insights", "forecasting", "experimentation", "A/B testing", "attribution", "-fabricated data", "-black box", "-guesswork", "-template only", "-unverified", "-spam", "-scam", "-unsafe", "-random gigs", "-cheap"],
+    "template": "Turn data into decisions — clean pipelines, trustworthy dashboards, and actionable insights. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_018",
+    "label": "Professional Services 18",
+    "keywords": ["PR", "communications", "media relations", "press release", "thought leadership", "speaking", "awards", "crisis comms", "message house", "media training", "coverage", "earned media", "brand reputation", "pitching", "placement", "-spam", "-buy coverage", "-fake news", "-link farm", "-cheap", "-scam", "-template only", "-unverified", "-unsafe", "-random gigs"],
+    "template": "Strategic communications and PR — clear messaging, real coverage, stronger reputation. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_019",
+    "label": "Professional Services 19",
+    "keywords": ["sales enablement", "playbooks", "ICP", "messaging", "battlecards", "demo narrative", "discovery", "objection handling", "training", "coaching", "call reviews", "content", "tooling", "metrics", "win rate", "-spam", "-boilerplate", "-template only", "-random tips", "-unverified", "-scam", "-unsafe", "-copycat", "-free", "-guesswork"],
+    "template": "Enable your sales team with clear messaging, stronger demos, and repeatable plays. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "professional_020",
+    "label": "Professional Services 20",
+    "keywords": ["customer success", "CX", "NPS", "onboarding", "adoption", "renewals", "expansion", "health score", "journey mapping", "playbooks", "success plans", "advocacy", "churn reduction", "voice of customer", "feedback loops", "-spam", "-template only", "-random tips", "-unverified", "-scam", "-unsafe", "-guesswork", "-cheap", "-free", "-copycat"],
+    "template": "Delight customers at scale — onboarding, adoption, and renewal programs that work. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

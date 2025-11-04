@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "photography",
+    "name": "Photography",
+    "description": "Portrait, event, commercial, and photography services"
+  },
+  "templates": [
+  {
+    "id": "photography_001",
+    "label": "Photography 1",
+    "keywords": ["photography", "photo", "picture", "camera", "professional photographer", "photoshoot", "lighting", "editing", "retouching", "portfolio", "creative", "studio", "on-location", "high resolution", "prints", "-cheap", "-free", "-unlicensed", "-AI generated", "-blurry", "-low res", "-random", "-stock only", "-fake", "-unsafe"],
+    "template": "Capture your story with crisp, creative photography — moments made to last. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_002",
+    "label": "Wedding Photography 2",
+    "keywords": ["wedding", "bride", "ceremony", "reception", "engagement", "bridal", "elopement", "timeline", "second shooter", "album", "venue", "candid", "romantic", "first look", "details", "-cheap", "-unlicensed", "-AI generated", "-blurry", "-low res", "-template", "-fake", "-random", "-unsafe", "-no contract"],
+    "template": "Timeless wedding photography that beautifully tells your love story from ‘I do’ to last dance. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_003",
+    "label": "Portrait Photography 3",
+    "keywords": ["portrait", "family", "professional", "studio", "lifestyle", "headshot", "natural light", "retouching", "posing", "kids", "parents", "grandparents", "siblings", "fine art", "prints", "-cheap", "-unlicensed", "-AI portrait", "-blurry", "-low res", "-template", "-random", "-unsafe", "-overfiltered", "-fake"],
+    "template": "Natural, flattering portraits for families and individuals — confidently be yourself. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_004",
+    "label": "Event Photography 4",
+    "keywords": ["event", "party", "celebration", "corporate", "conference", "gala", "festival", "awards", "candid", "highlights", "on-site", "instant delivery", "gallery", "photo coverage", "press", "-cheap", "-unlicensed", "-AI", "-blurry", "-low res", "-template", "-random", "-unsafe", "-no backup", "-no contract"],
+    "template": "Engaging event coverage that captures real moments, real people, and real energy. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_005",
+    "label": "Commercial Photography 5",
+    "keywords": ["commercial", "business", "product", "branding", "hero image", "lifestyle product", "ecommerce", "catalog", "retouching", "studio lighting", "creative direction", "lookbook", "campaign", "set design", "props", "-cheap", "-AI mockup", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake reviews", "-no brief"],
+    "template": "Elevate your brand with sharp, consistent commercial images that convert. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_006",
+    "label": "Photography 6",
+    "keywords": ["photography", "photo", "picture", "camera", "editorial", "creative", "storytelling", "natural light", "studio", "color grading", "retouch", "portfolio", "gallery", "print shop", "archival", "-cheap", "-AI generated", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-stolen"],
+    "template": "Editorial-quality photography with an artist’s eye — crafted to be remembered. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_007",
+    "label": "Wedding Photography 7",
+    "keywords": ["wedding", "bride", "ceremony", "reception", "engagement session", "bridal party", "family formals", "candid", "golden hour", "album", "prints", "heirloom", "second shooter", "film look", "timeline", "-cheap", "-unlicensed", "-AI", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no contract"],
+    "template": "Authentic, elegant wedding photography — every emotion, every detail, beautifully preserved. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_008",
+    "label": "Portrait Photography 8",
+    "keywords": ["portrait", "family", "professional", "headshots", "editorial portrait", "lifestyle", "studio", "outdoor", "wardrobe guide", "makeup", "retouching", "print package", "fine art", "black and white", "natural light", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-overfiltered", "-template", "-unsafe", "-random", "-fake"],
+    "template": "Modern portraits with personality — studio or on-location sessions tailored to you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_009",
+    "label": "Event Photography 9",
+    "keywords": ["event", "party", "celebration", "milestone", "birthday", "anniversary", "baby shower", "candid", "photojournalism", "same-day previews", "online gallery", "print shop", "coverage", "timeline", "vendor team", "-cheap", "-unlicensed", "-AI", "-blurry", "-low res", "-template", "-random", "-unsafe", "-no contract", "-fake"],
+    "template": "Celebrate every milestone — vibrant event photography that keeps the memories alive. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_010",
+    "label": "Commercial Photography 10",
+    "keywords": ["commercial", "business", "product", "brand", "advertising", "ecommerce", "packshot", "ghost mannequin", "lifestyle set", "art direction", "consistent lighting", "color accuracy", "retouching", "on-model", "flatlay", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no brief"],
+    "template": "Conversion-ready product photography — consistent lighting, clean retouching, true-to-color. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_011",
+    "label": "Photography 11",
+    "keywords": ["photography", "photo", "picture", "camera", "fine art", "gallery", "prints", "archival", "limited edition", "landscape", "cityscape", "black and white", "museum quality", "collector", "framed", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-poster rip", "-fake"],
+    "template": "Fine-art imagery and museum-quality prints for collectors and curated spaces. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_012",
+    "label": "Wedding Photography 12",
+    "keywords": ["wedding", "bride", "ceremony", "reception", "engagement", "elopement", "destination wedding", "sunset portraits", "details", "rings", "vows", "dance floor", "sparkler exit", "album design", "heirloom prints", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no contract"],
+    "template": "From morning vows to sparkler exit — romantic wedding photos you’ll treasure forever. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_013",
+    "label": "Portrait Photography 13",
+    "keywords": ["portrait", "family", "professional", "newborn", "maternity", "senior photos", "kids", "pets", "studio", "lifestyle", "backdrops", "natural light", "retouching", "prints", "albums", "-cheap", "-unlicensed", "-AI", "-blurry", "-low res", "-template", "-unsafe", "-random", "-overfiltered", "-fake"],
+    "template": "From maternity to newborn to family — heartfelt portraits across every season of life. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_014",
+    "label": "Event Photography 14",
+    "keywords": ["event", "party", "celebration", "corporate", "awards", "trade show", "expo", "keynote", "step and repeat", "press wall", "brand activation", "on-site edits", "PR images", "media kit", "deliverables", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no backup"],
+    "template": "Corporate events, conferences, and brand activations — polished photos ready for PR. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_015",
+    "label": "Commercial Photography 15",
+    "keywords": ["commercial", "business", "product", "food photography", "real estate", "architecture", "interiors", "menu shoot", "brand story", "campaign", "lookbook", "creative brief", "styling", "props", "set build", "-cheap", "-AI", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no contract"],
+    "template": "Impactful brand visuals — food, product, and spaces photographed with style and precision. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_016",
+    "label": "Headshots 16",
+    "keywords": ["headshot", "professional", "LinkedIn", "actor headshot", "corporate", "studio", "on-location", "lighting", "retouch", "branding", "team photos", "consistent look", "backdrop", "natural", "crisp", "-cheap", "-AI face", "-unlicensed", "-blurry", "-low res", "-template", "-overfiltered", "-random", "-fake", "-unsafe"],
+    "template": "Stand out with sharp, confident headshots — perfect for teams, actors, and LinkedIn. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_017",
+    "label": "Real Estate 17",
+    "keywords": ["real estate", "property", "interiors", "architecture", "HDR", "twilight", "drone", "virtual tour", "floor plan", "wide angle", "color accurate", "MLS ready", "next-day delivery", "staging", "detail shots", "-cheap", "-AI render", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no insurance"],
+    "template": "Sell faster with clean, color-true real estate images — interiors, exteriors, and drone. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_018",
+    "label": "Food & Product 18",
+    "keywords": ["food photography", "product", "ecommerce", "menu", "restaurant", "hero dish", "styling", "studio lighting", "macro", "color accuracy", "retouching", "packaging", "social content", "stop motion", "flatlay", "-cheap", "-AI mockup", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no brief"],
+    "template": "Appetizing food and product images that drive clicks, orders, and brand trust. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_019",
+    "label": "Maternity & Newborn 19",
+    "keywords": ["maternity", "newborn", "lifestyle", "studio", "safety trained", "wrapped poses", "natural light", "props", "family", "siblings", "wardrobe guide", "retouching", "prints", "album", "milestone", "-cheap", "-unsafe posing", "-unlicensed", "-AI baby", "-blurry", "-low res", "-template", "-random", "-fake", "-no sanitizer"],
+    "template": "Safe, tender maternity and newborn sessions — gentle posing and timeless keepsakes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "photography_020",
+    "label": "Branding Sessions 20",
+    "keywords": ["branding", "personal brand", "small business", "content session", "storytelling", "social media", "website images", "lifestyle portraits", "behind the scenes", "props", "location", "mood board", "shot list", "consistent look", "style guide", "-cheap", "-AI stock", "-unlicensed", "-blurry", "-low res", "-template", "-random", "-unsafe", "-fake", "-no brief"],
+    "template": "Build a consistent visual identity with strategic branding photography for your business. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "food",
+    "name": "Food & Restaurants",
+    "description": "Restaurants, catering, food delivery, and culinary services"
+  },
+  "templates": [
+  {
+    "id": "food_001",
+    "label": "Restaurant Recommendation",
+    "keywords": ["restaurant","dining","foodie","menu","chef","table","reservation","local","fresh","specials","family friendly","date night","-recipe-only","-home-cooking","-diet-argue","-cheap","-free","-giveaway","-spam","-delivery-app-only","-closed","-sold-out","-job-post"],
+    "template": "Love great food? Book a table and taste our chef’s favourites—fresh, local, and generous. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_002",
+    "label": "Catering Services",
+    "keywords": ["catering","event","party","wedding","corporate","buffet","canapés","platter","menu","chef","delivery","setup","-recipe-only","-home-potluck","-cheap","-free","-giveaway","-spam","-equipment-sale","-venue-hire-only","-job-post","-diet-argument"],
+    "template": "Planning an event? Seamless catering—menus, delivery, and setup handled end-to-end. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_003",
+    "label": "Food Delivery",
+    "keywords": ["delivery","takeout","order","online","tonight","app","driver","hot","fresh","family deal","combo","-recipe-only","-home-cooking","-meal-prep-guide","-cheap","-free","-giveaway","-spam","-closed","-pickup-only-argue","-diet-argue"],
+    "template": "Dinner sorted—fresh, hot delivery with easy online ordering and fast drop-off. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_004",
+    "label": "Pizza Special",
+    "keywords": ["pizza","slice","pepperoni","margherita","stone baked","wood fired","cheese","toppings","deal","2 for 1","-recipe-only","-home-oven","-cheap","-free","-giveaway","-spam","-diet-argue","-gluten-free-argue","-closed","-equipment-sale"],
+    "template": "Craving pizza? Hand-stretched bases, big toppings, and hot deals tonight. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_005",
+    "label": "Bakery Fresh",
+    "keywords": ["bakery","bread","pastry","croissant","cake","fresh","morning","artisan","butter","sourdough","-recipe-only","-home-bake","-cheap","-free","-giveaway","-spam","-gluten-argument","-equipment-sale","-job-post","-closed"],
+    "template": "From the oven to you—fresh breads and pastries baked each morning. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_006",
+    "label": "Coffee Shop",
+    "keywords": ["coffee","espresso","latte","cappuccino","beans","roast","barista","cafe","pastry","wifi","workspace","-home-brew-only","-equipment-sale","-cheap","-free","-giveaway","-spam","-diet-argue","-closed","-job-post"],
+    "template": "Need a pick-me-up? Specialty coffee, friendly baristas, and a cosy spot to unwind. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_007",
+    "label": "Healthy Options",
+    "keywords": ["healthy","salad","bowls","lean","protein","whole foods","fresh","macro friendly","gluten free options","veggie","-recipe-only","-diet-war","-keto-only","-vegan-argument","-cheap","-free","-giveaway","-spam","-closed","-supplement-sale","-fad"],
+    "template": "Clean, tasty, satisfying—healthy menu options that actually fill you up. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_008",
+    "label": "BBQ Specialties",
+    "keywords": ["bbq","barbecue","smoked","brisket","ribs","pulled pork","pit","sauce","smoker","grill","-recipe-only","-home-smoker","-vegan-argument","-cheap","-free","-giveaway","-spam","-closed","-equipment-sale","-diet-war"],
+    "template": "Low ’n slow done right—smoked meats, bold sauces, and proper portions. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_009",
+    "label": "Seafood Fresh",
+    "keywords": ["seafood","fish","shrimp","prawn","oyster","grill","pan seared","market fresh","ocean","daily catch","-recipe-only","-home-fishing","-sustainability-argue","-cheap","-free","-giveaway","-spam","-closed","-equipment-sale","-diet-war"],
+    "template": "Daily catch, expertly cooked—fresh seafood with bright, seasonal sides. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_010",
+    "label": "Dessert Heaven",
+    "keywords": ["dessert","cake","pudding","brownie","cheesecake","sweet","treat","indulgent","bake","pastry","-recipe-only","-home-bake","-sugar-argument","-cheap","-free","-giveaway","-spam","-closed","-diet-war","-equipment-sale"],
+    "template": "Got a sweet tooth? Indulgent desserts baked fresh—treat yourself tonight. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_011",
+    "label": "Meal Prep Service",
+    "keywords": ["meal prep","prep","weekly","macro","healthy","ready meals","order","delivery","portion","menu","-recipe-guide-only","-home-cook-only","-cheap","-free","-giveaway","-spam","-diet-war","-closed","-equipment-sale","-job-post"],
+    "template": "Healthy eating made easy—fresh meal prep by the week with clear macros. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_012",
+    "label": "Food Truck",
+    "keywords": ["food truck","street food","mobile","pop up","festival","location","menu","specials","events","-recipe-only","-permit-argue","-cheap","-free","-giveaway","-spam","-closed","-equipment-sale","-job-post","-diet-war"],
+    "template": "Street eats done right—follow the truck for today’s location and specials. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_013",
+    "label": "Wine & Dine",
+    "keywords": ["wine","pairing","cellar","sommelier","dinner","tasting menu","course","reserve","date night","-retail-only","-home-cellar","-cheap","-free","-giveaway","-spam","-closed","-diet-war","-age-argue","-policy-argue"],
+    "template": "Make it a night—thoughtful wine pairings and a chef’s tasting menu to match. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_014",
+    "label": "Breakfast Special",
+    "keywords": ["breakfast","brunch","morning","eggs","pancakes","coffee","pastry","family","weekend","specials","-recipe-only","-home-cook","-cheap","-free","-giveaway","-spam","-closed","-diet-war","-equipment-sale","-job-post"],
+    "template": "Start strong—hearty breakfasts, great coffee, and weekend brunch specials. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_015",
+    "label": "Vegan Options",
+    "keywords": ["vegan","plant based","dairy free","meat free","veg","bowls","salad","protein","menu","-recipe-only","-diet-war","-keto-argue","-cheap","-free","-giveaway","-spam","-closed","-equipment-sale","-politics"],
+    "template": "Plant-based and flavour-packed—proper vegan dishes with satisfying portions. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_016",
+    "label": "International Cuisine",
+    "keywords": ["international","world","authentic","flavours","spices","regional","chef","menu","specials","-recipe-only","-culture-argue","-cheap","-free","-giveaway","-spam","-closed","-equipment-sale","-job-post","-diet-war"],
+    "template": "Taste the world—authentic flavours and regional specials from our chef’s travels. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_017",
+    "label": "Happy Hour",
+    "keywords": ["happy hour","drinks","cocktails","beer","wine","nibbles","after work","deal","bar","-age-argue","-policy-argue","-cheap","-free","-giveaway","-spam","-closed","-aa-discussion","-politics","-health-argue"],
+    "template": "After-work plans? Happy hour drinks and bites—bring the crew. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_018",
+    "label": "Farm to Table",
+    "keywords": ["farm to table","local","seasonal","producers","fresh","traceable","menu","chef","-recipe-only","-sourcing-argue-only","-cheap","-free","-giveaway","-spam","-closed","-politics","-diet-war","-equipment-sale"],
+    "template": "Local farms, seasonal menus—fresh ingredients cooked with care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_019",
+    "label": "Cooking Classes",
+    "keywords": ["cooking class","learn","chef","hands on","kitchen","technique","menu","date night","team","-free-youtube","-recipe-only","-cheap","-giveaway","-spam","-equipment-sale","-venue-hire-only","-job-post","-closed"],
+    "template": "Sharpen your skills—hands-on cooking classes led by our chefs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "food_020",
+    "label": "Food Festival",
+    "keywords": ["festival","event","food stalls","vendors","street food","music","tickets","weekend","schedule","-recipe-only","-organiser-only","-cheap","-free","-giveaway-spam","-closed","-equipment-sale","-job-post","-politics"],
+    "template": "See you at the festival—great food stalls, live vibes, and plenty to try. {url}",
+    "isPrebuilt": true
+  }
+]
+}

@@ -83,6 +83,8 @@ function updateStatus(groupInfo) {
     }
 }
 
+let lastProcessedPostContent = null;
+
 function updatePostContent(postData) {
     const postContentEl = document.getElementById('postContent');
     const postTextEl = document.getElementById('postText');
@@ -114,16 +116,21 @@ function updatePostContent(postData) {
             }
 
             listEl.innerHTML = skipMessage;
+            lastProcessedPostContent = postData.content; // Update to prevent reprocessing
         } else {
-            // Generate suggestions normally
-            generateSuggestions(postData.content).catch(error => {
-                console.error('AdReply: Error generating suggestions:', error);
-                const listEl = document.getElementById('suggestionsList');
-                listEl.innerHTML = '<div class="no-suggestions">Error generating suggestions. Please try again.</div>';
-            });
+            // Only generate suggestions if this is new content
+            if (lastProcessedPostContent !== postData.content) {
+                lastProcessedPostContent = postData.content;
+                generateSuggestions(postData.content).catch(error => {
+                    console.error('AdReply: Error generating suggestions:', error);
+                    const listEl = document.getElementById('suggestionsList');
+                    listEl.innerHTML = '<div class="no-suggestions">Error generating suggestions. Please try again.</div>';
+                });
+            }
         }
     } else {
         postContentEl.style.display = 'none';
+        lastProcessedPostContent = null; // Reset when no post
 
         // Clear suggestions
         const listEl = document.getElementById('suggestionsList');
@@ -135,6 +142,15 @@ async function generateSuggestions(postContent) {
     console.log('AdReply: Generating suggestions for post:', postContent.substring(0, 50) + '...');
     const suggestions = [];
 
+    // Get default promo URL from settings
+    let defaultPromoUrl = '';
+    try {
+        const result = await chrome.storage.local.get(['defaultPromoUrl']);
+        defaultPromoUrl = result.defaultPromoUrl || '';
+    } catch (error) {
+        console.warn('AdReply: Could not get default promo URL:', error);
+    }
+
     // Match templates based on keywords
     const matchedTemplates = await matchTemplatesWithPost(postContent);
     console.log('AdReply: Matched templates:', matchedTemplates.length);
@@ -145,16 +161,15 @@ async function generateSuggestions(postContent) {
             const template = match.template;
             const variant = match.variant;
 
-            // Format the suggestion with URL appended
+            // Format the suggestion with URL replacement
             let suggestion = variant || template.template;
 
-            // Replace placeholders (basic implementation)
-            suggestion = suggestion.replace(/{site}/g, template.url || 'our website');
-
-            // Append URL if it exists and isn't already in the text
-            if (template.url && !suggestion.includes(template.url)) {
-                suggestion += ` ${template.url}`;
-            }
+            // Replace {url} placeholder with default promo URL or template URL
+            const urlToUse = template.url || defaultPromoUrl;
+            suggestion = suggestion.replace(/{url}/g, urlToUse);
+            
+            // Also replace {site} placeholder for backward compatibility
+            suggestion = suggestion.replace(/{site}/g, urlToUse || 'our website');
 
             suggestions.push({
                 text: suggestion,
@@ -294,12 +309,12 @@ async function matchTemplatesWithPost(postContent) {
         console.log('AdReply: Template score:', template.label, score);
 
         if (score > 0) {
-            // Add main template (variant index 0)
-            const isMainUsed = recentUsage.some(usage =>
+            // Add template (no variants system anymore - each template is individual)
+            const isTemplateUsed = recentUsage.some(usage =>
                 usage.templateId === template.id && usage.variantIndex === 0
             );
 
-            if (!isMainUsed) {
+            if (!isTemplateUsed) {
                 matches.push({
                     template,
                     variant: template.template,
@@ -318,34 +333,6 @@ async function matchTemplatesWithPost(postContent) {
                     lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === 0)?.timestamp
                 });
             }
-
-            // Add variants (variant index 1+)
-            template.variants.forEach((variant, index) => {
-                const variantIndex = index + 1;
-                const isVariantUsed = recentUsage.some(usage =>
-                    usage.templateId === template.id && usage.variantIndex === variantIndex
-                );
-
-                if (!isVariantUsed) {
-                    matches.push({
-                        template,
-                        variant,
-                        variantIndex,
-                        score,
-                        recentlyUsed: false
-                    });
-                } else {
-                    // Add to recently used for fallback
-                    matches.push({
-                        template,
-                        variant,
-                        variantIndex,
-                        score,
-                        recentlyUsed: true,
-                        lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === variantIndex)?.timestamp
-                    });
-                }
-            });
         }
     }
 

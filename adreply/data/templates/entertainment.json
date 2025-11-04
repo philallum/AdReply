@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "entertainment",
+    "name": "Entertainment",
+    "description": "Musicians, DJs, performers, and entertainment services"
+  },
+  "templates": [
+  {
+    "id": "entertainment_001",
+    "label": "Entertainment 1",
+    "keywords": ["music", "band", "musician", "performance", "live show", "concert", "acoustic", "cover band", "wedding music", "event band", "entertainment", "professional musicians", "party band", "live entertainment", "festival act", "-cheap", "-karaoke", "-recorded", "-playlist", "-fake", "-background"],
+    "template": "Bring your event to life with professional live musicians delivering unforgettable performances! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_002",
+    "label": "Entertainment 2",
+    "keywords": ["dj", "party", "dance", "music", "club", "event dj", "wedding dj", "professional dj", "mix", "sound system", "lighting", "dance floor", "crowd", "beats", "nightlife", "-amateur", "-cheap", "-playlist", "-auto mix", "-background", "-generic"],
+    "template": "Let’s get the party started! Our DJs know how to keep the crowd dancing all night. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_003",
+    "label": "Entertainment 3",
+    "keywords": ["entertainment", "performer", "show", "act", "stage", "event entertainment", "professional act", "party show", "corporate", "gala", "festival", "variety", "circus", "live performance", "crowd engagement", "-cheap", "-unverified", "-background", "-streamed", "-unlicensed", "-boring"],
+    "template": "Turn any event into a showstopper — book professional performers who wow every audience! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_004",
+    "label": "Entertainment 4",
+    "keywords": ["wedding", "reception", "celebration", "ceremony", "music", "dj", "band", "live performance", "love songs", "first dance", "party", "soundtrack", "custom playlist", "special day", "romantic", "-cheap", "-generic", "-unprofessional", "-background", "-random", "-noisy"],
+    "template": "Make your wedding unforgettable with live music and entertainment your guests will love! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_005",
+    "label": "Entertainment 5",
+    "keywords": ["corporate", "event", "professional", "conference", "gala", "launch", "networking", "team event", "afterparty", "corporate dj", "live act", "professional host", "stage show", "entertainment service", "business event", "-cheap", "-unreliable", "-unlicensed", "-random", "-karaoke", "-background"],
+    "template": "Elevate your corporate event with high-impact entertainment that engages and impresses. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_006",
+    "label": "Entertainment 6",
+    "keywords": ["music", "band", "musician", "performance", "singer", "live act", "concert", "cover band", "party band", "entertainment", "festival", "acoustic", "live show", "talent", "event performance", "-cheap", "-recorded", "-playlist", "-generic", "-fake", "-unlicensed"],
+    "template": "Turn your event into a live music experience your guests will never forget. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_007",
+    "label": "Entertainment 7",
+    "keywords": ["dj", "party", "dance", "music", "club", "festival", "nightlife", "sound system", "beats", "mixing", "professional dj", "crowd", "fun", "energy", "dancefloor", "-cheap", "-random", "-untrained", "-playlist", "-auto mix", "-background"],
+    "template": "High-energy DJs that keep every crowd moving — perfect for parties and events! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_008",
+    "label": "Entertainment 8",
+    "keywords": ["entertainment", "performer", "show", "circus", "magician", "comedian", "acrobat", "stage", "variety", "live act", "crowd pleaser", "event performance", "interactive", "spectacle", "fun", "-cheap", "-unlicensed", "-streamed", "-recorded", "-boring", "-fake"],
+    "template": "Add excitement to your event with world-class entertainers and unforgettable acts! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_009",
+    "label": "Entertainment 9",
+    "keywords": ["wedding", "reception", "celebration", "love", "party", "music", "dj", "band", "ceremony", "first dance", "soundtrack", "special day", "entertainment", "event planner", "romantic", "-cheap", "-generic", "-amateur", "-random", "-noisy", "-unprofessional"],
+    "template": "Celebrate your love with live entertainment that makes your big day magical! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_010",
+    "label": "Entertainment 10",
+    "keywords": ["corporate", "event", "professional", "gala", "business", "conference", "networking", "launch", "afterparty", "stage", "entertainment", "motivational speaker", "host", "dj", "band", "-cheap", "-unverified", "-background", "-random", "-karaoke", "-boring"],
+    "template": "From conferences to galas — we deliver polished entertainment that fits your brand. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_011",
+    "label": "Entertainment 11",
+    "keywords": ["music", "band", "musician", "performance", "festival", "live", "acoustic", "stage", "show", "talent", "crowd", "concert", "cover band", "party", "sound", "-cheap", "-recorded", "-unlicensed", "-generic", "-background", "-fake"],
+    "template": "Live music that connects — professional bands bringing your event to life! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_012",
+    "label": "Entertainment 12",
+    "keywords": ["dj", "party", "dance", "music", "mix", "club", "sound", "vibes", "nightlife", "professional dj", "event", "fun", "beats", "crowd", "energy", "-cheap", "-playlist", "-background", "-auto", "-generic", "-unlicensed"],
+    "template": "Our DJs bring the beats, lights, and vibes your party deserves! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_013",
+    "label": "Entertainment 13",
+    "keywords": ["entertainment", "performer", "show", "act", "variety", "circus", "acrobat", "magician", "illusionist", "comedian", "crowd", "spectacle", "fun", "wow factor", "engagement", "-cheap", "-untrained", "-boring", "-unlicensed", "-background", "-fake"],
+    "template": "Make your event unforgettable with thrilling live acts and professional entertainers! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_014",
+    "label": "Entertainment 14",
+    "keywords": ["wedding", "reception", "celebration", "dj", "band", "ceremony", "soundtrack", "entertainment", "party", "live", "romantic", "first dance", "music", "event", "special moment", "-cheap", "-generic", "-background", "-random", "-amateur", "-noisy"],
+    "template": "Create lasting memories with wedding entertainment that hits every perfect note! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_015",
+    "label": "Entertainment 15",
+    "keywords": ["corporate", "event", "professional", "gala", "conference", "business", "show", "afterparty", "networking", "entertainment", "dj", "band", "stage", "speaker", "launch", "-cheap", "-untrained", "-background", "-karaoke", "-generic", "-boring"],
+    "template": "Professional entertainment for professional events — elevate your next business occasion. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_016",
+    "label": "Entertainment 16",
+    "keywords": ["music", "band", "performance", "acoustic", "festival", "event", "party", "entertainment", "live act", "musician", "crowd", "show", "energy", "fun", "sound", "-cheap", "-fake", "-recorded", "-background", "-generic", "-unlicensed"],
+    "template": "Bring real music energy to your event — live performances that move every crowd! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_017",
+    "label": "Entertainment 17",
+    "keywords": ["dj", "club", "party", "dance", "beats", "sound system", "lighting", "professional dj", "wedding dj", "event dj", "energy", "nightlife", "fun", "mixing", "crowd", "-cheap", "-playlist", "-background", "-auto", "-amateur", "-generic"],
+    "template": "Turn any venue into the ultimate party — book experienced DJs who bring the energy! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_018",
+    "label": "Entertainment 18",
+    "keywords": ["entertainment", "show", "performer", "acrobat", "magician", "comedian", "stage", "circus", "illusionist", "crowd pleaser", "live act", "spectacle", "interactive", "fun", "wow", "-cheap", "-boring", "-streamed", "-background", "-fake", "-unlicensed"],
+    "template": "From magic to acrobatics — book crowd-pleasing entertainment that delivers the wow factor! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_019",
+    "label": "Entertainment 19",
+    "keywords": ["wedding", "celebration", "love", "music", "dj", "band", "party", "ceremony", "first dance", "entertainment", "romantic", "special moment", "event", "soundtrack", "memories", "-cheap", "-generic", "-amateur", "-background", "-noisy", "-random"],
+    "template": "Set the soundtrack for your love story with live wedding entertainment. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "entertainment_020",
+    "label": "Entertainment 20",
+    "keywords": ["corporate", "event", "professional", "launch", "conference", "networking", "afterparty", "gala", "band", "dj", "speaker", "entertainment", "stage", "event planner", "premium", "-cheap", "-boring", "-unverified", "-background", "-generic", "-karaoke"],
+    "template": "Impress clients and colleagues with premium corporate entertainment that inspires. {url}",
+    "isPrebuilt": true
+  }
+]
+}

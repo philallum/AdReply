@@ -33,51 +33,163 @@ function generateTechnologyTemplates() {
       id: 'tech_001',
       label: 'IT Support',
       category: 'technology',
-      keywords: ['computer', 'it', 'support', 'tech', 'repair'],
-      template: 'Tech troubles? Our IT experts solve computer problems fast! {url}',
+      keywords: ['computer', 'pc', 'laptop', 'mac', 'windows', 'blue screen', 'virus', 'malware', 'slow', 'wifi', 'network', 'printer', 'email', 'outlook', 'backup', 'data recovery', 'setup', 'troubleshoot', 'remote support', 'helpdesk', '-diy', '-howto', '-tutorial', '-hack', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-self-promo', '-scam', '-crypto-only', '-politics', '-rant', '-meme', '-opinion-only', '-for-sale', '-parts-only', '-dev-only'],
+      template: 'Tech hiccups fixed fast—friendly IT support for PCs, Macs, Wi-Fi, email, backups and more. {url}',
       isPrebuilt: true
     },
     {
       id: 'tech_002',
       label: 'Web Design',
       category: 'technology',
-      keywords: ['website', 'web', 'design', 'development'],
-      template: 'Need a website? Professional web design that grows your business! {url}',
+      keywords: ['website', 'web', 'site', 'design', 'redesign', 'developer', 'development', 'wordpress', 'shopify', 'ecommerce', 'landing page', 'ui', 'ux', 'responsive', 'seo', 'speed', 'hosting', 'domain', 'conversion', '-template-only', '-theme-sale', '-plugin-sale', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-tutorial', '-howto', '-diy', '-code-review-only', '-politics', '-rant', '-meme', '-opinion-only'],
+      template: 'Need a site that sells? Conversion-focused web design with clean UX, SEO, and fast speed. {url}',
       isPrebuilt: true
     },
     {
       id: 'tech_003',
       label: 'Software Development',
       category: 'technology',
-      keywords: ['software', 'app', 'development', 'programming'],
-      template: 'Custom software solutions! We build apps that solve real problems! {url}',
+      keywords: ['software', 'app', 'application', 'mobile', 'ios', 'android', 'web app', 'saas', 'api', 'integration', 'automation', 'workflow', 'custom', 'dashboard', 'database', 'backend', 'frontend', 'microservice', 'prototype', 'mvp', '-no-code-only', '-script-request', '-homework', '-code-challenge', '-snippet-only', '-free', '-cheap', '-giveaway', '-job-post', '-hiring', '-tutorial', '-howto', '-diy', '-pirated', '-crack'],
+      template: 'Got a workflow to streamline? We build reliable custom apps, APIs, and automations that fit. {url}',
       isPrebuilt: true
     },
     {
       id: 'tech_004',
       label: 'Cybersecurity',
       category: 'technology',
-      keywords: ['security', 'cyber', 'protection', 'data'],
-      template: 'Protect your business! Comprehensive cybersecurity solutions! {url}',
+      keywords: ['security', 'cybersecurity', 'infosec', 'pentest', 'penetration test', 'vulnerability', 'patch', 'endpoint', 'antivirus', 'firewall', 'mfa', 'phishing', 'awareness', 'ransomware', 'incident response', 'backup', 'audit', 'compliance', 'gdpr', '-hacking-tutorial', '-crack', '-keygen', '-illegal', '-ctf-only', '-cheat', '-leaks', '-dox', '-free', '-cheap', '-giveaway', '-job-post', '-hiring', '-politics', '-rant'],
+      template: 'Reduce risk, sleep better—audits, hardening, MFA, training, and incident response you can trust. {url}',
       isPrebuilt: true
     },
     {
       id: 'tech_005',
       label: 'Cloud Services',
       category: 'technology',
-      keywords: ['cloud', 'backup', 'storage', 'server'],
-      template: 'Move to the cloud! Secure, scalable cloud solutions for your business! {url}',
+      keywords: ['cloud', 'aws', 'azure', 'gcp', 'migration', 'migrate', 'backup', 'disaster recovery', 'dr', 'storage', 's3', 'vm', 'kubernetes', 'docker', 'serverless', 'devops', 'ci/cd', 'scaling', 'monitoring', 'cost optimization', 'vpn', '-mining', '-piracy', '-illegal', '-free-tier-argue', '-home-lab-only', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-tutorial', '-howto', '-diy', '-credits-only'],
+      template: 'Move smarter to the cloud—migrations, backups, Kubernetes/Serverless, and cost control done right. {url}',
       isPrebuilt: true
     },
-    // Add 15 more tech templates...
+    {
+      id: 'tech_006',
+      label: 'Data Recovery',
+      category: 'technology',
+      keywords: ['data recovery', 'restore', 'lost files', 'deleted', 'hard drive', 'ssd', 'usb', 'raid', 'corrupt', 'backup', 'restore point', 'accidentally deleted', 'retrieval', 'photos', 'documents', '-piracy', '-illegal', '-torrent', '-howto', '-tutorial', '-diy', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-opinion-only', '-spam', '-rant', '-scam', '-repost'],
+      template: 'Lost files? Our data recovery pros can retrieve your photos, docs, and drives safely. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_007',
+      label: 'Network Installation',
+      category: 'technology',
+      keywords: ['network', 'wifi', 'router', 'ethernet', 'switch', 'cabling', 'fiber', 'LAN', 'WAN', 'office setup', 'internet', 'firewall', 'VPN', 'connection', 'signal', '-isp-only', '-politics', '-rant', '-cheap', '-free', '-giveaway', '-diy', '-tutorial', '-howto', '-job-post', '-hiring', '-spam', '-advice-only', '-home-lab-only', '-opinion-only'],
+      template: 'Fast, reliable Wi-Fi and network installs for home or office—wired or wireless. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_008',
+      label: 'Managed IT Services',
+      category: 'technology',
+      keywords: ['managed it', 'msp', 'remote monitoring', 'helpdesk', 'support plan', 'subscription', 'network', 'servers', 'backup', 'endpoint', 'security', 'patch', 'maintenance', 'sla', 'compliance', '-diy', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-rant', '-politics', '-spam', '-trial-only', '-advice-only', '-template-only', '-self-promo-only'],
+      template: 'Proactive IT support—managed plans that monitor, maintain, and secure your systems. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_009',
+      label: 'E-commerce Development',
+      category: 'technology',
+      keywords: ['shopify', 'woocommerce', 'magento', 'ecommerce', 'online store', 'checkout', 'cart', 'product page', 'conversion', 'speed', 'ux', 'ui', 'payment gateway', 'stripe', 'paypal', '-dropship-only', '-cheap', '-free', '-giveaway', '-theme-sale', '-template-only', '-tutorial', '-howto', '-diy', '-job-post', '-hiring', '-meme', '-spam'],
+      template: 'Launch or level up your store—Shopify, WooCommerce & custom e-commerce builds that sell. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_010',
+      label: 'Digital Marketing',
+      category: 'technology',
+      keywords: ['digital marketing', 'seo', 'ads', 'ppc', 'google', 'facebook', 'meta', 'instagram', 'tiktok', 'campaign', 'conversion', 'leads', 'social media', 'analytics', 'retargeting', '-spam', '-link-drop', '-self-promo', '-cheap', '-free', '-giveaway', '-tutorial', '-howto', '-diy', '-meme', '-job-post', '-hiring', '-rant', '-politics'],
+      template: 'Get seen, get clicks, get sales—SEO, ads, and analytics that grow your online reach. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_011',
+      label: 'Tech Consulting',
+      category: 'technology',
+      keywords: ['consulting', 'technology', 'strategy', 'digital transformation', 'cloud', 'automation', 'architecture', 'integration', 'modernization', 'cost saving', 'audit', 'roadmap', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-rant', '-politics', '-meme', '-spam', '-opinion-only', '-self-promo-only', '-template-only', '-advice-only'],
+      template: 'Turn tech into traction—consulting that streamlines systems and drives smarter growth. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_012',
+      label: 'App Maintenance',
+      category: 'technology',
+      keywords: ['app maintenance', 'update', 'bug fix', 'patch', 'monitor', 'deploy', 'support', 'ios', 'android', 'web app', 'codebase', 'dependencies', 'version', 'testing', '-tutorial', '-howto', '-diy', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-meme', '-politics', '-spam', '-opinion-only', '-template-only'],
+      template: 'Keep your app smooth—updates, patches, and monitoring handled by pros. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_013',
+      label: 'Database Management',
+      category: 'technology',
+      keywords: ['database', 'sql', 'postgres', 'mysql', 'mongodb', 'backup', 'restore', 'migration', 'query', 'performance', 'index', 'replication', 'tuning', 'etl', 'data warehouse', '-dump', '-leak', '-piracy', '-hack', '-diy', '-tutorial', '-howto', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-politics', '-meme', '-spam'],
+      template: 'Fast, reliable data—backup, optimize, and secure your databases for peak performance. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_014',
+      label: 'Tech Support for Seniors',
+      category: 'technology',
+      keywords: ['seniors', 'elderly', 'older', 'retired', 'support', 'computer help', 'setup', 'tablet', 'phone', 'training', 'email', 'wifi', 'printer', 'safe browsing', 'fraud', '-cheap', '-free', '-giveaway', '-meme', '-politics', '-scam', '-job-post', '-hiring', '-advice-only', '-tutorial', '-howto', '-diy', '-rant'],
+      template: 'Friendly tech help for seniors—setup, training, and online safety made simple. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_015',
+      label: 'Tech Equipment Setup',
+      category: 'technology',
+      keywords: ['setup', 'install', 'printer', 'monitor', 'router', 'camera', 'security system', 'tv', 'projector', 'soundbar', 'smart home', 'wifi', 'configuration', '-diy', '-tutorial', '-howto', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-meme', '-spam', '-politics', '-advice-only', '-opinion-only'],
+      template: 'Skip the setup stress—TVs, routers, printers, and smart devices installed and configured. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_016',
+      label: 'Graphic & UI Design',
+      category: 'technology',
+      keywords: ['graphic design', 'ui', 'ux', 'branding', 'logo', 'illustration', 'web design', 'app design', 'wireframe', 'figma', 'adobe xd', 'prototyping', 'mockup', 'interface', 'visual identity', '-tutorial', '-howto', '-diy', '-cheap', '-free', '-giveaway', '-template-sale', '-job-post', '-hiring', '-politics', '-spam', '-rant'],
+      template: 'Design that converts—clean UI and brand visuals that make users click and stay. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_017',
+      label: 'IT Compliance & Audits',
+      category: 'technology',
+      keywords: ['compliance', 'audit', 'gdpr', 'iso27001', 'security policy', 'documentation', 'controls', 'assessment', 'risk management', 'review', 'standards', 'checklist', '-politics', '-rant', '-tutorial', '-howto', '-diy', '-cheap', '-free', '-giveaway', '-job-post', '-hiring', '-spam', '-meme', '-template-only', '-self-promo-only'],
+      template: 'Stay compliant—GDPR, ISO27001, and IT audit prep made straightforward and secure. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_018',
+      label: 'Tech Hardware Sales',
+      category: 'technology',
+      keywords: ['hardware', 'computer', 'laptop', 'monitor', 'accessories', 'router', 'network gear', 'server', 'ssd', 'ram', 'keyboard', 'mouse', 'bundle', 'refurbished', '-cheap', '-free', '-giveaway', '-piracy', '-hack', '-illegal', '-job-post', '-hiring', '-meme', '-politics', '-spam', '-opinion-only', '-scam'],
+      template: 'Upgrade your workspace—quality tech gear and peripherals, sourced and configured. {url}',
+      isPrebuilt: true
+    },
+    {
+      id: 'tech_019',
+      label: 'AI & Automation',
+      category: 'technology',
+      keywords: ['ai', 'automation', 'chatbot', 'workflow', 'zapier', 'make', 'api integration', 'machine learning', 'data pipeline', 'efficiency', 'bot', 'automate', 'scripting', 'productivity', '-politics', '-rant', '-scam', '-spam', '-meme', '-diy', '-howto', '-tutorial', '-cheap', '-free', '-giveaway', '-job-post', '-hiring'],
+      template: 'Automate your busywork—AI and workflow automations that save hours and cut costs. {url}',
+      isPrebuilt: true
+    },
     {
       id: 'tech_020',
       label: 'Tech Training',
       category: 'technology',
-      keywords: ['training', 'education', 'skills', 'certification'],
-      template: 'Upgrade your skills! Professional tech training and certification programs! {url}',
+      keywords: ['training', 'course', 'workshop', 'bootcamp', 'certification', 'skills', 'upskill', 'reskill', 'cloud', 'devops', 'security', 'data', 'analytics', 'python', 'javascript', 'excel', 'power bi', 'coaching', 'mentor', '-answers-only', '-cheat-sheet', '-pirated', '-torrent', '-free-only', '-homework-help-only', '-job-post', '-hiring', '-politics', '-rant', '-spam', '-giveaway', '-meme'],
+      template: 'Level up your team—practical tech training and certification prep that sticks. {url}',
       isPrebuilt: true
     }
+
   ];
 }
 

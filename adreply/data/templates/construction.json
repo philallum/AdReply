@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "construction",
+    "name": "Construction",
+    "description": "Contractors, builders, renovations, and construction services"
+  },
+  "templates": [
+  {
+    "id": "construction_001",
+    "label": "Construction 1",
+    "keywords": ["construction","contractor","general contractor","builder","licensed","insured","estimate","quote","ground-up","framing","drywall","concrete","roofing","siding","timeline","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-tool-sale","-materials-only","-permit-argument","-politics","-rant","-spam","-scam","-job-post","-hiring"],
+    "template": "From plans to punch list—licensed, insured builders delivering on schedule and on spec. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_002",
+    "label": "Construction 2",
+    "keywords": ["renovation","remodel","refurbish","upgrade","makeover","demo","finish carpentry","flooring","painting","insulation","permit","design-build","project management","estimate","timeline","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-decor-only","-tool-sale","-materials-only","-politics","-rant","-spam","-scam","-job-post","-hiring"],
+    "template": "Breathe new life into your space—design-build renovations with clear timelines and tidy sites. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_003",
+    "label": "Construction 3",
+    "keywords": ["kitchen","bathroom","remodel","cabinet","countertop","quartz","granite","backsplash","tile","plumbing fixtures","shower","tub","vanity","layout","permit","-recipe","-interior-inspo-only","-appliance-sale-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-materials-only","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Kitchen & bath that work as good as they look—custom layouts, quality finishes, spotless installs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_004",
+    "label": "Construction 4",
+    "keywords": ["addition","extension","expand","loft conversion","basement finish","garage conversion","adu","sunroom","dormer","structural","architect","drawings","planning","permit","-tiny-decor","-room-for-rent","-real-estate-ad-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Need more room? Planning, permits, and precision builds for additions and extensions. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_005",
+    "label": "Construction 5",
+    "keywords": ["commercial","industrial","project","tenant improvement","TI","fit-out","warehouse","office","retail","restaurant build-out","gc","bid","rfp","bonded","osha","-residential-only","-house-flip-only","-equipment-sale","-materials-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-job-seeking","-hiring-staff","-spam","-politics","-rant"],
+    "template": "Commercial builds made simple—bonded GC for offices, retail, warehouses, and restaurant fit-outs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_006",
+    "label": "Construction 6",
+    "keywords": ["construction","builder","contractor","licensed","insured","schedule","budget","value engineering","project management","site supervision","quality control","punch list","warranty","local codes","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-tool-sale","-materials-only","-permit-argument","-politics","-rant","-spam","-scam","-job-post","-hiring"],
+    "template": "Build with confidence—licensed crews, clear budgets, tight schedules, and warranty-backed work. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_007",
+    "label": "Construction 7",
+    "keywords": ["renovation","remodel","update","modernize","open plan","structural wall","beam","finish trim","tile","hardwood","paint","lighting","design assist","estimate","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-decor-only","-tool-sale","-materials-only","-politics","-rant","-spam","-scam","-job-post","-hiring"],
+    "template": "Smart remodels without the mess—design assist, clean crews, and finishes that last. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_008",
+    "label": "Construction 8",
+    "keywords": ["kitchen","bath","renovation","custom cabinets","island","pantry","tile shower","niche","glass door","heated floor","plumbing","electrical","venting","permit","-recipe","-appliance-sale-only","-interior-moodboard-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-materials-only","-spam","-job-post","-hiring"],
+    "template": "Chef-worthy kitchens and spa-calm baths—custom cabinetry, tilework, and precise MEP. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_009",
+    "label": "Construction 9",
+    "keywords": ["addition","extension","second story","dormer","sunroom","adu","in-law suite","foundation","framing","roof tie-in","engineering","architect","permitting","timeline","-rent-only","-realty-ad","-tiny-decor","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Grow without moving—seamless home additions engineered to blend and add value. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_010",
+    "label": "Construction 10",
+    "keywords": ["commercial","industrial","project","fit-out","tenant buildout","code compliance","life safety","sprinkler","mezzanine","dock doors","racking","schedule","budget","closeout","-residential-only","-house-flip","-equipment-sale","-materials-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-job-seeking","-hiring-staff","-spam","-politics","-rant"],
+    "template": "On-time fit-outs and upgrades—code-compliant commercial work with clean closeouts. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_011",
+    "label": "Construction 11",
+    "keywords": ["general contractor","construction","builder","estimate","scope","schedule","subcontractors","inspection","framing","mechanicals","finishes","turnkey","warranty","local","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-tool-sale","-materials-only","-permit-argument","-politics","-rant","-spam","-scam","-job-post","-hiring"],
+    "template": "Turnkey builds from one accountable GC—clear scopes, vetted subs, and tidy handovers. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_012",
+    "label": "Construction 12",
+    "keywords": ["renovation","remodel","historic","period details","restoration","insulation","window replacement","energy upgrade","plaster","millwork","permit","heritage","-antique-sale","-decor-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-materials-only","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Respect the character, upgrade the comfort—thoughtful restorations and energy-smart refits. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_013",
+    "label": "Construction 13",
+    "keywords": ["kitchen remodel","bath remodel","design","cabinetry","stone tops","apronsink","under-cabinet lighting","tilework","plumbing rough-in","vent hood","final punch","-recipe","-appliance-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-materials-only","-moodboard-only","-spam","-job-post","-hiring"],
+    "template": "Details that make daily life easier—clever kitchen layouts and durable bath finishes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_014",
+    "label": "Construction 14",
+    "keywords": ["addition","extension","basement finish","egress window","soundproofing","home office","gym","media room","insulation","drywall","trim","permit","inspection","-decor-only","-rent-ad","-realty-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-spam","-politics","-job-post","-hiring"],
+    "template": "Finish unused space beautifully—code-compliant basements, offices, and family rooms. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_015",
+    "label": "Construction 15",
+    "keywords": ["commercial","industrial","capex","retrofit","energy upgrade","accessibility","ADA","egress","sprinkler","MEP","controls","project controls","safety","bonded","-residential-only","-house-flip","-equipment-sale","-materials-only","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-job-seeking","-hiring-staff","-spam","-politics","-rant"],
+    "template": "Retrofits and upgrades that pay back—efficient, safe, code-ready commercial improvements. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_016",
+    "label": "Exterior Roofing & Siding",
+    "keywords": ["roof","roofing","re-roof","tear-off","shingles","metal roof","flat roof","EPDM","TPO","siding","hardie","soffit","fascia","flashing","storm damage","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-materials-only","-tool-sale","-insurance-argue","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Seal it tight and style it right—professional roof and siding installs with clean details and strong warranties. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_017",
+    "label": "Concrete & Masonry",
+    "keywords": ["concrete","masonry","slab","footing","foundation","driveway","patio","walkway","curb","block","brick","stone","retaining wall","rebar","finish","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-bagged-mix-only","-materials-only","-tool-sale","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Flat, true, and built to last—foundations, patios, and retaining walls with pro finishes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_018",
+    "label": "Decks & Fences",
+    "keywords": ["deck","composite","timber","railing","stairs","pergola","fence","privacy fence","gate","post set","ledger","flashing","permit","stain","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-materials-only","-lumber-sale","-tool-sale","-neighbour-dispute","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Outdoor space you’ll actually use—custom decks, pergolas, and privacy fences built right. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_019",
+    "label": "Sitework & Excavation",
+    "keywords": ["sitework","excavation","grading","drainage","french drain","swale","culvert","footings","utility trench","backfill","compaction","erosion control","demo","haul-off","bobcat","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-equipment-sale","-machine-rental-only","-materials-only","-permit-argument","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Start smart from the ground—grading, drainage, trenches, and footings with proper compaction and cleanup. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "construction_020",
+    "label": "Insurance Restoration & Emergency",
+    "keywords": ["restoration","emergency","water damage","fire damage","smoke","mold remediation","board-up","tarps","dry-out","demolition","rebuild","adjuster","estimate","24/7","claims","-diy","-howto","-tutorial","-cheap","-free","-giveaway","-policy-argue","-insurance-advice-only","-materials-only","-tool-sale","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "When the unexpected hits—24/7 board-up, dry-out, and full rebuilds with insurer-friendly estimates. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

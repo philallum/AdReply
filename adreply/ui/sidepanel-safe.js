@@ -83,6 +83,8 @@ function updateStatus(groupInfo) {
     }
 }
 
+let lastProcessedPostContent = null;
+
 function updatePostContent(postData) {
     const postContentEl = document.getElementById('postContent');
     const postTextEl = document.getElementById('postText');
@@ -114,16 +116,21 @@ function updatePostContent(postData) {
             }
 
             listEl.innerHTML = skipMessage;
+            lastProcessedPostContent = postData.content; // Update to prevent reprocessing
         } else {
-            // Generate suggestions normally
-            generateSuggestions(postData.content).catch(error => {
-                console.error('AdReply: Error generating suggestions:', error);
-                const listEl = document.getElementById('suggestionsList');
-                listEl.innerHTML = '<div class="no-suggestions">Error generating suggestions. Please try again.</div>';
-            });
+            // Only generate suggestions if this is new content
+            if (lastProcessedPostContent !== postData.content) {
+                lastProcessedPostContent = postData.content;
+                generateSuggestions(postData.content).catch(error => {
+                    console.error('AdReply: Error generating suggestions:', error);
+                    const listEl = document.getElementById('suggestionsList');
+                    listEl.innerHTML = '<div class="no-suggestions">Error generating suggestions. Please try again.</div>';
+                });
+            }
         }
     } else {
         postContentEl.style.display = 'none';
+        lastProcessedPostContent = null; // Reset when no post
 
         // Clear suggestions
         const listEl = document.getElementById('suggestionsList');
@@ -135,6 +142,15 @@ async function generateSuggestions(postContent) {
     console.log('AdReply: Generating suggestions for post:', postContent.substring(0, 50) + '...');
     const suggestions = [];
 
+    // Get default promo URL from settings
+    let defaultPromoUrl = '';
+    try {
+        const result = await chrome.storage.local.get(['defaultPromoUrl']);
+        defaultPromoUrl = result.defaultPromoUrl || '';
+    } catch (error) {
+        console.warn('AdReply: Could not get default promo URL:', error);
+    }
+
     // Match templates based on keywords
     const matchedTemplates = await matchTemplatesWithPost(postContent);
     console.log('AdReply: Matched templates:', matchedTemplates.length);
@@ -145,16 +161,15 @@ async function generateSuggestions(postContent) {
             const template = match.template;
             const variant = match.variant;
 
-            // Format the suggestion with URL appended
+            // Format the suggestion with URL replacement
             let suggestion = variant || template.template;
 
-            // Replace placeholders (basic implementation)
-            suggestion = suggestion.replace(/{site}/g, template.url || 'our website');
+            // Replace {url} placeholder with default promo URL or template URL
+            const urlToUse = template.url || defaultPromoUrl;
+            suggestion = suggestion.replace(/{url}/g, urlToUse);
 
-            // Append URL if it exists and isn't already in the text
-            if (template.url && !suggestion.includes(template.url)) {
-                suggestion += ` ${template.url}`;
-            }
+            // Also replace {site} placeholder for backward compatibility
+            suggestion = suggestion.replace(/{site}/g, urlToUse || 'our website');
 
             suggestions.push({
                 text: suggestion,
@@ -226,7 +241,7 @@ async function matchTemplatesWithPost(postContent) {
     console.log('AdReply: Available templates:', templates.length);
 
     const matches = [];
-    
+
     // Get user's preferred category
     let preferredCategory = null;
     try {
@@ -282,7 +297,7 @@ async function matchTemplatesWithPost(postContent) {
 
         // Calculate relevance score based on keyword matches
         let hasNegativeMatch = false;
-        
+
         for (const keyword of template.keywords) {
             const keywordLower = keyword.toLowerCase().trim();
             if (!keywordLower) continue; // Skip empty keywords
@@ -291,15 +306,15 @@ async function matchTemplatesWithPost(postContent) {
             if (keywordLower.startsWith('-')) {
                 const negativeKeyword = keywordLower.substring(1); // Remove the - prefix
                 if (!negativeKeyword) continue; // Skip if empty after removing -
-                
+
                 // Check if negative keyword is present in post
                 const exactNegativeMatch = postWords.includes(negativeKeyword);
                 const partialNegativeMatch = postWords.some(word => word.includes(negativeKeyword) && negativeKeyword.length > 2);
-                
+
                 console.log(`AdReply: Testing negative keyword "${keyword}" (${negativeKeyword}) against post words:`, postWords);
                 console.log(`AdReply: Negative exact match for "${negativeKeyword}":`, exactNegativeMatch);
                 console.log(`AdReply: Negative partial match for "${negativeKeyword}":`, partialNegativeMatch);
-                
+
                 if (exactNegativeMatch || partialNegativeMatch) {
                     hasNegativeMatch = true;
                     console.log('AdReply: ❌ Negative keyword match found:', keyword, '- template excluded');
@@ -322,7 +337,7 @@ async function matchTemplatesWithPost(postContent) {
                 }
             }
         }
-        
+
         // If negative keyword matched, exclude this template completely
         if (hasNegativeMatch) {
             console.log('AdReply: Template excluded due to negative keyword match:', template.label);
@@ -338,12 +353,12 @@ async function matchTemplatesWithPost(postContent) {
         console.log('AdReply: Template score:', template.label, score);
 
         if (score > 0) {
-            // Add main template (variant index 0)
-            const isMainUsed = recentUsage.some(usage =>
+            // Add template (no variants system anymore - each template is individual)
+            const isTemplateUsed = recentUsage.some(usage =>
                 usage.templateId === template.id && usage.variantIndex === 0
             );
 
-            if (!isMainUsed) {
+            if (!isTemplateUsed) {
                 matches.push({
                     template,
                     variant: template.template,
@@ -362,34 +377,6 @@ async function matchTemplatesWithPost(postContent) {
                     lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === 0)?.timestamp
                 });
             }
-
-            // Add variants (variant index 1+)
-            template.variants.forEach((variant, index) => {
-                const variantIndex = index + 1;
-                const isVariantUsed = recentUsage.some(usage =>
-                    usage.templateId === template.id && usage.variantIndex === variantIndex
-                );
-
-                if (!isVariantUsed) {
-                    matches.push({
-                        template,
-                        variant,
-                        variantIndex,
-                        score,
-                        recentlyUsed: false
-                    });
-                } else {
-                    // Add to recently used for fallback
-                    matches.push({
-                        template,
-                        variant,
-                        variantIndex,
-                        score,
-                        recentlyUsed: true,
-                        lastUsed: recentUsage.find(u => u.templateId === template.id && u.variantIndex === variantIndex)?.timestamp
-                    });
-                }
-            });
         }
     }
 
@@ -854,9 +841,30 @@ async function clearUsageHistory() {
 
 async function loadTemplates() {
     try {
+        // Load user-created templates from Chrome storage
         const result = await chrome.storage.local.get(['templates']);
-        templates = result.templates || [];
-        console.log('AdReply: Loaded templates:', templates.length, templates);
+        const userTemplates = result.templates || [];
+
+        // Load prebuilt templates from JSON files
+        let prebuiltTemplates = [];
+        if (typeof TemplateLoader !== 'undefined') {
+            try {
+                const templateLoader = new TemplateLoader();
+                prebuiltTemplates = await templateLoader.getAllTemplatesFlat();
+                console.log('AdReply: Loaded prebuilt templates:', prebuiltTemplates.length);
+            } catch (error) {
+                console.warn('AdReply: Could not load prebuilt templates:', error);
+            }
+        }
+
+        // Combine user templates and prebuilt templates
+        templates = [...userTemplates, ...prebuiltTemplates];
+
+        console.log('AdReply: Total templates loaded:', templates.length, {
+            userTemplates: userTemplates.length,
+            prebuiltTemplates: prebuiltTemplates.length
+        });
+
         renderTemplatesList();
         updateTemplateCount();
     } catch (error) {
@@ -868,14 +876,17 @@ async function loadTemplates() {
 function renderTemplatesList() {
     const listEl = document.getElementById('templatesList');
 
-    if (templates.length === 0) {
-        listEl.innerHTML = '<div class="no-suggestions">No templates created yet. Click "Add Template" to get started.</div>';
+    // Only show user-created templates in the template management list
+    const userTemplates = templates.filter(template => !template.isPrebuilt);
+
+    if (userTemplates.length === 0) {
+        listEl.innerHTML = '<div class="no-suggestions">No custom templates created yet. Click "Add Template" to get started.<br><br><small>Note: 300+ prebuilt templates are available for suggestions.</small></div>';
         return;
     }
 
     listEl.innerHTML = '';
 
-    templates.forEach(template => {
+    userTemplates.forEach(template => {
         const templateEl = document.createElement('div');
         templateEl.className = 'template-item';
 
@@ -910,8 +921,11 @@ function renderTemplatesList() {
 
 function updateTemplateCount() {
     const countEl = document.getElementById('templateCount');
+    const userTemplates = templates.filter(template => !template.isPrebuilt);
+    const prebuiltTemplates = templates.filter(template => template.isPrebuilt);
     const maxTemplates = isProLicense ? 'unlimited' : '10';
-    countEl.textContent = `${templates.length} templates (${maxTemplates} max)`;
+
+    countEl.textContent = `${userTemplates.length} custom templates (${maxTemplates} max) + ${prebuiltTemplates.length} prebuilt`;
 }
 
 function showTemplateForm() {
@@ -935,7 +949,6 @@ function clearTemplateForm() {
     document.getElementById('templateCategory').value = 'custom';
     document.getElementById('templateKeywords').value = '';
     document.getElementById('templateContent').value = '';
-    document.getElementById('templateVariants').value = '';
     document.getElementById('templateUrl').value = '';
 }
 
@@ -950,7 +963,6 @@ async function saveTemplate() {
     const category = document.getElementById('templateCategory').value;
     const keywords = document.getElementById('templateKeywords').value;
     const content = document.getElementById('templateContent').value;
-    const variants = document.getElementById('templateVariants').value;
     const url = document.getElementById('templateUrl').value;
 
     if (!label || !keywords || !content) {
@@ -964,9 +976,10 @@ async function saveTemplate() {
         return;
     }
 
-    // Check template limit for free users (only for new templates)
-    if (!isProLicense && templates.length >= 10) {
-        showNotification('Free license limited to 10 templates. Upgrade to Pro for unlimited templates.', 'error');
+    // Check template limit for free users (only for new user templates)
+    const userTemplates = templates.filter(template => !template.isPrebuilt);
+    if (!isProLicense && userTemplates.length >= 10) {
+        showNotification('Free license limited to 10 custom templates. Upgrade to Pro for unlimited templates.', 'error');
         return;
     }
 
@@ -976,10 +989,10 @@ async function saveTemplate() {
         category: category || 'custom',
         keywords: keywords.split(',').map(k => k.trim()),
         template: content,
-        variants: variants ? variants.split('\n').filter(v => v.trim()) : [],
         url: url || '',
         createdAt: new Date().toISOString(),
-        usageCount: 0
+        usageCount: 0,
+        isPrebuilt: false
     };
 
     templates.push(template);
@@ -1018,7 +1031,6 @@ function editTemplate(templateId) {
     document.getElementById('templateCategory').value = template.category || 'custom';
     document.getElementById('templateKeywords').value = template.keywords.join(', ');
     document.getElementById('templateContent').value = template.template;
-    document.getElementById('templateVariants').value = template.variants.join('\n');
     document.getElementById('templateUrl').value = template.url || '';
 
     // Show form
@@ -1034,7 +1046,6 @@ async function updateTemplate(templateId) {
     const category = document.getElementById('templateCategory').value;
     const keywords = document.getElementById('templateKeywords').value;
     const content = document.getElementById('templateContent').value;
-    const variants = document.getElementById('templateVariants').value;
     const url = document.getElementById('templateUrl').value;
 
     if (!label || !keywords || !content) {
@@ -1058,7 +1069,6 @@ async function updateTemplate(templateId) {
         category: category || 'custom',
         keywords: keywords.split(',').map(k => k.trim()),
         template: content,
-        variants: variants ? variants.split('\n').filter(v => v.trim()) : [],
         url: url || '',
         updatedAt: new Date().toISOString()
     };
@@ -1185,7 +1195,7 @@ async function initializeCategoryFunctionality() {
 async function loadCategories() {
     try {
         // Get pre-built categories
-        const categories = [
+        const prebuiltCategories = [
             { id: 'automotive', name: 'Automotive Services', description: 'Car repair, maintenance, detailing' },
             { id: 'fitness', name: 'Fitness & Health', description: 'Gyms, personal training, nutrition' },
             { id: 'food', name: 'Food & Restaurants', description: 'Restaurants, catering, food delivery' },
@@ -1208,20 +1218,50 @@ async function loadCategories() {
             { id: 'healthcare', name: 'Healthcare', description: 'Medical, dental, therapy' },
             { id: 'custom', name: 'Custom', description: 'User-created templates' }
         ];
-        
+
+        // Get custom categories from storage
+        const result = await chrome.storage.local.get(['customCategories']);
+        const customCategories = result.customCategories || [];
+
+        // Combine all categories
+        const allCategories = [...prebuiltCategories, ...customCategories];
+
+        // Update main category selector
         const categorySelect = document.getElementById('categorySelect');
         if (categorySelect) {
             // Clear existing options except "All Categories"
             categorySelect.innerHTML = '<option value="">All Categories</option>';
-            
+
             // Add categories to dropdown
-            categories.forEach(category => {
+            allCategories.forEach(category => {
                 const option = document.createElement('option');
                 option.value = category.id;
                 option.textContent = category.name;
                 option.title = category.description;
                 categorySelect.appendChild(option);
             });
+        }
+
+        // Update template form category selector
+        const templateCategorySelect = document.getElementById('templateCategory');
+        if (templateCategorySelect) {
+            const currentValue = templateCategorySelect.value;
+
+            // Clear and rebuild options
+            templateCategorySelect.innerHTML = '<option value="custom">Custom</option>';
+
+            // Add all categories except 'custom' (it's already added)
+            allCategories.filter(cat => cat.id !== 'custom').forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                templateCategorySelect.appendChild(option);
+            });
+
+            // Restore selected value if it still exists
+            if (currentValue && [...templateCategorySelect.options].some(opt => opt.value === currentValue)) {
+                templateCategorySelect.value = currentValue;
+            }
         }
     } catch (error) {
         console.error('Failed to load categories:', error);
@@ -1243,19 +1283,19 @@ async function handleCategoryChange(categoryId) {
         // Save the category preference using Chrome storage API
         const result = await chrome.storage.local.get(['settings']);
         const settings = result.settings || { templates: {} };
-        
+
         if (!settings.templates) {
             settings.templates = {};
         }
-        
+
         settings.templates.preferredCategory = categoryId;
         await chrome.storage.local.set({ settings });
-        
+
         // Show feedback to user
         const categorySelect = document.getElementById('categorySelect');
         const selectedOption = categorySelect.options[categorySelect.selectedIndex];
         const categoryName = selectedOption.textContent;
-        
+
         if (categoryId) {
             showSuccessMessage(`Category preference set to: ${categoryName}`);
         } else {
@@ -1271,7 +1311,7 @@ async function loadSavedCategoryPreference() {
     try {
         const result = await chrome.storage.local.get(['settings']);
         const settings = result.settings || {};
-        
+
         const categorySelect = document.getElementById('categorySelect');
         if (categorySelect && settings.templates?.preferredCategory) {
             categorySelect.value = settings.templates.preferredCategory;
@@ -1320,6 +1360,90 @@ function showErrorMessage(message) {
     }
 }
 
+// Custom Category Management
+function showCustomCategoryForm() {
+    document.getElementById('customCategoryForm').style.display = 'block';
+    document.getElementById('newCategoryName').focus();
+}
+
+function hideCustomCategoryForm() {
+    document.getElementById('customCategoryForm').style.display = 'none';
+    document.getElementById('newCategoryName').value = '';
+}
+
+async function saveCustomCategory() {
+    const categoryName = document.getElementById('newCategoryName').value.trim();
+
+    if (!categoryName) {
+        showErrorMessage('Please enter a category name');
+        return;
+    }
+
+    // Create category ID from name
+    const categoryId = categoryName.toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .substring(0, 30);
+
+    if (!categoryId) {
+        showErrorMessage('Please enter a valid category name');
+        return;
+    }
+
+    try {
+        // Get existing custom categories
+        const result = await chrome.storage.local.get(['customCategories']);
+        const customCategories = result.customCategories || [];
+
+        // Check if category already exists
+        if (customCategories.find(cat => cat.id === categoryId)) {
+            showErrorMessage('A category with this name already exists');
+            return;
+        }
+
+        // Add new category
+        const newCategory = {
+            id: categoryId,
+            name: categoryName,
+            description: `Custom category: ${categoryName}`,
+            isPrebuilt: false,
+            createdAt: new Date().toISOString()
+        };
+
+        customCategories.push(newCategory);
+        await chrome.storage.local.set({ customCategories });
+
+        // Add to dropdown
+        const categorySelect = document.getElementById('templateCategory');
+        const option = document.createElement('option');
+        option.value = categoryId;
+        option.textContent = categoryName;
+        categorySelect.appendChild(option);
+
+        // Select the new category
+        categorySelect.value = categoryId;
+
+        // Hide form and show success
+        hideCustomCategoryForm();
+        showSuccessMessage(`Category "${categoryName}" created successfully!`);
+
+        // Also update the main category selector
+        await loadCategories();
+
+    } catch (error) {
+        console.error('Failed to save custom category:', error);
+        showErrorMessage('Failed to create category');
+    }
+}
+
+// Template Pack Management
+function openTemplatePackManager() {
+    // Open template pack manager in a new tab
+    chrome.tabs.create({
+        url: chrome.runtime.getURL('ui/template-pack-manager.html')
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize tabs
@@ -1339,12 +1463,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('clearUsageBtn').addEventListener('click', clearUsageHistory);
     document.getElementById('saveDefaultUrlBtn').addEventListener('click', saveDefaultUrl);
 
+    // Custom category event listeners
+    document.getElementById('addCategoryBtn').addEventListener('click', showCustomCategoryForm);
+    document.getElementById('saveCategoryBtn').addEventListener('click', saveCustomCategory);
+    document.getElementById('cancelCategoryBtn').addEventListener('click', hideCustomCategoryForm);
+
+    // Template pack management event listeners
+    document.getElementById('managePacksBtn').addEventListener('click', openTemplatePackManager);
+    document.getElementById('viewPrebuiltBtn').addEventListener('click', openTemplatePackManager);
+
     // Initialize usage tracker
     initializeUsageTracker();
 
     // Load saved data
     await loadTemplates();
-    
+
     // Initialize category functionality
     await initializeCategoryFunctionality();
 

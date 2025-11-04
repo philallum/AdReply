@@ -10,6 +10,15 @@ class PostAnalyzer {
     async generateSuggestions(postContent) {
         console.log('AdReply: Generating suggestions for post:', postContent.substring(0, 50) + '...');
         const suggestions = [];
+
+        // Get default promo URL from settings
+        let defaultPromoUrl = '';
+        try {
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            defaultPromoUrl = result.defaultPromoUrl || '';
+        } catch (error) {
+            console.warn('AdReply: Could not get default promo URL:', error);
+        }
         
         // Match templates based on keywords
         const matchedTemplates = await this.matchTemplatesWithPost(postContent);
@@ -21,16 +30,15 @@ class PostAnalyzer {
                 const template = match.template;
                 const variant = match.variant;
                 
-                // Format the suggestion with URL appended
+                // Format the suggestion with URL replacement
                 let suggestion = variant || template.template;
+
+                // Replace {url} placeholder with default promo URL or template URL
+                const urlToUse = template.url || defaultPromoUrl;
+                suggestion = suggestion.replace(/{url}/g, urlToUse);
                 
-                // Replace placeholders (basic implementation)
-                suggestion = suggestion.replace(/{site}/g, template.url || 'our website');
-                
-                // Append URL if it exists and isn't already in the text
-                if (template.url && !suggestion.includes(template.url)) {
-                    suggestion += ` ${template.url}`;
-                }
+                // Also replace {site} placeholder for backward compatibility
+                suggestion = suggestion.replace(/{site}/g, urlToUse || 'our website');
                 
                 suggestions.push({
                     text: suggestion,
@@ -174,8 +182,8 @@ class PostAnalyzer {
     }
 
     addTemplateMatches(template, score, recentUsage, matches) {
-        // Add main template (variant index 0)
-        const isMainUsed = recentUsage.some(usage => 
+        // Add template (no variants system anymore - each template is individual)
+        const isTemplateUsed = recentUsage.some(usage => 
             usage.templateId === template.id && usage.variantIndex === 0
         );
         
@@ -184,25 +192,8 @@ class PostAnalyzer {
             variant: template.template,
             variantIndex: 0,
             score,
-            recentlyUsed: isMainUsed,
-            lastUsed: isMainUsed ? recentUsage.find(u => u.templateId === template.id && u.variantIndex === 0)?.timestamp : null
-        });
-        
-        // Add variants (variant index 1+)
-        template.variants.forEach((variant, index) => {
-            const variantIndex = index + 1;
-            const isVariantUsed = recentUsage.some(usage => 
-                usage.templateId === template.id && usage.variantIndex === variantIndex
-            );
-            
-            matches.push({
-                template,
-                variant,
-                variantIndex,
-                score,
-                recentlyUsed: isVariantUsed,
-                lastUsed: isVariantUsed ? recentUsage.find(u => u.templateId === template.id && u.variantIndex === variantIndex)?.timestamp : null
-            });
+            recentlyUsed: isTemplateUsed,
+            lastUsed: isTemplateUsed ? recentUsage.find(u => u.templateId === template.id && u.variantIndex === 0)?.timestamp : null
         });
     }
 

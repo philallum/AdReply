@@ -9,7 +9,7 @@ class UsageTrackerManager {
         try {
             if (typeof UsageTracker !== 'undefined') {
                 this.usageTracker = new UsageTracker();
-                // Usage tracker initialized
+                console.log('AdReply: Usage tracker initialized in sidebar');
             } else {
                 console.warn('AdReply: UsageTracker class not available');
             }
@@ -29,7 +29,7 @@ class UsageTrackerManager {
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
             
             if (!tab.url.includes('facebook.com')) {
-                // Not on Facebook, skipping usage recording
+                console.log('AdReply: Not on Facebook, skipping usage recording');
                 return;
             }
 
@@ -58,7 +58,12 @@ class UsageTrackerManager {
                 }
             );
 
-            // Usage recorded successfully
+            console.log('AdReply: Usage recorded:', {
+                templateId,
+                variantIndex,
+                groupId,
+                timestamp: new Date().toISOString()
+            });
 
             return { success: true, groupId };
 

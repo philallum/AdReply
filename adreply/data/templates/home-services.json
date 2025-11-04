@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "home-services",
+    "name": "Home Services",
+    "description": "Cleaning, repairs, landscaping, and home improvement services"
+  },
+  "templates": [
+  {
+    "id": "home_001",
+    "label": "Plumbing Services",
+    "keywords": ["plumber","plumbing","leak","pipe","drain","toilet","sink","bathroom","water heater","repair","install","fix","burst","tap","flood","-diy","-tutorial","-howto","-cheap","-free","-giveaway","-meme","-spam","-politics","-rant","-job-post"],
+    "template": "Leaky tap or burst pipe? Reliable plumbing repairs done fast and clean. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_002",
+    "label": "Electrical Services",
+    "keywords": ["electrician","electrical","wiring","socket","outlet","lights","fuse","panel","install","repair","circuit","breaker","lighting","switch","inspection","-diy","-tutorial","-howto","-cheap","-free","-giveaway","-spam","-meme","-politics","-rant","-job-post"],
+    "template": "Stay safe and powered up—professional electricians for repairs and new installs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_003",
+    "label": "HVAC & Heating",
+    "keywords": ["hvac","air conditioning","heating","boiler","furnace","cooling","ac","vent","filter","duct","maintenance","repair","install","thermostat","service","-cheap","-free","-giveaway","-tutorial","-howto","-meme","-politics","-rant","-spam","-job-post"],
+    "template": "Stay comfortable all year—expert heating and cooling installation and service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_004",
+    "label": "Roofing Services",
+    "keywords": ["roof","roofing","leak","repair","shingles","tiles","gutters","inspection","replacement","storm","wind","hail","insurance","estimate","-cheap","-free","-giveaway","-spam","-diy","-tutorial","-howto","-politics","-rant","-job-post"],
+    "template": "Protect your home—quality roofing repairs and replacements built to last. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_005",
+    "label": "Painting & Decorating",
+    "keywords": ["painting","decorating","interior","exterior","home improvement","wall","color","finish","brush","roller","freshen","room","renovation","-diy","-tutorial","-howto","-cheap","-free","-giveaway","-spam","-meme","-politics","-job-post"],
+    "template": "Refresh your space—professional painting that transforms your home inside and out. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_006",
+    "label": "Carpentry & Joinery",
+    "keywords": ["carpenter","joinery","wood","furniture","door","frame","cabinet","custom","build","repair","trim","decking","stairs","install","-diy","-tutorial","-howto","-cheap","-free","-giveaway","-spam","-meme","-politics","-job-post"],
+    "template": "Need custom woodwork? Skilled carpentry for furniture, doors, and home upgrades. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_007",
+    "label": "Cleaning Services",
+    "keywords": ["cleaning","maid","housekeeping","deep clean","spring clean","office","home","carpet","window","sanitizing","vacuum","move out","-cheap","-free","-giveaway","-tutorial","-howto","-spam","-meme","-politics","-job-post"],
+    "template": "Make your space sparkle—trusted cleaning services for home and office. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_008",
+    "label": "Landscaping",
+    "keywords": ["landscaping","garden","lawn","mowing","hedge","tree","flowers","deck","patio","outdoor","maintenance","design","yard","grass","-cheap","-free","-giveaway","-tutorial","-howto","-diy","-spam","-meme","-job-post"],
+    "template": "Love your garden again—landscaping and lawn care that looks after every detail. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_009",
+    "label": "Pest Control",
+    "keywords": ["pest","insect","rodent","rat","mouse","bug","termite","ant","cockroach","infestation","exterminator","treatment","control","removal","-cheap","-free","-giveaway","-tutorial","-howto","-meme","-spam","-politics","-job-post"],
+    "template": "Unwanted guests? Fast, safe pest control that protects your home and family. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_010",
+    "label": "Flooring Installation",
+    "keywords": ["flooring","carpet","hardwood","laminate","tile","vinyl","install","replace","fit","renovation","stairs","rooms","-cheap","-free","-giveaway","-tutorial","-howto","-diy","-spam","-politics","-rant","-job-post"],
+    "template": "Step up your space—expert flooring installation with lasting quality. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_011",
+    "label": "Window & Door Installations",
+    "keywords": ["window","door","install","repair","double glazing","frames","lock","handle","replacement","patio","garage","entryway","-diy","-cheap","-free","-giveaway","-meme","-spam","-tutorial","-howto","-job-post"],
+    "template": "Upgrade your view—energy-efficient window and door installations done right. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_012",
+    "label": "Home Renovation",
+    "keywords": ["renovation","remodel","kitchen","bathroom","update","project","contractor","home improvement","design","build","repair","construction","-cheap","-free","-giveaway","-spam","-politics","-meme","-tutorial","-howto","-job-post"],
+    "template": "Transform your home—complete renovation and remodeling handled by professionals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_013",
+    "label": "Security Systems",
+    "keywords": ["security","alarm","camera","cctv","monitoring","smart home","lock","doorbell","motion","alert","install","setup","-cheap","-free","-giveaway","-spam","-politics","-tutorial","-howto","-diy","-job-post"],
+    "template": "Peace of mind starts here—smart security systems professionally installed. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_014",
+    "label": "Moving Services",
+    "keywords": ["moving","relocation","removal","truck","packing","boxes","house move","storage","unpack","local move","long distance","-cheap","-free","-giveaway","-diy","-tutorial","-howto","-spam","-politics","-job-post"],
+    "template": "Moving house? Let us handle the heavy lifting—safe, fast, and affordable moves. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_015",
+    "label": "Handyman Services",
+    "keywords": ["handyman","odd jobs","repair","maintenance","install","assemble","fix","home","house","contractor","-cheap","-free","-giveaway","-spam","-meme","-tutorial","-howto","-politics","-job-post"],
+    "template": "Fix it once, fix it right—trusted handyman services for every small job. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_016",
+    "label": "Appliance Repair",
+    "keywords": ["appliance","fridge","oven","washer","dryer","microwave","repair","install","service","maintenance","-cheap","-free","-giveaway","-tutorial","-howto","-diy","-meme","-spam","-job-post"],
+    "template": "Broken appliance? We repair all major brands—fast and affordable service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_017",
+    "label": "Interior Design",
+    "keywords": ["interior","design","decor","styling","color scheme","layout","home","room","furniture","renovation","ideas","-cheap","-free","-giveaway","-spam","-meme","-tutorial","-howto","-politics","-job-post"],
+    "template": "Transform your space—professional interior design that reflects your style. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_018",
+    "label": "Home Staging",
+    "keywords": ["staging","real estate","sell home","decor","presentation","buyer","photos","listing","property","open house","furniture","setup","-cheap","-free","-giveaway","-spam","-politics","-job-post"],
+    "template": "Sell faster and for more—expert home staging that makes buyers fall in love. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_019",
+    "label": "Gutter Cleaning",
+    "keywords": ["gutter","clean","roof","drain","blockage","leaf","overflow","water","maintenance","ladder","home","-cheap","-free","-giveaway","-diy","-tutorial","-howto","-spam","-job-post"],
+    "template": "Prevent leaks—affordable gutter cleaning and maintenance services. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "home_020",
+    "label": "Pressure Washing",
+    "keywords": ["pressure wash","power wash","driveway","patio","deck","concrete","clean","mold","grime","restore","outdoor","home","-cheap","-free","-giveaway","-diy","-tutorial","-howto","-spam","-job-post"],
+    "template": "Restore your home’s shine—professional pressure washing for every surface. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "transportation",
+    "name": "Transportation",
+    "description": "Moving, delivery, ride services, and transportation"
+  },
+  "templates": [
+  {
+    "id": "transportation_001",
+    "label": "Transportation 1",
+    "keywords": ["moving", "relocation", "move", "packing", "furniture", "truck", "household", "long distance", "local", "storage", "boxes", "loading", "unloading", "professional movers", "insured", "-cheap labor", "-unsafe", "-unverified", "-no license", "-damaged items", "-late", "-fake", "-scam", "-random gigs", "-template only"],
+    "template": "Relocating soon? Our professional movers make every move organized, insured, and stress-free. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_002",
+    "label": "Transportation 2",
+    "keywords": ["delivery", "shipping", "transport", "logistics", "courier", "express", "same day", "dispatch", "tracking", "fleet", "on time", "safe handling", "insured", "local", "nationwide", "-unsafe", "-fake", "-unverified", "-lost packages", "-cheap", "-no insurance", "-late", "-random", "-scam", "-template only"],
+    "template": "Fast, reliable delivery — professional shipping services with live tracking and care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_003",
+    "label": "Transportation 3",
+    "keywords": ["ride", "taxi", "uber", "transport", "pickup", "dropoff", "chauffeur", "driver", "car service", "safe", "affordable", "clean vehicles", "on time", "book online", "travel", "-unsafe", "-unverified", "-fake", "-no insurance", "-spam", "-random", "-late", "-unlicensed", "-cheap", "-scam"],
+    "template": "Wherever you’re headed, our clean, safe, and on-time ride services get you there smoothly. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_004",
+    "label": "Transportation 4",
+    "keywords": ["logistics", "freight", "cargo", "trucking", "distribution", "warehousing", "supply chain", "B2B", "shipping", "dispatch", "transport", "fleet", "delivery", "route optimization", "tracking", "-fake", "-unverified", "-unsafe", "-no insurance", "-late", "-random", "-cheap", "-scam", "-template only", "-no license"],
+    "template": "Streamlined logistics for your freight — safe, efficient, and fully trackable deliveries. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_005",
+    "label": "Transportation 5",
+    "keywords": ["airport", "shuttle", "service", "transfer", "pickup", "dropoff", "terminal", "flight", "chauffeur", "on time", "meet and greet", "private", "group", "luggage", "comfort", "-unsafe", "-fake", "-no insurance", "-unverified", "-spam", "-random", "-cheap", "-scam", "-template only", "-no license"],
+    "template": "Arrive relaxed — reliable airport transfers with professional drivers and on-time service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_006",
+    "label": "Transportation 6",
+    "keywords": ["moving", "relocation", "move", "packing", "truck", "long distance", "household", "office", "storage", "boxes", "insured", "professional movers", "local", "timely", "secure", "-unsafe", "-fake", "-unverified", "-cheap", "-random", "-late", "-no insurance", "-scam", "-template only", "-damaged items"],
+    "template": "Move with confidence — professional movers who treat your belongings with care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_007",
+    "label": "Transportation 7",
+    "keywords": ["delivery", "shipping", "transport", "courier", "dispatch", "same day", "express", "tracking", "fleet", "insured", "on time", "professional", "safe", "nationwide", "affordable", "-unsafe", "-unverified", "-no insurance", "-fake", "-cheap", "-spam", "-late", "-scam", "-random", "-template only"],
+    "template": "Dependable delivery when it matters — fast, tracked, and secure every time. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_008",
+    "label": "Transportation 8",
+    "keywords": ["ride", "taxi", "uber", "driver", "transport", "pickup", "airport", "car", "minivan", "clean", "safe", "affordable", "private", "on time", "professional", "-unsafe", "-fake", "-no insurance", "-cheap", "-random", "-late", "-spam", "-scam", "-unverified", "-template only"],
+    "template": "Book your next ride — clean cars, courteous drivers, and safe travel 24/7. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_009",
+    "label": "Transportation 9",
+    "keywords": ["logistics", "freight", "cargo", "shipping", "distribution", "warehousing", "supply chain", "fleet", "route optimization", "load management", "tracking", "on time", "reliable", "insured", "dispatch", "-unsafe", "-cheap", "-fake", "-random", "-scam", "-late", "-unverified", "-template only", "-no insurance", "-broken"],
+    "template": "Simplify logistics — reliable freight and cargo delivery built on trust and precision. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_010",
+    "label": "Transportation 10",
+    "keywords": ["airport", "shuttle", "service", "pickup", "dropoff", "flight", "private", "group", "driver", "luggage", "meet and greet", "on time", "luxury", "comfortable", "safe", "-unsafe", "-fake", "-cheap", "-scam", "-unverified", "-no insurance", "-spam", "-random", "-template only", "-broken"],
+    "template": "Fly worry-free — airport shuttle and transfer services that run like clockwork. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_011",
+    "label": "Transportation 11",
+    "keywords": ["moving", "relocation", "move", "packing", "truck", "household", "long distance", "local", "office", "storage", "loading", "unloading", "insured", "organized", "timely", "-unsafe", "-unverified", "-cheap", "-fake", "-random", "-late", "-no license", "-scam", "-template only", "-damaged"],
+    "template": "From homes to offices — efficient relocation services for local and long-distance moves. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_012",
+    "label": "Transportation 12",
+    "keywords": ["delivery", "shipping", "transport", "courier", "same day", "dispatch", "express", "insured", "fleet", "logistics", "on time", "safe", "local", "professional", "nationwide", "-unsafe", "-fake", "-spam", "-unverified", "-cheap", "-no insurance", "-late", "-scam", "-random", "-template only"],
+    "template": "Fast, friendly, and fully insured deliveries — because reliability matters most. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_013",
+    "label": "Transportation 13",
+    "keywords": ["ride", "taxi", "uber", "transport", "driver", "chauffeur", "pickup", "car", "luxury", "clean", "safe", "on time", "affordable", "local", "comfortable", "-unsafe", "-cheap", "-fake", "-random", "-scam", "-unverified", "-no insurance", "-late", "-spam", "-template only"],
+    "template": "Private or corporate — your reliable ride, ready when you are. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_014",
+    "label": "Transportation 14",
+    "keywords": ["logistics", "freight", "cargo", "supply chain", "distribution", "warehousing", "fleet", "dispatch", "route planning", "tracking", "delivery", "optimization", "B2B", "insured", "timely", "-unsafe", "-cheap", "-fake", "-unverified", "-scam", "-late", "-random", "-spam", "-template only", "-broken"],
+    "template": "Logistics that deliver — efficient freight, cargo, and supply chain management. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_015",
+    "label": "Transportation 15",
+    "keywords": ["airport", "shuttle", "service", "pickup", "transfer", "chauffeur", "on time", "professional", "flight", "luggage", "group", "private", "safe", "luxury", "comfortable", "-unsafe", "-fake", "-cheap", "-spam", "-scam", "-unverified", "-random", "-template only", "-no insurance", "-late"],
+    "template": "Seamless airport transfers — dependable, comfortable travel for every flight. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_016",
+    "label": "Transportation 16",
+    "keywords": ["trucking", "freight", "cargo", "distribution", "warehousing", "logistics", "dispatch", "fleet", "shipping", "B2B", "tracking", "on time", "insurance", "dispatch", "service", "-unsafe", "-fake", "-cheap", "-unverified", "-late", "-random", "-scam", "-no insurance", "-template only", "-broken"],
+    "template": "Trusted trucking and freight services — delivering safely, on time, every time. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_017",
+    "label": "Transportation 17",
+    "keywords": ["courier", "delivery", "parcel", "express", "same day", "tracking", "insured", "door to door", "professional", "local", "nationwide", "pickup", "dispatch", "secure", "on time", "-unsafe", "-cheap", "-fake", "-spam", "-random", "-scam", "-unverified", "-no insurance", "-late", "-template only"],
+    "template": "Door-to-door courier service — fast, secure, and always on schedule. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_018",
+    "label": "Transportation 18",
+    "keywords": ["car rental", "vehicle hire", "van", "SUV", "luxury car", "daily", "weekly", "affordable", "fleet", "pickup", "dropoff", "clean", "maintenance", "insured", "trusted", "-unsafe", "-fake", "-scam", "-cheap", "-unverified", "-spam", "-no insurance", "-random", "-broken", "-template only"],
+    "template": "Rent the perfect ride — from economy to luxury, clean and reliable every time. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_019",
+    "label": "Transportation 19",
+    "keywords": ["bicycle delivery", "eco transport", "green", "sustainable", "urban", "courier", "express", "local", "city", "fast", "tracking", "safe", "clean", "affordable", "professional", "-unsafe", "-fake", "-cheap", "-scam", "-unverified", "-random", "-late", "-no insurance", "-template only", "-broken"],
+    "template": "Go green — fast and eco-friendly bicycle delivery for local businesses. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "transportation_020",
+    "label": "Transportation 20",
+    "keywords": ["fleet management", "transport", "logistics", "maintenance", "tracking", "optimization", "dispatch", "efficiency", "cost savings", "driver safety", "performance", "fuel monitoring", "B2B", "automation", "GPS", "-unsafe", "-fake", "-cheap", "-random", "-spam", "-scam", "-unverified", "-template only", "-broken", "-no insurance"],
+    "template": "Optimize your operations — smart fleet management for safer, more efficient transport. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

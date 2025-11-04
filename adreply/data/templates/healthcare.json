@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "healthcare",
+    "name": "Healthcare",
+    "description": "Medical, dental, therapy, and healthcare services"
+  },
+  "templates": [
+  {
+    "id": "healthcare_001",
+    "label": "Healthcare 1",
+    "keywords": ["health", "medical", "doctor", "care", "clinic", "wellness", "checkup", "family doctor", "primary care", "patient", "treatment", "healthcare provider", "professional", "medical center", "consultation", "-cheap", "-fake", "-unlicensed", "-alternative cure", "-miracle", "-home remedy", "-illegal", "-scam", "-dangerous", "-unverified"],
+    "template": "Your health is our priority — trusted medical professionals providing personalized care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_002",
+    "label": "Healthcare 2",
+    "keywords": ["dental", "dentist", "teeth", "smile", "oral health", "cleaning", "whitening", "checkup", "orthodontics", "family dentist", "tooth care", "hygiene", "dental care", "cosmetic dentistry", "dental clinic", "-cheap", "-whitening kit", "-fake", "-unlicensed", "-miracle", "-unsafe", "-illegal", "-home remedy", "-scam", "-painfree"],
+    "template": "Keep your smile bright and healthy with our gentle, professional dental care. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_003",
+    "label": "Healthcare 3",
+    "keywords": ["therapy", "physical", "rehabilitation", "recovery", "exercise", "mobility", "wellness", "pain relief", "sports injury", "healing", "strength", "therapist", "treatment", "rehab center", "support", "-cheap", "-quick fix", "-miracle", "-home cure", "-unverified", "-fake", "-dangerous", "-illegal", "-unlicensed", "-magic"],
+    "template": "Heal stronger with expert physical therapy designed for lasting recovery. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_004",
+    "label": "Healthcare 4",
+    "keywords": ["mental", "counseling", "wellness", "therapy", "psychologist", "support", "stress relief", "anxiety", "depression", "emotional health", "mental health", "sessions", "self care", "mindfulness", "balance", "-miracle", "-drug", "-quick fix", "-unlicensed", "-fake", "-scam", "-illegal", "-psychic", "-magic", "-home remedy"],
+    "template": "Take care of your mind — professional counseling for a healthier, calmer you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_005",
+    "label": "Healthcare 5",
+    "keywords": ["specialist", "treatment", "medical", "diagnosis", "expert", "consultant", "doctor", "clinic", "condition", "care plan", "health service", "hospital", "referral", "checkup", "expertise", "-unlicensed", "-fake", "-miracle", "-quick fix", "-dangerous", "-alternative", "-illegal", "-scam", "-magic", "-unverified"],
+    "template": "Specialist medical care tailored to your needs — experience excellence in treatment. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_006",
+    "label": "Healthcare 6",
+    "keywords": ["health", "medical", "doctor", "care", "clinic", "checkup", "wellness", "family doctor", "general practice", "patient", "appointment", "treatment", "health plan", "nurse", "consultation", "-cheap", "-fake", "-miracle", "-home remedy", "-unlicensed", "-illegal", "-quick cure", "-scam", "-dangerous", "-unverified"],
+    "template": "Compassionate, professional medical care — keeping you healthy year-round. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_007",
+    "label": "Healthcare 7",
+    "keywords": ["dental", "dentist", "teeth", "smile", "hygiene", "cleaning", "checkup", "whitening", "orthodontist", "cosmetic dentistry", "dental clinic", "family care", "tooth health", "oral exam", "preventive care", "-cheap", "-whitening kit", "-fake", "-illegal", "-unsafe", "-unlicensed", "-miracle", "-scam", "-home remedy", "-quick fix"],
+    "template": "Your smile deserves expert care — book your next dental checkup today. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_008",
+    "label": "Healthcare 8",
+    "keywords": ["therapy", "physical", "rehabilitation", "exercise", "mobility", "healing", "pain relief", "sports injury", "recovery", "strength", "treatment", "rehab center", "therapist", "care plan", "balance", "-fake", "-miracle", "-home remedy", "-dangerous", "-unlicensed", "-illegal", "-magic", "-quick fix", "-scam", "-unverified"],
+    "template": "Rebuild confidence and mobility with expert physical therapy programs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_009",
+    "label": "Healthcare 9",
+    "keywords": ["mental", "counseling", "wellness", "therapy", "support", "psychology", "mind", "stress management", "balance", "self care", "therapy sessions", "emotional support", "mental health", "psychologist", "mental wellbeing", "-magic", "-drug", "-miracle", "-fake", "-quick fix", "-unlicensed", "-illegal", "-psychic", "-scam", "-alternative"],
+    "template": "Find your balance — confidential therapy for mental and emotional wellness. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_010",
+    "label": "Healthcare 10",
+    "keywords": ["specialist", "treatment", "medical", "doctor", "consultation", "clinic", "diagnosis", "healthcare", "expert", "condition", "treatment plan", "referral", "hospital", "medical service", "care", "-fake", "-miracle", "-unlicensed", "-alternative", "-quick fix", "-illegal", "-scam", "-magic", "-home remedy", "-unverified"],
+    "template": "Get specialized medical attention from trusted healthcare experts. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_011",
+    "label": "Healthcare 11",
+    "keywords": ["health", "doctor", "medical", "care", "clinic", "checkup", "healthcare", "family doctor", "primary care", "wellness", "patient", "prevention", "consultation", "appointment", "nurse", "-fake", "-miracle", "-unlicensed", "-dangerous", "-scam", "-illegal", "-home remedy", "-magic", "-unverified", "-alternative"],
+    "template": "Trusted healthcare for you and your family — quality care you can count on. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_012",
+    "label": "Healthcare 12",
+    "keywords": ["dental", "dentist", "teeth", "smile", "hygiene", "checkup", "cleaning", "oral health", "cosmetic", "whitening", "orthodontics", "family dentist", "gum health", "restoration", "dental care", "-fake", "-cheap", "-unlicensed", "-illegal", "-unsafe", "-miracle", "-home remedy", "-scam", "-quick fix", "-bogus"],
+    "template": "Healthy teeth, confident smile — visit our trusted dental professionals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_013",
+    "label": "Healthcare 13",
+    "keywords": ["therapy", "rehabilitation", "recovery", "physical", "strength", "pain relief", "mobility", "healing", "therapist", "treatment", "support", "rehab center", "exercise", "balance", "wellness", "-fake", "-miracle", "-dangerous", "-home cure", "-unlicensed", "-scam", "-illegal", "-quick fix", "-unverified", "-magic"],
+    "template": "Personalized rehabilitation and therapy designed to help you move freely again. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_014",
+    "label": "Healthcare 14",
+    "keywords": ["mental", "counseling", "wellness", "therapy", "psychologist", "support", "anxiety", "depression", "balance", "stress", "emotional health", "self care", "sessions", "psychology", "recovery", "-miracle", "-drug", "-unlicensed", "-fake", "-psychic", "-illegal", "-magic", "-scam", "-quick fix", "-alternative"],
+    "template": "Professional mental health support for a calmer, happier you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_015",
+    "label": "Healthcare 15",
+    "keywords": ["specialist", "treatment", "medical", "consultation", "expert", "doctor", "diagnosis", "clinic", "condition", "care plan", "hospital", "service", "checkup", "referral", "care", "-fake", "-miracle", "-unlicensed", "-dangerous", "-magic", "-quick fix", "-illegal", "-scam", "-unverified", "-home remedy"],
+    "template": "Advanced treatments from medical specialists you can trust. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_016",
+    "label": "Healthcare 16",
+    "keywords": ["health", "medical", "doctor", "care", "checkup", "wellness", "clinic", "family doctor", "primary care", "consultation", "treatment", "prevention", "health plan", "appointment", "patient", "-cheap", "-fake", "-miracle", "-illegal", "-unlicensed", "-scam", "-alternative", "-home cure", "-unverified", "-magic"],
+    "template": "Dedicated healthcare professionals committed to keeping you well. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_017",
+    "label": "Healthcare 17",
+    "keywords": ["dental", "dentist", "teeth", "smile", "oral health", "cleaning", "checkup", "whitening", "hygiene", "family care", "dental clinic", "orthodontist", "gum health", "restoration", "preventive", "-fake", "-cheap", "-unsafe", "-unlicensed", "-illegal", "-miracle", "-scam", "-home remedy", "-quick fix", "-bogus"],
+    "template": "Experience gentle, expert dental care for a smile that lasts a lifetime. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_018",
+    "label": "Healthcare 18",
+    "keywords": ["therapy", "physical", "rehabilitation", "recovery", "mobility", "strength", "pain relief", "healing", "wellness", "sports injury", "exercise", "treatment", "balance", "care", "rehab center", "-fake", "-miracle", "-quick fix", "-dangerous", "-unlicensed", "-scam", "-illegal", "-magic", "-unverified", "-alternative"],
+    "template": "Recover better, move stronger — physical therapy that helps you thrive. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_019",
+    "label": "Healthcare 19",
+    "keywords": ["mental", "counseling", "wellness", "therapy", "support", "psychologist", "stress", "anxiety", "emotional health", "mindfulness", "balance", "sessions", "self care", "psychology", "healing", "-miracle", "-drug", "-fake", "-unlicensed", "-magic", "-quick fix", "-psychic", "-scam", "-alternative", "-illegal"],
+    "template": "Confidential mental health counseling focused on your wellbeing. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "healthcare_020",
+    "label": "Healthcare 20",
+    "keywords": ["specialist", "treatment", "medical", "doctor", "clinic", "expert", "diagnosis", "healthcare", "consultation", "hospital", "service", "condition", "referral", "care plan", "therapy", "-fake", "-miracle", "-unlicensed", "-quick fix", "-illegal", "-magic", "-scam", "-unverified", "-dangerous", "-home remedy"],
+    "template": "Expert medical specialists delivering high-quality care and trusted treatment. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

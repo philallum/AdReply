@@ -1,0 +1,148 @@
+{
+  "category": {
+    "id": "beauty",
+    "name": "Beauty & Wellness",
+    "description": "Salons, spas, cosmetics, and beauty services"
+  },
+  "templates": [
+  {
+    "id": "beauty_001",
+    "label": "Hair Salon",
+    "keywords": ["hair","salon","stylist","cut","trim","restyle","blowout","treatment","keratin","olaplex","appointment","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring","-home-kit"],
+    "template": "New hair, new mood—precision cuts, treatments, and blowouts by stylists who listen. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_002",
+    "label": "Nail Service",
+    "keywords": ["nails","manicure","pedicure","gel","acrylic","builder","shape","file","polish","nail art","spa","-diy","-press-on-only","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Hands and feet, flawlessly finished—manicures, pedicures, and nail art you’ll love. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_003",
+    "label": "Spa Treatment",
+    "keywords": ["spa","massage","facial","relax","aromatherapy","hot stone","hydra","glow","pamper","gift voucher","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-medical-claims","-job-post","-hiring"],
+    "template": "Switch off and recharge—massages and facials tailored to relax, reset, and revive. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_004",
+    "label": "Makeup Artist",
+    "keywords": ["makeup","mua","artist","wedding","bridal","event","prom","photoshoot","soft glam","airbrush","trial","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Camera-ready confidence—professional makeup for weddings, events, and shoots. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_005",
+    "label": "Skincare Treatment",
+    "keywords": ["skincare","facial","peel","microderm","extractions","hydration","brighten","acne care","anti-age","spf","consult","-medical-claims","-cure","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Glowing, clearer skin—targeted facials and plans tailored to your skin goals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_006",
+    "label": "Eyebrow Service",
+    "keywords": ["eyebrow","brows","threading","waxing","shape","tint","lamination","arch","mapping","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-home-kit","-product-sale-only","-job-post","-hiring"],
+    "template": "Brows that frame your face—expert shaping, tinting, and lamination. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_007",
+    "label": "Eyelash Extensions",
+    "keywords": ["eyelash","lashes","extensions","classic","hybrid","volume","fill","retention","patch test","aftercare","-diy","-cluster-only","-strip-lash","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Wake up ready—classic to volume lash extensions with gentle application and great retention. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_008",
+    "label": "Hair Color",
+    "keywords": ["hair color","colour","highlights","balayage","toner","roots","lift","gloss","corrective","consult","-diy","-box-dye","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Colour with confidence—balayage, highlights, and glossing tailored to your tone. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_009",
+    "label": "Botox Treatment",
+    "keywords": ["botox","anti-wrinkle","lines","forehead","crows feet","consultation","nurse","clinician","clinic","-illegal","-at-home","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-unlicensed","-claims","-job-post","-hiring"],
+    "template": "Subtle, refreshed results—clinician-led anti-wrinkle treatments with a careful touch. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_010",
+    "label": "Laser Hair Removal",
+    "keywords": ["laser hair removal","laser","hair","permanent reduction","course","patch test","consult","area","smooth","clinic","-at-home-device","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-claims","-job-post","-hiring"],
+    "template": "Smoother for longer—clinically delivered laser hair reduction with patch testing and plans. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_011",
+    "label": "Microblading",
+    "keywords": ["microblading","brows","semi-permanent","hair strokes","mapping","numbing","aftercare","touch-up","healing","-tattoo-argument","-at-home","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-unlicensed","-job-post","-hiring"],
+    "template": "Wake up with brows—natural-looking microblading with mapping, aftercare, and touch-ups. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_012",
+    "label": "Body Contouring",
+    "keywords": ["body contouring","sculpt","cavitation","rf","firm","toning","consult","course","areas","non-invasive","-medical-claims","-weight-loss-guarantee","-surgery","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-job-post","-hiring"],
+    "template": "Smoother lines, non-invasive—body contouring sessions tailored to your goals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_013",
+    "label": "Teeth Whitening",
+    "keywords": ["teeth whitening","smile","shade","tray","led","enamel-safe","session","clinic","-dental-claims","-medical-claims","-home-kit-only","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-job-post","-hiring"],
+    "template": "Brighter smile, fast—gentle whitening sessions with enamel-safe products. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_014",
+    "label": "Tanning Service",
+    "keywords": ["tanning","spray tan","bronze","airbrush","shade","prep","aftercare","streak-free","event","-sunbed-argument","-health-argue","-at-home","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Golden, even glow—custom spray tans with skin prep and aftercare tips included. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_015",
+    "label": "Waxing Service",
+    "keywords": ["waxing","hair removal","brows","lip","underarm","bikini","hollywood","leg","back","sensitive","aftercare","-at-home","-sugar-only-argument","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Smooth results, fast—professional waxing with quality waxes and expert technique. {url}",
+    "isPrebuilt": true  },
+  {
+    "id": "beauty_016",
+    "label": "Bridal Beauty",
+    "keywords": ["bridal","wedding","bride","trial","makeup","hair","schedule","party","packages","on-location","-dress-sale","-venue-argue","-planner-only","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-job-post","-hiring"],
+    "template": "Your look, perfected—bridal hair and makeup with trials and on-location options. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_017",
+    "label": "Men's Grooming",
+    "keywords": ["men","grooming","barber","beard","trim","fade","hot towel","shave","style","product","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-home-kit","-product-sale-only","-job-post","-hiring"],
+    "template": "Sharp, clean, confident—barbering and beard grooming with classic hot towel finishes. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_018",
+    "label": "Permanent Makeup",
+    "keywords": ["permanent makeup","pmu","brows","eyeliner","lip blush","mapping","numbing","touch-up","aftercare","-unlicensed","-at-home","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-claims","-job-post","-hiring"],
+    "template": "Wake up ready—PMU brows, liner, and lip blush with careful mapping and aftercare. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_019",
+    "label": "Wellness Spa",
+    "keywords": ["wellness","spa","holistic","relax","detox","sauna","steam","salt room","aroma","mind-body","packages","-medical-claims","-cure","-diy","-howto","-tutorial","-hack","-cheap","-free","-giveaway","-product-sale-only","-job-post","-hiring"],
+    "template": "Space to breathe—wellness spa packages that restore balance and calm. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "beauty_020",
+    "label": "Beauty Products",
+    "keywords": ["beauty products","cosmetics","skincare","haircare","professional","retail","set","bundle","recommend","-mlm","-resale-only","-dropship","-cheap","-free","-giveaway","-spam","-fake","-counterfeit","-recall","-job-post","-hiring"],
+    "template": "Pro-picked products that perform—shop our curated skincare and haircare in-studio or online. {url}",
+    "isPrebuilt": true
+  }
+]
+}

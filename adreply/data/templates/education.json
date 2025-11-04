@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "education",
+    "name": "Education & Training",
+    "description": "Courses, tutoring, workshops, and educational services"
+  },
+  "templates": [
+  {
+    "id": "edu_001",
+    "label": "Tutoring Services",
+    "keywords": ["tutoring","tutor","private lesson","one-on-one","study help","homework","students","learn","math","english","science","revision","exam prep","coaching","education","-cheap","-free","-giveaway","-test-answers","-cheat","-torrent","-piracy","-meme","-politics","-rant","-spam","-job-post","-hiring","-promotion-only","-self-promo-only"],
+    "template": "Struggling with schoolwork? Get one-on-one tutoring to boost grades and confidence! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_002",
+    "label": "Online Courses",
+    "keywords": ["course","online","elearning","learning","education","training","virtual class","distance learning","webinar","tutorial","self-paced","certificate","program","lesson","coach","-torrent","-piracy","-free","-cheap","-giveaway","-job-post","-hiring","-spam","-meme","-politics","-rant","-survey-only","-advice-only"],
+    "template": "Learn anywhere, anytime—our online courses help you build real-world skills fast. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_003",
+    "label": "Language Classes",
+    "keywords": ["language","english","spanish","french","german","italian","chinese","japanese","speaking","conversation","class","lesson","bilingual","translation","learning","-cheap","-free","-piracy","-torrent","-meme","-politics","-rant","-spam","-tutorial","-howto","-diy","-job-post","-hiring","-cheat"],
+    "template": "Speak with confidence! Join interactive language classes led by experienced tutors. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_004",
+    "label": "Test Preparation",
+    "keywords": ["exam","test","sat","act","ielts","toefl","gmat","gre","gcse","a-level","prep","practice","score","study","revision","-answers","-cheat","-leak","-torrent","-piracy","-free","-cheap","-giveaway","-meme","-politics","-rant","-spam","-job-post","-hiring","-diy"],
+    "template": "Ace your exams! Tailored test prep programs for top performance and confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_005",
+    "label": "Music Lessons",
+    "keywords": ["music","guitar","piano","drum","violin","vocal","singing","instrument","lesson","teacher","practice","studio","class","beginner","advanced","-free","-cheap","-piracy","-torrent","-mp3","-download","-bootleg","-job-post","-hiring","-meme","-rant","-politics","-spam"],
+    "template": "Make music happen! Learn your favorite instrument with friendly, expert tutors. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_006",
+    "label": "STEM Programs",
+    "keywords": ["stem","science","technology","engineering","math","robotics","coding","programming","ai","innovation","lab","project","kids","teen","-hack","-piracy","-torrent","-free","-cheap","-giveaway","-job-post","-hiring","-politics","-meme","-rant","-spam","-advice-only","-diy"],
+    "template": "Future-ready learning! Engaging STEM programs that spark curiosity and creativity. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_007",
+    "label": "Art Classes",
+    "keywords": ["art","drawing","painting","creative","sketch","design","craft","studio","lesson","kids","adults","watercolor","digital art","hobby","expression","-cheap","-free","-piracy","-download","-torrent","-meme","-politics","-rant","-spam","-template-only","-job-post","-hiring"],
+    "template": "Unleash your creativity! Join fun art classes for beginners and experienced artists. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_008",
+    "label": "Coding Bootcamps",
+    "keywords": ["coding","bootcamp","programming","developer","javascript","python","html","css","full stack","backend","frontend","project","training","career","skills","-homework-help","-piracy","-torrent","-cheap","-free","-giveaway","-meme","-politics","-rant","-spam","-job-post","-hiring"],
+    "template": "Launch your tech career—intensive coding bootcamps for hands-on learning. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_009",
+    "label": "Driving School",
+    "keywords": ["driving","lesson","license","learner","test","car","road","traffic","training","practice","defensive","student","permit","vehicle","instructor","-racing","-cheap","-free","-giveaway","-politics","-rant","-spam","-meme","-piracy","-torrent","-job-post","-hiring"],
+    "template": "Get on the road with confidence! Friendly, patient driving lessons for all levels. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_010",
+    "label": "Early Childhood Education",
+    "keywords": ["preschool","nursery","kindergarten","early learning","childcare","kids","toddler","montessori","playgroup","education","development","fun","creative","learning","school","-cheap","-free","-politics","-rant","-spam","-meme","-torrent","-piracy","-giveaway","-job-post","-hiring"],
+    "template": "Bright beginnings! Quality early education that inspires curiosity and learning. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_011",
+    "label": "Adult Education",
+    "keywords": ["adult education","night classes","evening","continuing education","return to school","college","skills","career change","online","degree","certification","training","mature","student","professional","-cheap","-free","-politics","-rant","-spam","-meme","-giveaway","-torrent","-piracy","-job-post","-hiring"],
+    "template": "It’s never too late! Evening and online courses to boost your career and confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_012",
+    "label": "Special Education Support",
+    "keywords": ["special education","sen","adhd","autism","learning support","iep","teacher","child","needs","assistance","dyslexia","behavior","development","education","therapy","-cheap","-free","-politics","-rant","-spam","-meme","-giveaway","-torrent","-piracy","-job-post","-hiring","-joke-only"],
+    "template": "Support that matters—personalized special education and inclusive learning plans. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_013",
+    "label": "Test Grading & Assessment Tools",
+    "keywords": ["assessment","grading","exam","marking","quiz","teacher","students","test","results","feedback","rubric","education","report","evaluation","software","-cheat","-answers","-torrent","-piracy","-free","-cheap","-meme","-spam","-rant","-politics","-job-post","-hiring","-self-promo-only"],
+    "template": "Save time on grading—smart assessment tools that help teachers focus on teaching. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_014",
+    "label": "Scholarship Programs",
+    "keywords": ["scholarship","grant","bursary","financial aid","student","college","university","apply","application","education","funding","tuition","school","assistance","support","-scam","-fake","-cheap","-free","-giveaway","-politics","-rant","-spam","-piracy","-torrent","-meme","-job-post","-hiring"],
+    "template": "Invest in your future—find scholarships and grants for students of all backgrounds. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_015",
+    "label": "Study Abroad Programs",
+    "keywords": ["study abroad","exchange","international","college","university","travel","student visa","scholarship","foreign","culture","learning","experience","immersion","global","education","-politics","-rant","-spam","-meme","-cheap","-free","-giveaway","-torrent","-piracy","-job-post","-hiring"],
+    "template": "See the world while you learn—study abroad programs that expand your horizons. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_016",
+    "label": "College Admissions Coaching",
+    "keywords": ["college","university","admission","application","essay","prep","sat","act","interview","student","high school","guidance","mentor","coaching","counseling","-cheat","-answers","-fake","-cheap","-free","-giveaway","-piracy","-torrent","-job-post","-hiring","-spam","-meme","-politics"],
+    "template": "Get into your dream school—personalized college admissions coaching and essay support. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_017",
+    "label": "Corporate Training",
+    "keywords": ["corporate training","workplace learning","leadership","team building","skills","soft skills","communication","sales training","management","employee development","coaching","onboarding","seminar","workshop","professional growth","-cheap","-free","-politics","-rant","-spam","-meme","-giveaway","-torrent","-piracy","-job-post","-hiring"],
+    "template": "Boost performance—custom corporate training that inspires teams and drives results. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_018",
+    "label": "Homeschool Resources",
+    "keywords": ["homeschool","parent","curriculum","lesson plan","education","kids","family","learning","teacher","resources","worksheets","virtual","support","group","community","-cheap","-free","-politics","-rant","-spam","-meme","-giveaway","-torrent","-piracy","-job-post","-hiring"],
+    "template": "Empower learning at home—flexible homeschool resources for every family. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_019",
+    "label": "Continuing Education Credits",
+    "keywords": ["continuing education","credits","certification","renewal","licensing","professional development","teacher training","healthcare","accounting","engineering","compliance","course","online","approved","program","-cheap","-free","-politics","-rant","-spam","-meme","-giveaway","-torrent","-piracy","-job-post","-hiring"],
+    "template": "Keep your credentials current—approved CE courses for professionals in every field. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "edu_020",
+    "label": "Career Coaching",
+    "keywords": ["career","coaching","job","interview","resume","cv","professional","career change","mentor","guidance","skills","confidence","goal","promotion","success","-cheap","-free","-giveaway","-spam","-meme","-politics","-rant","-job-post","-hiring","-scam","-torrent","-piracy","-fake"],
+    "template": "Advance your career—get personal coaching to land the job or promotion you deserve. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

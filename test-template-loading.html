@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Template Loading</title>
+</head>
+<body>
+    <h1>Template Loading Test</h1>
+    <div id="results"></div>
+    
+    <script src="adreply/storage/template-loader.js"></script>
+    <script>
+        async function testTemplateLoading() {
+            const results = document.getElementById('results');
+            results.innerHTML = 'Loading templates...<br>';
+            
+            try {
+                const loader = new TemplateLoader();
+                
+                // Test loading a specific category
+                const automotiveData = await loader.loadCategoryTemplates('automotive');
+                results.innerHTML += `Automotive: ${automotiveData ? automotiveData.templates.length : 0} templates<br>`;
+                
+                const fitnessData = await loader.loadCategoryTemplates('fitness');
+                results.innerHTML += `Fitness: ${fitnessData ? fitnessData.templates.length : 0} templates<br>`;
+                
+                // Test loading all templates
+                const allTemplates = await loader.getAllTemplatesFlat();
+                results.innerHTML += `<br>Total templates loaded: ${allTemplates.length}<br>`;
+                
+                // Show first few templates
+                results.innerHTML += '<br><strong>Sample templates:</strong><br>';
+                allTemplates.slice(0, 5).forEach(template => {
+                    results.innerHTML += `- ${template.label} (${template.category})<br>`;
+                });
+                
+            } catch (error) {
+                results.innerHTML += `<br>Error: ${error.message}<br>`;
+                console.error('Template loading error:', error);
+            }
+        }
+        
+        // Run test when page loads
+        testTemplateLoading();
+    </script>
+</body>
+</html>

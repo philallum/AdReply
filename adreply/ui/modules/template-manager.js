@@ -10,7 +10,7 @@ class TemplateManager {
         try {
             const result = await chrome.storage.local.get(['templates']);
             this.templates = result.templates || [];
-            // Templates loaded successfully
+            console.log('AdReply: Loaded templates:', this.templates.length, this.templates);
             return this.templates;
         } catch (error) {
             console.error('AdReply: Error loading templates:', error);

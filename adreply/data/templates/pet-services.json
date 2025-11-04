@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "pet-services",
+    "name": "Pet Services",
+    "description": "Veterinary, grooming, pet sitting, and animal care"
+  },
+  "templates": [
+  {
+    "id": "pet_services_001",
+    "label": "Pet Services 1",
+    "keywords": ["pet", "dog", "cat", "animal", "pet care", "pet services", "loving care", "pet checkup", "pet wellness", "friendly staff", "local", "trusted", "pet lovers", "home visits", "gentle handling", "-cheap", "-free", "-backyard breeder", "-puppy mill", "-harmful", "-DIY treatment", "-unlicensed", "-unsafe", "-random", "-fake"],
+    "template": "Loving, reliable care for the pets you love — gentle handling and happy tails. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_002",
+    "label": "Pet Services 2",
+    "keywords": ["veterinary", "vet", "health", "medical", "vaccination", "checkup", "diagnostics", "pet wellness", "clinic", "veterinarian", "pet hospital", "care plan", "compassionate", "treatment", "pet health", "-cheap", "-home remedy", "-unlicensed", "-unsafe", "-fake", "-miracle cure", "-DIY", "-illegal", "-random", "-scam"],
+    "template": "Compassionate veterinary care — from routine checkups to advanced treatment. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_003",
+    "label": "Pet Services 3",
+    "keywords": ["grooming", "bath", "trim", "clean", "nail trim", "deshedding", "spa", "coat care", "ear cleaning", "hypoallergenic", "full groom", "puppy groom", "cat grooming", "professional groomer", "salon", "-cheap", "-DIY grooming", "-unsafe", "-home kit", "-shedding gadget", "-unlicensed", "-random", "-scam", "-harsh chemicals", "-rush job"],
+    "template": "Shiny coats and wagging tails — professional grooming for every breed and coat type. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_004",
+    "label": "Pet Services 4",
+    "keywords": ["sitting", "boarding", "care", "watch", "overnight", "daycare", "kennel alternative", "pet hotel", "crate-free", "playtime", "supervised", "safe", "home-like", "drop-in visits", "routine updates", "-cheap", "-crowded", "-uninsured", "-unsafe", "-random sitter", "-no updates", "-dirty", "-overbooked", "-unlicensed", "-fake"],
+    "template": "Travel with confidence — safe, loving pet sitting and boarding with daily updates. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_005",
+    "label": "Pet Services 5",
+    "keywords": ["training", "obedience", "behavior", "puppy class", "recall", "loose leash", "house training", "socialization", "positive reinforcement", "private sessions", "group class", "behavior consult", "confidence building", "AKC CGC", "manners", "-shock collar", "-alpha roll", "-punishment", "-aversive", "-cheap", "-quick fix", "-unqualified", "-harmful", "-random tips", "-DIY"],
+    "template": "Build better manners with positive, results-driven dog training — from puppies to pros. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_006",
+    "label": "Pet Services 6",
+    "keywords": ["pet", "dog", "cat", "animal", "pet care", "pet sitting", "drop-in", "playtime", "feeding", "medication", "trustworthy", "insured", "local sitter", "gentle care", "reliable", "-cheap", "-free", "-uninsured", "-unsafe", "-random", "-no references", "-fake", "-backyard breeder", "-puppy mill", "-DIY care"],
+    "template": "On-time, caring pet visits — feeding, play, and meds handled with love. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_007",
+    "label": "Pet Services 7",
+    "keywords": ["veterinary", "vet", "health", "medical", "dental cleaning", "spay neuter", "microchip", "vaccines", "allergy care", "senior pets", "urgent care", "wellness plan", "lab tests", "x-ray", "ultrasound", "-home remedy", "-unlicensed", "-fake", "-miracle", "-unsafe", "-random", "-DIY", "-cheap drugs", "-illegal", "-scam"],
+    "template": "Full-service veterinary clinic — wellness, diagnostics, and kind, expert treatment. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_008",
+    "label": "Pet Services 8",
+    "keywords": ["grooming", "bath", "trim", "clean", "deshed", "puppy groom", "sanitary trim", "pawdicure", "blueberry facial", "cat groom", "ear care", "mat removal", "coat conditioning", "breed standard", "express service", "-cheap", "-DIY", "-unsafe", "-unlicensed", "-rush job", "-harsh chemicals", "-random", "-home kit", "-fake", "-unsanitary"],
+    "template": "Calm, careful grooming that keeps pets clean, comfortable, and adorable. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_009",
+    "label": "Pet Services 9",
+    "keywords": ["sitting", "boarding", "care", "watch", "daycare", "enrichment", "meet & greet", "crate-free", "play groups", "fenced yard", "temperature controlled", "cuddle time", "safe transport", "routine", "photo updates", "-cheap", "-overcrowded", "-dirty", "-no insurance", "-random", "-unsafe", "-no updates", "-unlicensed", "-fake", "-no supervision"],
+    "template": "Comfy boarding and playful daycare — safe spaces, supervised fun, happy pets. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_010",
+    "label": "Pet Services 10",
+    "keywords": ["training", "obedience", "behavior", "puppy", "reactivity", "leash skills", "recall", "impulse control", "confidence", "social skills", "enrichment", "custom plan", "in-home training", "group classes", "coaching", "-punishment", "-aversive", "-shock collar", "-alpha roll", "-quick fix", "-cheap", "-unqualified", "-harmful", "-random tips", "-DIY"],
+    "template": "Confident dogs start here — personalized training with positive methods and real results. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_011",
+    "label": "Pet Services 11",
+    "keywords": ["pet", "dog", "cat", "animal", "pet taxi", "pet transport", "local", "appointments", "safe ride", "secure crates", "insured", "on-time", "courteous", "stress-free", "door to door", "-cheap", "-unsafe", "-unlicensed", "-random driver", "-rideshare", "-overcrowded", "-dirty", "-fake", "-no insurance", "-late"],
+    "template": "Safe, insured pet transport for vet visits, grooming, and playdates. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_012",
+    "label": "Pet Services 12",
+    "keywords": ["veterinary", "vet", "health", "medical", "nutrition", "weight management", "diet plan", "allergy diet", "prescription food", "wellness", "consultation", "senior care", "puppy care", "cat care", "preventive", "-home remedy", "-fad diet", "-unsafe", "-unlicensed", "-random", "-miracle cure", "-DIY", "-cheap", "-fake", "-illegal"],
+    "template": "Vet-guided nutrition plans to keep pets healthy, happy, and full of energy. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_013",
+    "label": "Pet Services 13",
+    "keywords": ["grooming", "bath", "trim", "clean", "mobile groom", "house call", "van groom", "convenient", "stress-free", "one-on-one", "sanitized", "professional", "pet salon", "cat grooming", "dog grooming", "-DIY", "-cheap", "-unsafe", "-unlicensed", "-random", "-home kit", "-harsh chemicals", "-rush job", "-fake", "-unsanitary"],
+    "template": "Mobile grooming that comes to you — convenient, calm, and spotless results. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_014",
+    "label": "Pet Services 14",
+    "keywords": ["sitting", "boarding", "care", "watch", "cat sitting", "litter care", "quiet home", "solo suites", "meds given", "daily updates", "hydration", "playtime", "cat behavior", "gentle handling", "stress-aware", "-dogs only", "-cheap", "-dirty", "-overcrowded", "-random", "-unlicensed", "-unsafe", "-no updates", "-fake", "-noisy"],
+    "template": "Cat-first sitting and boarding — calm spaces, clean routines, and daily updates. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_015",
+    "label": "Pet Services 15",
+    "keywords": ["training", "obedience", "behavior", "puppy class", "AKC CGC", "service prep", "crate training", "settle", "heel", "stay", "recall", "marker training", "family coaching", "kid-friendly", "lifetime skills", "-aversive", "-shock collar", "-alpha roll", "-punishment", "-quick fix", "-cheap", "-unqualified", "-harmful", "-random tips", "-DIY"],
+    "template": "Family-friendly dog training — positive methods that fit real life at home. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_016",
+    "label": "Pet Services 16",
+    "keywords": ["dog walking", "walker", "midday walk", "potty break", "exercise", "leash skills", "daily visits", "photo updates", "GPS tracked", "insured", "reliable", "on-time", "rain or shine", "friendly", "local", "-cheap", "-random", "-unsafe", "-uninsured", "-no references", "-late", "-fake", "-crowded packs", "-off-leash", "-unlicensed"],
+    "template": "Daily dog walks with reliable, insured walkers — exercise, enrichment, and updates. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_017",
+    "label": "Pet Services 17",
+    "keywords": ["emergency vet", "urgent care", "veterinary", "after hours", "triage", "stabilization", "x-ray", "surgery", "ICU", "oxygen", "pain control", "experienced team", "critical care", "fast response", "-home remedy", "-wait days", "-unlicensed", "-unsafe", "-DIY", "-fake", "-miracle cure", "-random", "-cheap drugs", "-illegal"],
+    "template": "24/7 urgent veterinary care — fast, compassionate help when your pet needs it most. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_018",
+    "label": "Pet Services 18",
+    "keywords": ["daycare", "playgroup", "enrichment", "puzzle games", "small groups", "trained staff", "temperament test", "indoor outdoor", "clean facility", "rest breaks", "structured play", "socialization", "safe fun", "report cards", "routine", "-overcrowded", "-dirty", "-unsupervised", "-unsafe", "-random", "-no screening", "-cheap", "-no reports", "-unlicensed", "-fake"],
+    "template": "Enrichment-based dog daycare — small groups, trained staff, and structured play. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_019",
+    "label": "Pet Services 19",
+    "keywords": ["exotic pets", "small animals", "rabbit", "guinea pig", "bird", "reptile", "vet", "specialized care", "husbandry", "nutrition", "nail trim", "wellness", "checkup", "gentle handling", "experienced", "-wild capture", "-illegal", "-cheap", "-unlicensed", "-unsafe", "-random", "-DIY surgery", "-home remedy", "-fake", "-harmful"],
+    "template": "Experienced exotic pet care — thoughtful handling and species-specific guidance. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "pet_services_020",
+    "label": "Pet Services 20",
+    "keywords": ["end of life", "hospice", "quality of life", "palliative", "home visit", "gentle care", "vet support", "pain management", "compassion", "guidance", "memorial options", "aftercare", "private", "respectful", "support", "-graphic", "-cheap", "-unlicensed", "-unsafe", "-random", "-DIY", "-insensitive", "-fake", "-rush", "-upsell"],
+    "template": "Compassionate end-of-life support — gentle veterinary care and guidance at every step. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}

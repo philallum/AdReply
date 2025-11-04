@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "automotive",
+    "name": "Automotive Services",
+    "description": "Car repair, maintenance, detailing, and automotive services"
+  },
+  "templates": [
+  {
+    "id": "auto_001",
+    "label": "Car Service Offer",
+    "keywords": ["car","service","repair","maintenance","auto","mechanic","garage","checkup","tune-up","vehicle","shop","inspection","certified","oil","safety","-cheap","-free","-diy","-tutorial","-howto","-politics","-meme","-rant","-spam","-scam","-hiring","-job-post"],
+    "template": "Nice ride! Keep it running smooth with our reliable car servicing and expert mechanics! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_002",
+    "label": "Oil Change Special",
+    "keywords": ["oil","change","maintenance","engine","filter","synthetic","lubrication","garage","service","car","vehicle","checkup","performance","smooth","running","-cheap","-free","-giveaway","-diy","-tutorial","-howto","-spam","-meme","-politics","-rant","-job-post","-hiring"],
+    "template": "Keep your engine healthy! Fast, affordable oil changes done right by trusted pros. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_003",
+    "label": "Tire Service",
+    "keywords": ["tire","tires","wheel","alignment","rotation","balancing","flat","puncture","air","pressure","repair","replace","shop","garage","safety","-bike","-bicycle","-free","-cheap","-diy","-tutorial","-howto","-politics","-meme","-rant","-spam","-job-post"],
+    "template": "Smooth and safe! We handle tire replacements, balancing, and wheel alignments. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_004",
+    "label": "Brake Service",
+    "keywords": ["brake","brakes","pads","rotors","discs","fluid","inspection","safety","stop","sound","repair","garage","service","car","check","-bike","-bicycle","-diy","-cheap","-free","-meme","-politics","-rant","-spam","-tutorial","-howto"],
+    "template": "Safety first! Get your brakes inspected and serviced by certified technicians. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_005",
+    "label": "Engine Diagnostics",
+    "keywords": ["engine","diagnostic","check","light","warning","sensor","performance","issue","repair","car","vehicle","tune","test","error","mechanic","-diy","-free","-cheap","-tutorial","-howto","-politics","-meme","-rant","-spam","-scam","-job-post"],
+    "template": "Engine light on? Our diagnostics pinpoint the problem fast and fix it right! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_006",
+    "label": "Car Detailing",
+    "keywords": ["detail","wash","clean","shine","wax","polish","interior","vacuum","buff","valet","finish","paint","upholstery","smell","refresh","-diy","-home","-cheap","-free","-giveaway","-tutorial","-howto","-meme","-politics","-spam","-job-post"],
+    "template": "Turn heads! Keep your ride spotless with our premium car detailing services. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_007",
+    "label": "Transmission Service",
+    "keywords": ["transmission","gear","shift","fluid","clutch","automatic","manual","repair","replace","maintenance","slipping","drivetrain","torque","service","mechanic","-bike","-bicycle","-diy","-cheap","-free","-tutorial","-howto","-meme","-politics","-spam"],
+    "template": "Smooth shifting guaranteed—expert transmission repair and maintenance. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_008",
+    "label": "AC Repair",
+    "keywords": ["ac","air","conditioning","cool","heat","vent","hvac","car","climate","comfort","blower","compressor","service","repair","garage","-home","-cheap","-free","-tutorial","-howto","-meme","-politics","-rant","-spam","-job-post"],
+    "template": "Stay cool all year—expert AC repairs and recharges for every make and model. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_009",
+    "label": "Battery Service",
+    "keywords": ["battery","dead","jump","start","charging","alternator","replace","power","car","truck","van","garage","service","testing","voltage","-free","-cheap","-giveaway","-tutorial","-howto","-meme","-politics","-spam","-job-post","-scam"],
+    "template": "Battery low? We test, charge, and replace car batteries fast—stay powered up! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_010",
+    "label": "Roadside Assistance",
+    "keywords": ["roadside","tow","emergency","help","rescue","flat tire","jump start","lockout","fuel","battery","accident","car","truck","24/7","breakdown","-insurance","-claim","-policy","-cheap","-free","-spam","-meme","-politics","-rant","-scam"],
+    "template": "Stranded? Our 24/7 roadside assistance will get you back on the road fast. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_011",
+    "label": "Pre-Purchase Inspection",
+    "keywords": ["inspection","buying","purchase","check","used car","secondhand","report","mechanic","test drive","evaluate","condition","mileage","service","review","verify","-cheap","-free","-meme","-politics","-rant","-spam","-scam","-job-post"],
+    "template": "Buying a car? Get peace of mind with a professional pre-purchase inspection. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_012",
+    "label": "Suspension Repair",
+    "keywords": ["suspension","shock","strut","ride","spring","alignment","bounce","comfort","smooth","noise","vibration","control","steering","handling","garage","-bike","-bicycle","-free","-cheap","-diy","-meme","-rant","-spam","-politics"],
+    "template": "Bumpy ride? Our suspension experts will have you gliding smoothly again. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_013",
+    "label": "Exhaust Service",
+    "keywords": ["exhaust","muffler","pipe","noise","smoke","emissions","catalytic","converter","replace","repair","leak","garage","car","vehicle","engine","-free","-cheap","-diy","-tutorial","-howto","-politics","-meme","-rant","-spam"],
+    "template": "Noisy exhaust? We repair or replace systems to keep your car running clean and quiet. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_014",
+    "label": "Windshield Repair",
+    "keywords": ["windshield","glass","crack","chip","window","replace","repair","screen","visibility","car","vehicle","safe","seal","installation","service","-home","-diy","-cheap","-free","-meme","-rant","-spam","-politics","-tutorial"],
+    "template": "Cracked or chipped? Quick windshield repair or replacement while you wait. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_015",
+    "label": "Fleet Service",
+    "keywords": ["fleet","business","commercial","truck","maintenance","vehicle","contract","company cars","inspection","oil change","tire rotation","brakes","service plan","repair","-cheap","-free","-spam","-politics","-rant","-job-post","-meme","-scam"],
+    "template": "Run a business fleet? Keep your vehicles reliable with our tailored maintenance plans. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_016",
+    "label": "Classic Car Restoration",
+    "keywords": ["classic","restoration","vintage","antique","collector","muscle car","custom","paint","chrome","upholstery","engine","retro","maintenance","oldtimer","auto show","-cheap","-free","-politics","-rant","-spam","-meme","-job-post","-diy"],
+    "template": "Love your classic? We restore vintage cars to their original beauty and performance. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_017",
+    "label": "Performance Upgrades",
+    "keywords": ["performance","upgrade","tuning","power","horsepower","chip","ecu","exhaust","turbo","supercharger","engine","intake","speed","mods","custom","-bike","-bicycle","-cheap","-free","-spam","-politics","-rant","-job-post","-meme"],
+    "template": "Want more power? We offer performance tuning and upgrades built to thrill. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_018",
+    "label": "Motorcycle Service",
+    "keywords": ["motorcycle","bike","service","repair","tune-up","brake","chain","tire","oil change","inspection","mechanic","garage","motorbike","shop","safety","-bicycle","-electric scooter","-cheap","-free","-diy","-tutorial","-meme","-politics"],
+    "template": "Nice bike! From oil changes to full rebuilds, we keep motorcycles running like new. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_019",
+    "label": "Diesel Service",
+    "keywords": ["diesel","truck","heavy","duty","engine","injector","turbo","fuel","filter","maintenance","repair","fleet","power","service","mechanic","-bike","-bicycle","-cheap","-free","-tutorial","-howto","-politics","-meme","-rant"],
+    "template": "Drive diesel? Our technicians specialize in diesel repair, tuning, and maintenance. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "auto_020",
+    "label": "Hybrid Service",
+    "keywords": ["hybrid","electric","ev","battery","prius","charging","eco","motor","green","plug-in","inspection","diagnostic","service","maintenance","certified","-bike","-bicycle","-cheap","-free","-tutorial","-howto","-politics","-meme","-spam"],
+    "template": "Drive hybrid or EV? Certified specialists handle battery and system maintenance. {url}",
+    "isPrebuilt": true
+  }
+]
+}

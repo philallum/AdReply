@@ -532,6 +532,7 @@
 </head>
 <body>
     <script src="../scripts/usage-tracker.js"></script>
+    <script src="../storage/template-loader.js"></script>
     <div class="header">
         <h1>AdReply</h1>
         <p>Facebook Comment Assistant</p>
@@ -598,8 +599,17 @@
     <!-- Templates Tab - Template management -->
     <div id="templates" class="tab-content">
         <div class="template-header">
-            <h3>Advertisement Templates</h3>
-            <button class="btn btn-small" id="addTemplateBtn">+ Add Template</button>
+            <h3>Custom Templates</h3>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-small" id="addTemplateBtn">+ Add Template</button>
+                <button class="btn btn-small secondary" id="managePacksBtn">Manage Template Packs</button>
+            </div>
+        </div>
+        
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 4px; margin-bottom: 16px; font-size: 12px;">
+            <strong>📦 300+ Prebuilt Templates Available</strong><br>
+            Professional templates are automatically loaded from 20 business categories. 
+            <a href="#" id="viewPrebuiltBtn" style="color: #1976d2;">View & customize template packs</a>
         </div>
 
         <div id="templatesList" class="templates-list">
@@ -616,29 +626,42 @@
 
             <div class="form-group">
                 <label for="templateCategory">Category</label>
-                <select id="templateCategory" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
-                    <option value="custom">Custom</option>
-                    <option value="automotive">Automotive Services</option>
-                    <option value="fitness">Fitness & Health</option>
-                    <option value="food">Food & Restaurants</option>
-                    <option value="home-services">Home Services</option>
-                    <option value="beauty">Beauty & Wellness</option>
-                    <option value="real-estate">Real Estate</option>
-                    <option value="technology">Technology Services</option>
-                    <option value="education">Education & Training</option>
-                    <option value="financial">Financial Services</option>
-                    <option value="legal">Legal Services</option>
-                    <option value="pet-services">Pet Services</option>
-                    <option value="events">Event Planning</option>
-                    <option value="photography">Photography</option>
-                    <option value="crafts">Crafts & Handmade</option>
-                    <option value="construction">Construction</option>
-                    <option value="transportation">Transportation</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="retail">Retail & E-commerce</option>
-                    <option value="professional">Professional Services</option>
-                    <option value="healthcare">Healthcare</option>
-                </select>
+                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                    <select id="templateCategory" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
+                        <option value="custom">Custom</option>
+                        <option value="automotive">Automotive Services</option>
+                        <option value="fitness">Fitness & Health</option>
+                        <option value="food">Food & Restaurants</option>
+                        <option value="home-services">Home Services</option>
+                        <option value="beauty">Beauty & Wellness</option>
+                        <option value="real-estate">Real Estate</option>
+                        <option value="technology">Technology Services</option>
+                        <option value="education">Education & Training</option>
+                        <option value="financial">Financial Services</option>
+                        <option value="legal">Legal Services</option>
+                        <option value="pet-services">Pet Services</option>
+                        <option value="events">Event Planning</option>
+                        <option value="photography">Photography</option>
+                        <option value="crafts">Crafts & Handmade</option>
+                        <option value="construction">Construction</option>
+                        <option value="transportation">Transportation</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="retail">Retail & E-commerce</option>
+                        <option value="professional">Professional Services</option>
+                        <option value="healthcare">Healthcare</option>
+                    </select>
+                    <button type="button" class="btn btn-small secondary" id="addCategoryBtn" style="white-space: nowrap;">+ Category</button>
+                </div>
+            </div>
+
+            <!-- Custom Category Form (hidden by default) -->
+            <div id="customCategoryForm" class="form-group" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 4px; margin-top: 8px;">
+                <label for="newCategoryName">New Category Name</label>
+                <input type="text" id="newCategoryName" placeholder="e.g., My Business Category" style="width: 100%; padding: 6px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-small" id="saveCategoryBtn">Save Category</button>
+                    <button type="button" class="btn btn-small secondary" id="cancelCategoryBtn">Cancel</button>
+                </div>
             </div>
 
             <div class="form-group">
@@ -654,10 +677,7 @@
                 <textarea id="templateContent" placeholder="Great build! If you need custom exhaust work, we do same-day fitting — {site}."></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="templateVariants">Variants (one per line)</label>
-                <textarea id="templateVariants" placeholder="Looks ace. We do performance exhaust installs same day — {site}.&#10;Nice work! If you want a quick exhaust swap, we can fit it today — {site}."></textarea>
-            </div>
+            <!-- Variants removed - each template is now tracked individually -->
 
             <div class="form-group">
                 <label for="templateUrl">Website URL (automatically added to comments)</label>

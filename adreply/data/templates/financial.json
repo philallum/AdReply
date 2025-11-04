@@ -1,0 +1,149 @@
+{
+  "category": {
+    "id": "financial",
+    "name": "Financial Services",
+    "description": "Insurance, loans, accounting, and financial consulting"
+  },
+  "templates": [
+  {
+    "id": "financial_001",
+    "label": "Financial Services 1",
+    "keywords": ["financial", "money", "planning", "advisor", "wealth management", "budgeting", "retirement plan", "savings", "investment", "tax advice", "financial goals", "portfolio", "consulting", "strategy", "advisory", "-scam", "-get rich", "-crypto", "-free money", "-gambling", "-unlicensed", "-scheme", "-fake", "-risk", "-loan shark"],
+    "template": "Build a secure future with trusted financial advisors who put your goals first. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_002",
+    "label": "Financial Services 2",
+    "keywords": ["insurance", "coverage", "protection", "life insurance", "health", "auto", "home insurance", "policy", "advisor", "risk management", "financial safety", "family protection", "peace of mind", "insurance quote", "trust", "-scam", "-cheap", "-fake", "-unlicensed", "-pyramid", "-gamble", "-scheme", "-risk", "-random", "-bogus"],
+    "template": "Protect what matters most — get personalized insurance coverage you can count on. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_003",
+    "label": "Financial Services 3",
+    "keywords": ["accounting", "taxes", "bookkeeping", "finance", "audit", "CPA", "financial report", "tax return", "invoicing", "small business", "records", "payroll", "compliance", "advisory", "consulting", "-cheap", "-free", "-unlicensed", "-fake", "-unverified", "-random", "-illegal", "-bot", "-quick fix", "-scheme"],
+    "template": "Stay tax-ready all year — expert accounting and bookkeeping services you can trust. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_004",
+    "label": "Financial Services 4",
+    "keywords": ["loan", "credit", "financing", "business loan", "personal loan", "mortgage", "auto finance", "low rate", "debt management", "credit score", "approval", "financial help", "borrow", "lending", "capital", "-payday", "-loan shark", "-quick cash", "-unlicensed", "-scam", "-scheme", "-pyramid", "-fake", "-gambling", "-free"],
+    "template": "Flexible financing made simple — get approved for the credit or loan you need. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_005",
+    "label": "Financial Services 5",
+    "keywords": ["investment", "retirement", "savings", "financial growth", "wealth", "portfolio", "advisor", "IRA", "mutual fund", "stocks", "planning", "long term", "compound interest", "strategy", "secure future", "-crypto", "-get rich", "-scam", "-pyramid", "-gambling", "-fake", "-quick profit", "-unlicensed", "-random", "-scheme"],
+    "template": "Invest with confidence — grow your savings and plan for a stronger financial future. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_006",
+    "label": "Financial Services 6",
+    "keywords": ["financial", "money", "advisor", "planning", "retirement", "budget", "wealth management", "goals", "savings", "investment", "consultation", "strategy", "plan", "advice", "tax", "-crypto", "-get rich", "-fake", "-scam", "-pyramid", "-free money", "-gambling", "-bot", "-risk", "-scheme"],
+    "template": "Take control of your finances with expert planning tailored to your goals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_007",
+    "label": "Financial Services 7",
+    "keywords": ["insurance", "coverage", "protection", "family", "policy", "advisor", "life insurance", "health", "car insurance", "home", "risk management", "trust", "financial safety", "quote", "peace of mind", "-fake", "-cheap", "-unlicensed", "-random", "-bogus", "-pyramid", "-scheme", "-gambling", "-free money", "-risk"],
+    "template": "Comprehensive insurance protection designed to safeguard your future. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_008",
+    "label": "Financial Services 8",
+    "keywords": ["accounting", "tax", "bookkeeping", "audit", "records", "finance", "reporting", "CPA", "consulting", "invoicing", "small business", "compliance", "filing", "tax season", "expert", "-fake", "-cheap", "-unverified", "-bot", "-free", "-scheme", "-illegal", "-random", "-scam", "-unlicensed"],
+    "template": "Accurate accounting and stress-free tax prep — handled by professionals. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_009",
+    "label": "Financial Services 9",
+    "keywords": ["loan", "credit", "financing", "debt", "mortgage", "business loan", "personal", "approval", "capital", "borrow", "interest rate", "funding", "financial help", "installment", "secure", "-payday", "-scam", "-unlicensed", "-scheme", "-pyramid", "-fake", "-quick cash", "-get rich", "-gambling", "-free"],
+    "template": "Simple, transparent loans with competitive rates and trusted service. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_010",
+    "label": "Financial Services 10",
+    "keywords": ["investment", "retirement", "savings", "financial growth", "advisor", "wealth", "long-term", "stocks", "mutual fund", "IRA", "strategy", "portfolio", "tax planning", "secure", "future", "-crypto", "-fake", "-scam", "-scheme", "-get rich", "-gambling", "-quick profit", "-bot", "-free", "-unlicensed"],
+    "template": "Plan, save, and invest smarter — expert guidance for lasting wealth. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_011",
+    "label": "Financial Services 11",
+    "keywords": ["financial", "advisor", "planning", "wealth", "money", "savings", "budgeting", "consulting", "strategy", "portfolio", "goal setting", "retirement", "advice", "management", "plan", "-scam", "-fake", "-crypto", "-get rich", "-scheme", "-free money", "-pyramid", "-bot", "-gambling", "-unlicensed"],
+    "template": "Expert financial advice for every stage of life — plan smarter today. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_012",
+    "label": "Financial Services 12",
+    "keywords": ["insurance", "coverage", "protection", "policy", "advisor", "trust", "risk management", "life", "health", "property", "car", "home", "family", "peace of mind", "security", "-fake", "-scam", "-unlicensed", "-bogus", "-pyramid", "-scheme", "-cheap", "-random", "-get rich", "-gambling"],
+    "template": "Stay protected with trusted insurance plans built around your needs. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_013",
+    "label": "Financial Services 13",
+    "keywords": ["accounting", "taxes", "bookkeeping", "audit", "records", "finance", "filing", "CPA", "compliance", "report", "advisory", "consulting", "business", "tax return", "expert", "-cheap", "-fake", "-free", "-random", "-bot", "-scam", "-illegal", "-unlicensed", "-scheme", "-quick fix"],
+    "template": "Get your books balanced and your taxes right — professional accounting made easy. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_014",
+    "label": "Financial Services 14",
+    "keywords": ["loan", "credit", "financing", "business", "mortgage", "personal", "borrow", "approval", "rate", "funding", "capital", "secure", "financial help", "installment", "support", "-payday", "-scam", "-fake", "-unlicensed", "-pyramid", "-scheme", "-quick cash", "-get rich", "-gambling", "-free"],
+    "template": "Unlock your potential with fair, fast, and flexible financing options. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_015",
+    "label": "Financial Services 15",
+    "keywords": ["investment", "retirement", "savings", "advisor", "portfolio", "growth", "long-term", "wealth", "planning", "stocks", "mutual fund", "IRA", "tax efficiency", "goal setting", "strategy", "-crypto", "-get rich", "-fake", "-pyramid", "-scheme", "-scam", "-gambling", "-bot", "-free", "-unlicensed"],
+    "template": "Start building wealth today — expert investment and retirement strategies that last. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_016",
+    "label": "Financial Services 16",
+    "keywords": ["financial", "advisor", "planning", "wealth", "budgeting", "retirement", "savings", "consulting", "portfolio", "goals", "strategy", "money", "advice", "management", "investment", "-crypto", "-get rich", "-scam", "-fake", "-pyramid", "-scheme", "-bot", "-gambling", "-unlicensed", "-free money"],
+    "template": "Trusted financial planners helping you manage, save, and invest with confidence. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_017",
+    "label": "Financial Services 17",
+    "keywords": ["insurance", "coverage", "protection", "policy", "advisor", "family", "life insurance", "health", "auto", "home", "risk", "trust", "financial safety", "support", "peace of mind", "-fake", "-cheap", "-unlicensed", "-bogus", "-scheme", "-scam", "-random", "-get rich", "-gambling", "-free"],
+    "template": "Reliable insurance coverage that gives you and your family peace of mind. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_018",
+    "label": "Financial Services 18",
+    "keywords": ["accounting", "tax", "finance", "bookkeeping", "audit", "business", "CPA", "records", "reporting", "filing", "consulting", "advice", "organization", "compliance", "accuracy", "-cheap", "-fake", "-unverified", "-random", "-bot", "-free", "-illegal", "-scam", "-scheme", "-quick fix"],
+    "template": "Keep your finances in order — precise accounting and expert financial reporting. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_019",
+    "label": "Financial Services 19",
+    "keywords": ["loan", "credit", "financing", "mortgage", "auto", "business loan", "personal", "funding", "approval", "rate", "capital", "secure", "financial help", "debt management", "support", "-payday", "-scam", "-unlicensed", "-fake", "-scheme", "-quick cash", "-get rich", "-pyramid", "-gambling", "-free"],
+    "template": "From mortgages to business loans — flexible financing designed around you. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "financial_020",
+    "label": "Financial Services 20",
+    "keywords": ["investment", "retirement", "savings", "planning", "advisor", "wealth", "strategy", "portfolio", "growth", "tax", "goal setting", "secure future", "long-term", "stability", "financial freedom", "-crypto", "-get rich", "-fake", "-pyramid", "-scheme", "-scam", "-bot", "-gambling", "-free", "-unlicensed"],
+    "template": "Your financial freedom starts here — personalized investment and savings strategies. {url}",
+    "isPrebuilt": true
+  }
+]
+}

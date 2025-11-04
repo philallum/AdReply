@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Pack Manager</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .category-header {
+            padding: 16px;
+            background: #007bff;
+            color: white;
+        }
+
+        .category-header h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+        }
+
+        .category-header p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .category-content {
+            padding: 16px;
+        }
+
+        .category-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+
+        .customized-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .import-export-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .file-input {
+            margin: 10px 0;
+        }
+
+        .file-input input[type="file"] {
+            display: none;
+        }
+
+        .file-input label {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .template-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .template-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f3f4;
+            font-size: 12px;
+        }
+
+        .template-item:last-child {
+            border-bottom: none;
+        }
+
+        .template-label {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .template-text {
+            color: #6c757d;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Template Pack Manager</h1>
+        <p>Customize, import, and export your template collections</p>
+    </div>
+
+    <div class="category-grid" id="categoryGrid">
+        <!-- Categories will be loaded here -->
+    </div>
+
+    <div class="import-export-section">
+        <h3>Import & Export Template Packs</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+            <div style="flex: 1;">
+                <h4>Import Template Pack</h4>
+                <div class="file-input">
+                    <label for="importFile">Choose JSON File</label>
+                    <input type="file" id="importFile" accept=".json" />
+                </div>
+                <button class="btn btn-primary" id="importBtn">Import Template Pack</button>
+            </div>
+            
+            <div style="flex: 1;">
+                <h4>Export Template Pack</h4>
+                <select id="exportCategory" style="width: 100%; padding: 8px; margin: 10px 0;">
+                    <option value="">Select category to export...</option>
+                </select>
+                <button class="btn btn-success" id="exportBtn">Export Template Pack</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Preview Modal -->
+    <div id="templateModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Template Pack Preview</h3>
+            <div id="modalContent">
+                <!-- Template list will be shown here -->
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Load dependencies -->
+    <script src="../storage/template-loader.js"></script>
+    
+    <script>
+        let templateLoader;
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', async () => {
+            templateLoader = new TemplateLoader();
+            await loadCategories();
+            setupEventListeners();
+        });
+        
+        async function loadCategories() {
+            const grid = document.getElementById('categoryGrid');
+            const exportSelect = document.getElementById('exportCategory');
+            
+            grid.innerHTML = '<div style="text-align: center; padding: 40px;">Loading categories...</div>';
+            exportSelect.innerHTML = '<option value="">Select category to export...</option>';
+            
+            const categories = templateLoader.getAvailableCategories();
+            grid.innerHTML = '';
+            
+            for (const categoryId of categories) {
+                const info = await templateLoader.getTemplatePackInfo(categoryId);
+                if (info) {
+                    createCategoryCard(info);
+                    
+                    // Add to export dropdown
+                    const option = document.createElement('option');
+                    option.value = categoryId;
+                    option.textContent = info.categoryName;
+                    exportSelect.appendChild(option);
+                }
+            }
+        }
+        
+        function createCategoryCard(info) {
+            const grid = document.getElementById('categoryGrid');
+            
+            const card = document.createElement('div');
+            card.className = 'category-card';
+            
+            card.innerHTML = `
+                <div class="category-header">
+                    <h3>
+                        ${info.categoryName}
+                        ${info.isCustomized ? '<span class="customized-badge">CUSTOMIZED</span>' : ''}
+                    </h3>
+                    <p>${info.description}</p>
+                </div>
+                <div class="category-content">
+                    <div class="category-stats">
+                        <span>${info.templateCount} templates</span>
+                        ${info.lastModified ? `<span>Modified: ${new Date(info.lastModified).toLocaleDateString()}</span>` : ''}
+                    </div>
+                    <div class="category-actions">
+                        <button class="btn btn-primary btn-small" onclick="previewTemplates('${info.categoryId}')">Preview</button>
+                        <button class="btn btn-secondary btn-small" onclick="exportCategory('${info.categoryId}')">Export</button>
+                        ${info.isCustomized ? 
+                            `<button class="btn btn-warning btn-small" onclick="resetCategory('${info.categoryId}')">Reset</button>` : 
+                            ''
+                        }
+                    </div>
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        }
+        
+        async function previewTemplates(categoryId) {
+            const categoryData = await templateLoader.loadCategoryTemplates(categoryId);
+            if (!categoryData) return;
+            
+            const modal = document.getElementById('templateModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            title.textContent = `${categoryData.category.name} Templates`;
+            
+            const templateList = document.createElement('div');
+            templateList.className = 'template-list';
+            
+            categoryData.templates.forEach(template => {
+                const item = document.createElement('div');
+                item.className = 'template-item';
+                item.innerHTML = `
+                    <div class="template-label">${template.label}</div>
+                    <div class="template-text">${template.template}</div>
+                    <div style="font-size: 10px; color: #999; margin-top: 4px;">
+                        Keywords: ${template.keywords.join(', ')}
+                    </div>
+                `;
+                templateList.appendChild(item);
+            });
+            
+            content.innerHTML = '';
+            content.appendChild(templateList);
+            
+            modal.style.display = 'block';
+        }
+        
+        async function exportCategory(categoryId) {
+            try {
+                const jsonData = await templateLoader.exportTemplatePack(categoryId);
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${categoryId}-templates.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification(`Template pack exported successfully!`, 'success');
+            } catch (error) {
+                showNotification(`Export failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function resetCategory(categoryId) {
+            if (!confirm('Reset this category to default templates? This will remove all customizations.')) {
+                return;
+            }
+            
+            try {
+                const success = await templateLoader.resetCategoryToDefault(categoryId);
+                if (success) {
+                    showNotification('Category reset to default templates', 'success');
+                    await loadCategories(); // Reload to show changes
+                } else {
+                    showNotification('Failed to reset category', 'error');
+                }
+            } catch (error) {
+                showNotification(`Reset failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('importBtn').addEventListener('click', importTemplatePack);
+            document.getElementById('exportBtn').addEventListener('click', exportSelectedCategory);
+        }
+        
+        async function importTemplatePack() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Please select a JSON file to import', 'error');
+                return;
+            }
+            
+            try {
+                const jsonData = await file.text();
+                const result = await templateLoader.importTemplatePack(jsonData);
+                
+                if (result.success) {
+                    showNotification(`Imported ${result.templateCount} templates for ${result.categoryName}`, 'success');
+                    await loadCategories(); // Reload to show changes
+                    fileInput.value = ''; // Clear file input
+                } else {
+                    showNotification(`Import failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showNotification(`Import failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function exportSelectedCategory() {
+            const categoryId = document.getElementById('exportCategory').value;
+            if (!categoryId) {
+                showNotification('Please select a category to export', 'error');
+                return;
+            }
+            
+            await exportCategory(categoryId);
+        }
+        
+        function closeModal() {
+            document.getElementById('templateModal').style.display = 'none';
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('templateModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

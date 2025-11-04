@@ -1,0 +1,150 @@
+{
+  "category": {
+    "id": "retail",
+    "name": "Retail & E-commerce",
+    "description": "Online stores, boutiques, and retail businesses"
+  },
+  "templates": [
+  {
+    "id": "retail_001",
+    "label": "Retail & E-commerce 1",
+    "keywords": ["shop", "store", "retail", "buy", "shopping", "browse", "local store", "in stock", "customer service", "brand new", "exclusive", "collection", "trusted", "secure checkout", "fast shipping", "-cheap knockoffs", "-fake", "-scam", "-unverified", "-unsafe", "-pirated", "-counterfeit", "-random seller", "-spam", "-no return"],
+    "template": "Shop smarter — explore trusted products and friendly service at our retail store! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_002",
+    "label": "Retail & E-commerce 2",
+    "keywords": ["online", "ecommerce", "website", "shopping", "digital store", "checkout", "deals", "cart", "fast shipping", "secure payment", "customer reviews", "inventory", "returns", "exclusive offers", "gift cards", "-cheap clones", "-unsafe", "-fake", "-spam", "-scam", "-unverified", "-pirated", "-no support", "-broken", "-template only"],
+    "template": "Shop online with ease — secure checkout, fast delivery, and exclusive offers! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_003",
+    "label": "Retail & E-commerce 3",
+    "keywords": ["boutique", "fashion", "style", "clothing", "trendy", "collection", "handpicked", "accessories", "outfits", "seasonal", "designer", "lookbook", "inspired", "unique", "quality", "-cheap fakes", "-fast fashion", "-unsafe", "-random seller", "-counterfeit", "-spam", "-copycat", "-unverified", "-no reviews", "-scam"],
+    "template": "Find your style — curated boutique fashion made for confidence and comfort. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_004",
+    "label": "Retail & E-commerce 4",
+    "keywords": ["sale", "discount", "deal", "promo", "offer", "clearance", "flash sale", "bestseller", "bundle", "coupon", "special price", "save", "value", "limited time", "exclusive", "-spam", "-fake codes", "-clickbait", "-unsafe", "-random", "-unverified", "-scam", "-expired", "-cheap knockoffs", "-no returns"],
+    "template": "Save more today — limited-time sales and exclusive deals on your favorite items! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_005",
+    "label": "Retail & E-commerce 5",
+    "keywords": ["gift", "present", "special", "unique", "holiday", "birthday", "anniversary", "occasion", "packaging", "card", "delivery", "thoughtful", "handpicked", "curated", "surprise", "-spam", "-cheap junk", "-fake", "-unsafe", "-random", "-unverified", "-counterfeit", "-low quality", "-scam", "-template only"],
+    "template": "Find the perfect gift — thoughtful, quality presents for every special occasion. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_006",
+    "label": "Retail & E-commerce 6",
+    "keywords": ["shop", "store", "retail", "buy", "local business", "downtown", "boutique", "customer service", "exclusive items", "support local", "curated", "quality products", "in-store pickup", "seasonal", "friendly staff", "-unsafe", "-fake", "-unverified", "-spam", "-random", "-cheap", "-scam", "-pirated", "-counterfeit", "-no returns"],
+    "template": "Shop local — discover curated goods and personalized service in-store. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_007",
+    "label": "Retail & E-commerce 7",
+    "keywords": ["online", "ecommerce", "shopping", "mobile", "fast checkout", "responsive", "UX", "customer experience", "free shipping", "exclusive", "returns", "tracking", "payment options", "trust", "convenience", "-unsafe", "-spam", "-fake", "-broken site", "-random", "-scam", "-cheap clone", "-no SSL", "-unverified", "-pirated"],
+    "template": "Shop from anywhere — fast, safe, and mobile-friendly online shopping made simple. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_008",
+    "label": "Retail & E-commerce 8",
+    "keywords": ["boutique", "fashion", "style", "apparel", "handmade", "independent", "trending", "seasonal", "lookbook", "vintage", "designer", "personalized", "unique finds", "colorful", "modern", "-cheap", "-counterfeit", "-fake", "-unsafe", "-fast fashion", "-spam", "-random", "-unverified", "-low quality", "-scam"],
+    "template": "Discover something unique — independent boutique fashion with real personality. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_009",
+    "label": "Retail & E-commerce 9",
+    "keywords": ["sale", "discount", "deal", "clearance", "coupon", "bargain", "bundle", "save", "loyalty", "flash sale", "promo code", "value", "event", "weekend sale", "storewide", "-fake codes", "-spam", "-clickbait", "-unsafe", "-expired", "-random", "-scam", "-unverified", "-cheap", "-no returns"],
+    "template": "Hot deals this week — shop limited-time discounts and value bundles before they’re gone! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_010",
+    "label": "Retail & E-commerce 10",
+    "keywords": ["gift", "present", "special", "holiday", "packaging", "wrapping", "thoughtful", "luxury", "experience", "subscription box", "exclusive", "unique", "gifting ideas", "for him", "for her", "-spam", "-cheap", "-fake", "-unsafe", "-random", "-counterfeit", "-unverified", "-scam", "-junk", "-no return"],
+    "template": "Beautifully wrapped, thoughtfully chosen — gifts that make every occasion memorable. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_011",
+    "label": "Retail & E-commerce 11",
+    "keywords": ["shop", "store", "retail", "buy", "inventory", "bestseller", "customer favorites", "shopping experience", "easy returns", "brand", "trust", "loyalty", "membership", "seasonal picks", "offers", "-cheap", "-fake", "-spam", "-unsafe", "-unverified", "-random", "-pirated", "-scam", "-counterfeit", "-no return"],
+    "template": "Your favorite products, in stock and ready to ship — shop our top sellers now! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_012",
+    "label": "Retail & E-commerce 12",
+    "keywords": ["online", "ecommerce", "website", "shop", "collection", "exclusive drops", "preorder", "back in stock", "shipping", "reviews", "customer care", "secure payment", "UX", "responsive", "promo", "-unsafe", "-broken site", "-spam", "-fake", "-cheap clone", "-no SSL", "-random", "-scam", "-unverified", "-pirated"],
+    "template": "New arrivals just landed — shop our latest online collection today! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_013",
+    "label": "Retail & E-commerce 13",
+    "keywords": ["boutique", "fashion", "style", "clothing", "handpicked", "collection", "curated", "exclusive", "quality", "luxury", "limited edition", "seasonal", "lookbook", "inspired", "trend", "-fake", "-cheap", "-unsafe", "-spam", "-random", "-fast fashion", "-unverified", "-counterfeit", "-low quality", "-scam"],
+    "template": "Luxury boutique fashion — limited collections with timeless appeal. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_014",
+    "label": "Retail & E-commerce 14",
+    "keywords": ["sale", "discount", "deal", "offer", "promo", "bundle", "coupon", "limited", "bestseller", "event", "storewide", "exclusive", "holiday", "save", "flash sale", "-expired", "-spam", "-fake codes", "-scam", "-unsafe", "-cheap", "-random", "-no returns", "-unverified", "-clickbait"],
+    "template": "Limited-time sale — enjoy exclusive discounts on top-rated products today! {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_015",
+    "label": "Retail & E-commerce 15",
+    "keywords": ["gift", "present", "special", "holiday", "unique", "bundle", "gift ideas", "luxury", "thoughtful", "personalized", "wrap", "occasion", "exclusive", "surprise", "limited", "-spam", "-cheap", "-fake", "-unsafe", "-counterfeit", "-scam", "-unverified", "-low quality", "-random", "-junk"],
+    "template": "Gifting made simple — unique, personalized presents they’ll love. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_016",
+    "label": "Retail & E-commerce 16",
+    "keywords": ["home goods", "decor", "lifestyle", "interior", "accessories", "modern", "quality", "collection", "furniture", "giftable", "cozy", "seasonal", "trending", "artisanal", "aesthetic", "-cheap", "-fake", "-unsafe", "-random", "-unverified", "-spam", "-low quality", "-scam", "-copycat", "-pirated"],
+    "template": "Refresh your home — shop modern decor, furniture, and lifestyle essentials. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_017",
+    "label": "Retail & E-commerce 17",
+    "keywords": ["electronics", "tech", "gadgets", "devices", "accessories", "charging", "audio", "smart home", "innovation", "latest", "high quality", "reliable", "secure", "trusted", "reviews", "-counterfeit", "-fake", "-cheap", "-unsafe", "-spam", "-pirated", "-scam", "-unverified", "-random", "-no warranty"],
+    "template": "Smart tech, smarter prices — shop quality electronics and trusted accessories. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_018",
+    "label": "Retail & E-commerce 18",
+    "keywords": ["beauty", "skincare", "makeup", "fragrance", "self care", "wellness", "organic", "natural", "cruelty-free", "vegan", "premium", "hydration", "routine", "glow", "essentials", "-unsafe", "-fake", "-unverified", "-counterfeit", "-cheap", "-spam", "-scam", "-random", "-expired", "-template only"],
+    "template": "Beauty that feels good — clean, cruelty-free skincare and wellness essentials. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_019",
+    "label": "Retail & E-commerce 19",
+    "keywords": ["toys", "kids", "games", "educational", "learning", "fun", "safe", "family", "giftable", "creative", "interactive", "collection", "trusted brand", "durable", "affordable", "-unsafe", "-fake", "-cheap", "-pirated", "-broken", "-scam", "-spam", "-unverified", "-random", "-no warranty"],
+    "template": "Fun for all ages — safe, educational, and creative toys your kids will love. {url}",
+    "isPrebuilt": true
+  },
+  {
+    "id": "retail_020",
+    "label": "Retail & E-commerce 20",
+    "keywords": ["eco friendly", "sustainable", "green", "ethical", "organic", "handmade", "local", "responsible", "plastic-free", "natural", "zero waste", "refill", "recycled", "quality", "planet friendly", "-fake", "-cheap", "-unsafe", "-spam", "-scam", "-unverified", "-random", "-greenwashing", "-counterfeit", "-template only"],
+    "template": "Shop sustainably — eco-friendly products that make a real difference. {url}",
+    "isPrebuilt": true
+  }
+]
+
+}
