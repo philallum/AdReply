@@ -88,19 +88,18 @@ The large monolithic `sidepanel-safe.js` files (1,200-1,500 lines) have been suc
 | **Before** | ~2,663 lines | 2 large files |
 | **After** | ~1,400 lines | 7 focused modules |
 
-## Cleanup Recommendations
+## Cleanup Completed ✅
 
-The following files can now be safely removed:
+All unused files have been moved to the `unused/` folder for safe keeping:
 
-```bash
-# Legacy monolithic files (no longer used)
-rm ui/sidepanel-safe.js
-rm ui/sidepanel-safe.html  
-rm ui/sidepanel.js
-rm ui/sidepanel.html
-rm adreply/ui/sidepanel-safe.js
-rm adreply/ui/sidepanel-safe.html
-```
+### Moved Files:
+- **Legacy Sidepanel Files**: `sidepanel-safe.js/html`, `sidepanel.js/html`
+- **Legacy Scripts**: `background.js`, `content.js`, `content-facebook-safe.js`, `content-stealth.js`
+- **Legacy UI Components**: `category-functionality.js`, `template-database.js`
+- **Test Files**: All `test-*.html` files and test scripts
+- **Debug Files**: `diagnostic.html`, `verify-category-filter.js`
+
+### Files can be permanently deleted from `unused/` folder when confident migration is successful.
 
 ## Testing Required
 
