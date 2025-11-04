@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Category Implementation Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        facebook: {
+                            blue: '#1877f2',
+                            hover: '#166fe5',
+                            light: '#e7f3ff',
+                            gray: '#65676b',
+                            lightgray: '#f2f3f5',
+                            border: '#e4e6ea'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="w-80 min-h-screen bg-gray-50 font-sans text-sm leading-relaxed text-gray-800">
+    <div class="p-4">
+        <h1 class="text-lg font-semibold mb-4 text-facebook-blue">Category Implementation Test</h1>
+        
+        <!-- Replicate the exact structure from sidepanel.html -->
+        <section class="suggestions-section" aria-labelledby="suggestions-heading">
+            <h2 class="text-base font-semibold mb-3 text-gray-900" id="suggestions-heading">Comment Suggestions</h2>
+            
+            <!-- Category Selection -->
+            <div class="category-selection mb-4">
+                <label for="categorySelect" class="block text-sm font-medium text-gray-700 mb-2">
+                    Business Category
+                </label>
+                <select id="categorySelect" 
+                        class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-facebook-blue focus:border-transparent bg-white"
+                        aria-label="Select your business category to prioritize relevant templates">
+                    <option value="">All Categories</option>
+                    <!-- Categories will be populated by JavaScript -->
+                </select>
+                <p class="text-xs text-gray-500 mt-1">
+                    Select your business category to get more relevant advertisement suggestions
+                </p>
+            </div>
+            
+            <div class="suggestions-container bg-white rounded-lg border border-facebook-border min-h-32" 
+                 id="suggestionsContainer" 
+                 role="region" 
+                 aria-label="Comment suggestions list"
+                 aria-live="polite">
+                <div class="no-suggestions p-6 text-center text-facebook-gray" role="status">
+                    <div class="mb-2" aria-hidden="true">
+                        <svg class="w-8 h-8 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm">No suggestions available. Navigate to a Facebook group post to see relevant comment suggestions.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Test Status -->
+        <div class="mt-6 p-4 bg-white rounded-lg border">
+            <h3 class="font-medium mb-2">Test Status</h3>
+            <div id="testStatus" class="text-sm text-gray-600">Initializing...</div>
+            <div id="testResults" class="mt-2 space-y-1"></div>
+        </div>
+        
+        <!-- Test Controls -->
+        <div class="mt-4 space-y-2">
+            <button id="testLoadCategories" class="w-full px-4 py-2 bg-facebook-blue text-white rounded-md hover:bg-facebook-hover">
+                Test Load Categories
+            </button>
+            <button id="testSavePreference" class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                Test Save Preference
+            </button>
+            <button id="testLoadPreference" class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                Test Load Preference
+            </button>
+        </div>
+    </div>
+
+    <!-- Load all required scripts in the correct order -->
+    <script src="storage/data-models.js"></script>
+    <script src="storage/indexeddb-manager.js"></script>
+    <script src="storage/chrome-storage-manager.js"></script>
+    <script src="storage/storage-manager.js"></script>
+    <script src="storage/category-manager.js"></script>
+    <script src="ui/category-functionality.js"></script>
+    
+    <script>
+        // Mock Chrome storage for testing
+        if (typeof chrome === 'undefined') {
+            window.chrome = {
+                storage: {
+                    local: {
+                        get: async (keys) => {
+                            const stored = localStorage.getItem('test_settings');
+                            const settings = stored ? JSON.parse(stored) : {};
+                            return { settings };
+                        },
+                        set: async (data) => {
+                            if (data.settings) {
+                                localStorage.setItem('test_settings', JSON.stringify(data.settings));
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        // Test functions
+        function addTestResult(message, success = true) {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `text-xs ${success ? 'text-green-600' : 'text-red-600'}`;
+            resultDiv.textContent = `${success ? '✓' : '✗'} ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function updateStatus(message) {
+            document.getElementById('testStatus').textContent = message;
+        }
+
+        // Test button handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatus('DOM loaded, waiting for category system...');
+            
+            // Wait a bit for the category system to initialize
+            setTimeout(() => {
+                updateStatus('Category system should be initialized');
+                
+                const categorySelect = document.getElementById('categorySelect');
+                if (categorySelect.options.length > 1) {
+                    addTestResult('Categories loaded successfully');
+                } else {
+                    addTestResult('Categories not loaded', false);
+                }
+            }, 2000);
+            
+            // Test buttons
+            document.getElementById('testLoadCategories').addEventListener('click', async () => {
+                try {
+                    await window.CategoryFunctionality.loadCategories();
+                    const categorySelect = document.getElementById('categorySelect');
+                    addTestResult(`Load categories: ${categorySelect.options.length - 1} categories loaded`);
+                } catch (error) {
+                    addTestResult(`Load categories failed: ${error.message}`, false);
+                }
+            });
+            
+            document.getElementById('testSavePreference').addEventListener('click', async () => {
+                try {
+                    const categorySelect = document.getElementById('categorySelect');
+                    if (categorySelect.options.length > 1) {
+                        categorySelect.selectedIndex = 1; // Select first category
+                        await window.CategoryFunctionality.handleCategoryChange(categorySelect.value);
+                        addTestResult(`Save preference: ${categorySelect.options[1].textContent}`);
+                    } else {
+                        addTestResult('No categories available to test', false);
+                    }
+                } catch (error) {
+                    addTestResult(`Save preference failed: ${error.message}`, false);
+                }
+            });
+            
+            document.getElementById('testLoadPreference').addEventListener('click', async () => {
+                try {
+                    const result = await chrome.storage.local.get(['settings']);
+                    const settings = result.settings || {};
+                    const preference = settings.templates?.preferredCategory;
+                    
+                    if (preference) {
+                        addTestResult(`Load preference: ${preference}`);
+                    } else {
+                        addTestResult('No saved preference found');
+                    }
+                } catch (error) {
+                    addTestResult(`Load preference failed: ${error.message}`, false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -193,9 +193,18 @@ class TemplateEngine {
 
   /**
    * Calculate template score based on keyword overlap with post content
-   * @param {Object} template - Template object
+   * Supports negative keywords (prefixed with '-') that exclude templates when matched
+   * 
+   * @param {Object} template - Template object with keywords array
    * @param {Object} extractedData - Extracted keywords and metadata from post
-   * @returns {number} Relevance score (0-1)
+   * @returns {number} Relevance score (0-1), or 0 if negative keywords match
+   * 
+   * @example
+   * // Template with negative keywords
+   * template.keywords = ['car', 'service', '-cheap', '-diy']
+   * // This template will be excluded if post contains 'cheap' or 'diy'
+   * 
+   * // Positive keywords increase score, negative keywords exclude completely
    */
   calculateTemplateScore(template, extractedData) {
     if (!template || !extractedData || !extractedData.keywords) {
@@ -213,9 +222,37 @@ class TemplateEngine {
     let score = 0;
     let matchCount = 0;
     
-    // Calculate keyword matches
+    // Check for negative keywords first - if any match, exclude template completely
     for (const templateKeyword of templateKeywords) {
-      const keywordLower = templateKeyword.toLowerCase();
+      const keywordLower = templateKeyword.toLowerCase().trim();
+      
+      if (keywordLower.startsWith('-')) {
+        const negativeKeyword = keywordLower.substring(1);
+        if (!negativeKeyword) continue;
+        
+        // Check if negative keyword is present in post
+        const hasNegativeMatch = postKeywords.some(postKeyword => {
+          const postKeywordLower = postKeyword.toLowerCase();
+          return postKeywordLower === negativeKeyword || 
+                 postKeywordLower.includes(negativeKeyword) || 
+                 negativeKeyword.includes(postKeywordLower);
+        });
+        
+        if (hasNegativeMatch) {
+          // Negative keyword found - exclude this template completely
+          return 0;
+        }
+      }
+    }
+    
+    // Calculate positive keyword matches
+    for (const templateKeyword of templateKeywords) {
+      const keywordLower = templateKeyword.toLowerCase().trim();
+      
+      // Skip negative keywords (already processed above)
+      if (keywordLower.startsWith('-')) {
+        continue;
+      }
       
       // Check for exact matches
       const exactMatch = postKeywords.some(postKeyword => 

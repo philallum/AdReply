@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "AdReply",
+  "version": "1.0.0",
+  "description": "Intelligent Facebook comment advertising assistance for small business owners and marketers",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "sidePanel",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "https://www.facebook.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "scripts/background-safe.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": [
+        "scripts/content-minimal.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  
+  "side_panel": {
+    "default_path": "ui/sidepanel-safe.html"
+  },
+  
+  "action": {
+    "default_title": "Open AdReply"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["ui/*", "assets/*"],
+      "matches": ["https://www.facebook.com/*"]
+    }
+  ]
+}

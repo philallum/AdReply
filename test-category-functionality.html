@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Category Functionality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-50">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+        <h1 class="text-xl font-bold mb-4">Category Selection Test</h1>
+        
+        <!-- Category Selection -->
+        <div class="category-selection mb-4">
+            <label for="categorySelect" class="block text-sm font-medium text-gray-700 mb-2">
+                Business Category
+            </label>
+            <select id="categorySelect" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                <option value="">All Categories</option>
+                <!-- Categories will be populated by JavaScript -->
+            </select>
+            <p class="text-xs text-gray-500 mt-1">
+                Select your business category to get more relevant advertisement suggestions
+            </p>
+        </div>
+        
+        <div id="status" class="text-sm text-gray-600"></div>
+    </div>
+
+    <script src="storage/data-models.js"></script>
+    <script src="storage/indexeddb-manager.js"></script>
+    <script src="storage/chrome-storage-manager.js"></script>
+    <script src="storage/storage-manager.js"></script>
+    <script src="storage/category-manager.js"></script>
+    
+    <script>
+        // Mock Chrome storage for testing
+        if (typeof chrome === 'undefined') {
+            window.chrome = {
+                storage: {
+                    local: {
+                        get: async (keys) => {
+                            const stored = localStorage.getItem('test_settings');
+                            const settings = stored ? JSON.parse(stored) : {};
+                            return { settings };
+                        },
+                        set: async (data) => {
+                            if (data.settings) {
+                                localStorage.setItem('test_settings', JSON.stringify(data.settings));
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        async function loadCategories() {
+            try {
+                const storageManager = new StorageManager();
+                const categoryManager = new CategoryManager(storageManager);
+                await categoryManager.initialize();
+                
+                const categories = await categoryManager.getAllCategories();
+                const categorySelect = document.getElementById('categorySelect');
+                
+                // Clear existing options except "All Categories"
+                categorySelect.innerHTML = '<option value="">All Categories</option>';
+                
+                // Add categories to dropdown
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    option.title = category.description;
+                    categorySelect.appendChild(option);
+                });
+                
+                document.getElementById('status').textContent = `Loaded ${categories.length} categories`;
+            } catch (error) {
+                console.error('Failed to load categories:', error);
+                document.getElementById('status').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function handleCategoryChange(categoryId) {
+            try {
+                const result = await chrome.storage.local.get(['settings']);
+                const settings = result.settings || { templates: {} };
+                
+                if (!settings.templates) {
+                    settings.templates = {};
+                }
+                
+                settings.templates.preferredCategory = categoryId;
+                await chrome.storage.local.set({ settings });
+                
+                const categorySelect = document.getElementById('categorySelect');
+                const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+                const categoryName = selectedOption.textContent;
+                
+                if (categoryId) {
+                    document.getElementById('status').textContent = `Category preference set to: ${categoryName}`;
+                } else {
+                    document.getElementById('status').textContent = 'Category preference cleared - showing all categories';
+                }
+                
+                console.log('Category preference saved:', categoryId);
+            } catch (error) {
+                console.error('Failed to save category preference:', error);
+                document.getElementById('status').textContent = `Error saving preference: ${error.message}`;
+            }
+        }
+
+        // Set up event listeners
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadCategories();
+            
+            const categorySelect = document.getElementById('categorySelect');
+            categorySelect.addEventListener('change', (e) => {
+                handleCategoryChange(e.target.value);
+            });
+            
+            // Load saved preference
+            try {
+                const result = await chrome.storage.local.get(['settings']);
+                const settings = result.settings || {};
+                if (settings.templates?.preferredCategory) {
+                    categorySelect.value = settings.templates.preferredCategory;
+                    document.getElementById('status').textContent = `Loaded saved preference: ${categorySelect.options[categorySelect.selectedIndex].textContent}`;
+                }
+            } catch (error) {
+                console.error('Failed to load saved preference:', error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test UI Enhancements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="ui/styles.css">
+</head>
+<body class="p-8 bg-gray-50">
+    <h1 class="text-2xl font-bold mb-6">UI Enhancements Test</h1>
+    
+    <!-- Test Template Display with Category Indicators -->
+    <section class="mb-8">
+        <h2 class="text-lg font-semibold mb-4">Template Display with Category Indicators</h2>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+            <div class="template-item group hover:bg-gray-50 transition-all duration-200 border-b border-gray-100">
+                <div class="p-3">
+                    <div class="template-header flex justify-between items-start mb-2">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center space-x-2 mb-1">
+                                <div class="template-label text-sm font-medium text-gray-900 truncate">
+                                    Car Service Special Offer
+                                </div>
+                                <span class="category-indicator bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0">
+                                    Automotive
+                                </span>
+                            </div>
+                            <div class="template-stats flex items-center space-x-3 text-xs text-gray-500">
+                                <span title="Usage count">📊 15 uses</span>
+                                <span title="Last used">⏰ 2 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-content text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed">
+                        Great car! If you need reliable service, we're here to help! Visit our website for special offers.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Test Suggestion Display with Category -->
+    <section class="mb-8">
+        <h2 class="text-lg font-semibold mb-4">Suggestion Display with Category</h2>
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+            <div class="suggestion-item group cursor-pointer hover:bg-gray-50 transition-all duration-200">
+                <div class="flex items-start space-x-3 p-3">
+                    <div class="flex-shrink-0">
+                        <span class="suggestion-rank inline-flex items-center justify-center w-6 h-6 bg-green-500 text-white text-xs font-bold rounded-full">
+                            1
+                        </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="suggestion-header flex items-start justify-between mb-2">
+                            <div class="suggestion-text text-sm text-gray-900 leading-relaxed flex-1">
+                                Great car! If you need reliable service, we're here to help! Visit our website for special offers.
+                            </div>
+                            <span class="suggestion-category bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium ml-2 flex-shrink-0">
+                                Automotive
+                            </span>
+                        </div>
+                        <div class="suggestion-meta flex items-center justify-between text-xs">
+                            <div class="flex items-center space-x-2 flex-wrap">
+                                <span class="suggestion-score text-green-600 font-medium">
+                                    95% match
+                                </span>
+                                <span class="text-gray-500">• Car Service Special</span>
+                            </div>
+                            <div class="suggestion-actions opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button class="text-blue-600 hover:text-blue-700 text-xs font-medium">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Test Usage Statistics Display -->
+    <section class="mb-8">
+        <h2 class="text-lg font-semibold mb-4">Usage Statistics Display</h2>
+        <div class="bg-white rounded-lg border border-gray-200">
+            <div class="usage-stats-content p-4">
+                <div class="stats-overview grid grid-cols-2 gap-4 mb-6">
+                    <div class="stat-card bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div class="stat-value text-2xl font-bold text-blue-600">47</div>
+                        <div class="stat-label text-xs text-blue-700">Total Uses</div>
+                    </div>
+                    <div class="stat-card bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div class="stat-value text-2xl font-bold text-green-600">5</div>
+                        <div class="stat-label text-xs text-green-700">Active Categories</div>
+                    </div>
+                </div>
+                
+                <div class="category-stats mb-6">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Usage by Category</h3>
+                    <div class="category-breakdown space-y-2">
+                        <div class="category-stat-item flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <div class="flex items-center space-x-2">
+                                <span class="category-indicator bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                                    Automotive
+                                </span>
+                                <span class="text-xs text-gray-600">8 templates</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="usage-bar bg-gray-200 rounded-full h-2 w-16">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 32%"></div>
+                                </div>
+                                <span class="text-xs font-medium text-gray-900">15</span>
+                            </div>
+                        </div>
+                        
+                        <div class="category-stat-item flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <div class="flex items-center space-x-2">
+                                <span class="category-indicator bg-green-100 text-green-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                                    Fitness
+                                </span>
+                                <span class="text-xs text-gray-600">5 templates</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="usage-bar bg-gray-200 rounded-full h-2 w-16">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 26%"></div>
+                                </div>
+                                <span class="text-xs font-medium text-gray-900">12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="top-templates mb-6">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Most Used Templates</h3>
+                    <div class="template-rankings space-y-2">
+                        <div class="template-rank-item flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <div class="flex items-center space-x-2">
+                                <span class="rank-badge bg-yellow-100 text-yellow-800 w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center">
+                                    1
+                                </span>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-900 truncate max-w-32">
+                                        Car Service Special Offer
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        Automotive
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-medium text-gray-900">
+                                8 uses
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        console.log('UI Enhancements test page loaded successfully');
+        
+        // Test hover effects
+        document.querySelectorAll('.template-item, .suggestion-item, .category-stat-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                console.log('Hover effect working on:', item.className);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .status {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AdReply Migration System Test</h1>
+        <p>This page tests the migration system for converting variant-based templates to individual templates with categories.</p>
+        
+        <div class="test-section info">
+            <h3>Test Status</h3>
+            <div id="testStatus" class="status">Ready to test</div>
+            <button onclick="runMigrationTest()">Run Migration Test</button>
+            <button onclick="testURLIntegration()">Test URL Integration</button>
+            <button onclick="testCompatibility()">Test Compatibility</button>
+            <button onclick="clearTestData()">Clear Test Data</button>
+        </div>
+
+        <div class="test-section" id="migrationResults" style="display: none;">
+            <h3>Migration Results</h3>
+            <div id="migrationOutput"></div>
+        </div>
+
+        <div class="test-section" id="urlResults" style="display: none;">
+            <h3>URL Integration Results</h3>
+            <div id="urlOutput"></div>
+        </div>
+
+        <div class="test-section" id="compatibilityResults" style="display: none;">
+            <h3>Compatibility Results</h3>
+            <div id="compatibilityOutput"></div>
+        </div>
+    </div>
+
+    <!-- Load required scripts -->
+    <script src="storage/data-models.js"></script>
+    <script src="storage/chrome-storage-manager.js"></script>
+    <script src="storage/indexeddb-manager.js"></script>
+    <script src="storage/storage-manager.js"></script>
+    <script src="storage/category-manager.js"></script>
+    <script src="storage/migration-manager.js"></script>
+    <script src="scripts/url-integration-manager.js"></script>
+    <script src="scripts/migration-initializer.js"></script>
+    <script src="scripts/usage-tracker.js"></script>
+
+    <script>
+        // Mock Chrome storage for testing
+        if (typeof chrome === 'undefined') {
+            window.chrome = {
+                storage: {
+                    local: {
+                        data: {},
+                        get: function(keys) {
+                            return Promise.resolve(
+                                Array.isArray(keys) ? 
+                                keys.reduce((result, key) => {
+                                    result[key] = this.data[key];
+                                    return result;
+                                }, {}) :
+                                { [keys]: this.data[keys] }
+                            );
+                        },
+                        set: function(items) {
+                            Object.assign(this.data, items);
+                            return Promise.resolve();
+                        },
+                        remove: function(keys) {
+                            const keysArray = Array.isArray(keys) ? keys : [keys];
+                            keysArray.forEach(key => delete this.data[key]);
+                            return Promise.resolve();
+                        }
+                    }
+                }
+            };
+        }
+
+        let migrationInitializer;
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('testStatus');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function showResults(sectionId, content) {
+            const section = document.getElementById(sectionId);
+            const output = document.getElementById(sectionId.replace('Results', 'Output'));
+            
+            section.style.display = 'block';
+            output.innerHTML = `<pre>${JSON.stringify(content, null, 2)}</pre>`;
+        }
+
+        async function setupTestData() {
+            // Create some old-format templates with variants for testing
+            const oldFormatTemplates = [
+                {
+                    id: 'test_template_1',
+                    label: 'Car Service Template',
+                    keywords: ['car', 'service', 'repair'],
+                    template: 'Great car! We offer professional service.',
+                    variants: [
+                        'Nice ride! Our mechanics can help with any repairs.',
+                        'Beautiful vehicle! We provide expert automotive service.'
+                    ],
+                    verticals: ['automotive'],
+                    usageCount: 5
+                },
+                {
+                    id: 'test_template_2',
+                    label: 'Fitness Template',
+                    keywords: ['fitness', 'gym', 'workout'],
+                    template: 'Great workout! Join our fitness program.',
+                    variants: [
+                        'Amazing fitness journey! Our trainers can help you reach your goals.'
+                    ],
+                    verticals: ['fitness'],
+                    usageCount: 3
+                },
+                {
+                    id: 'test_template_3',
+                    label: 'General Business',
+                    keywords: ['business', 'service'],
+                    template: 'Excellent post! Check out our services.',
+                    // No variants - should still be migrated to ensure category
+                    usageCount: 1
+                }
+            ];
+
+            // Save test data
+            await chrome.storage.local.set({
+                'adreply_templates': oldFormatTemplates,
+                'defaultPromoUrl': 'https://testbusiness.com'
+            });
+
+            return oldFormatTemplates;
+        }
+
+        async function runMigrationTest() {
+            try {
+                updateStatus('Setting up test data...', 'info');
+                
+                // Setup test data
+                const testTemplates = await setupTestData();
+                
+                updateStatus('Initializing migration system...', 'info');
+                
+                // Initialize migration system
+                migrationInitializer = new MigrationInitializer();
+                const initResult = await migrationInitializer.initialize();
+                
+                if (!initResult.success) {
+                    throw new Error(`Initialization failed: ${initResult.error}`);
+                }
+
+                updateStatus('Migration test completed successfully!', 'success');
+                
+                // Show results
+                const migrationStatus = await migrationInitializer.getMigrationStatus();
+                showResults('migrationResults', {
+                    initialization: initResult,
+                    status: migrationStatus,
+                    originalTemplates: testTemplates.length,
+                    testData: testTemplates
+                });
+
+            } catch (error) {
+                updateStatus(`Migration test failed: ${error.message}`, 'error');
+                showResults('migrationResults', {
+                    error: error.message,
+                    stack: error.stack
+                });
+            }
+        }
+
+        async function testURLIntegration() {
+            try {
+                updateStatus('Testing URL integration...', 'info');
+                
+                if (!migrationInitializer) {
+                    migrationInitializer = new MigrationInitializer();
+                    await migrationInitializer.initialize();
+                }
+
+                const { urlIntegrationManager } = migrationInitializer.getManagers();
+                
+                // Test URL validation
+                const urlTests = [
+                    'https://example.com',
+                    'example.com',
+                    'invalid-url',
+                    ''
+                ];
+
+                const validationResults = {};
+                for (const url of urlTests) {
+                    validationResults[url] = urlIntegrationManager.validatePromotionalURL(url);
+                }
+
+                // Test template URL integration
+                const testTemplate = {
+                    id: 'url_test',
+                    template: 'Great service! Contact us for more info.'
+                };
+
+                const templateWithURL = urlIntegrationManager.ensureURLPlaceholder(testTemplate);
+                
+                // Get integration status
+                const integrationStatus = await urlIntegrationManager.getURLIntegrationStatus();
+
+                updateStatus('URL integration test completed!', 'success');
+                
+                showResults('urlResults', {
+                    validationTests: validationResults,
+                    templateTest: {
+                        original: testTemplate,
+                        withURL: templateWithURL
+                    },
+                    integrationStatus: integrationStatus
+                });
+
+            } catch (error) {
+                updateStatus(`URL integration test failed: ${error.message}`, 'error');
+                showResults('urlResults', {
+                    error: error.message
+                });
+            }
+        }
+
+        async function testCompatibility() {
+            try {
+                updateStatus('Testing compatibility...', 'info');
+                
+                if (!migrationInitializer) {
+                    migrationInitializer = new MigrationInitializer();
+                    await migrationInitializer.initialize();
+                }
+
+                // Test validation
+                const validationResult = await migrationInitializer.validateMigrationIntegrity();
+                
+                // Test compatibility check
+                const compatibilityResult = await migrationInitializer.ensureCompatibility();
+
+                updateStatus('Compatibility test completed!', 'success');
+                
+                showResults('compatibilityResults', {
+                    validation: validationResult,
+                    compatibility: compatibilityResult
+                });
+
+            } catch (error) {
+                updateStatus(`Compatibility test failed: ${error.message}`, 'error');
+                showResults('compatibilityResults', {
+                    error: error.message
+                });
+            }
+        }
+
+        async function clearTestData() {
+            try {
+                updateStatus('Clearing test data...', 'info');
+                
+                // Clear all test data
+                await chrome.storage.local.remove([
+                    'adreply_templates',
+                    'adreply_categories', 
+                    'adreply_migration_status',
+                    'adreply_pre_migration_backup',
+                    'defaultPromoUrl'
+                ]);
+
+                // Hide result sections
+                document.getElementById('migrationResults').style.display = 'none';
+                document.getElementById('urlResults').style.display = 'none';
+                document.getElementById('compatibilityResults').style.display = 'none';
+
+                updateStatus('Test data cleared. Ready for new test.', 'info');
+
+            } catch (error) {
+                updateStatus(`Failed to clear test data: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('Migration system test ready. Click "Run Migration Test" to begin.', 'info');
+        });
+    </script>
+</body>
+</html>

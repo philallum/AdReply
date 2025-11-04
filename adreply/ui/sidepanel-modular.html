@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdReply - Modular Version</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .status {
+            font-size: 12px;
+            margin-top: 4px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .status.active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 4px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .suggestion {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .suggestion.recently-used {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+
+        .suggestion-label {
+            font-size: 10px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-top: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .no-suggestions {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .loading-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .template-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 4px;
+            margin-bottom: 4px;
+        }
+
+        .template-item h4 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+
+
+        .template-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
+        .license-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .license-status.valid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .license-status.invalid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .skip-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .skip-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .user-comments {
+            margin-top: 8px;
+            font-size: 11px;
+        }
+
+        .user-comments ul {
+            margin: 4px 0;
+            padding-left: 16px;
+        }
+
+        .usage-group {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .usage-group-header {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .usage-template {
+            margin: 4px 0;
+            padding: 4px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .usage-template.recently-used {
+            background: #fff3cd;
+        }
+
+        .usage-template-name {
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .usage-template-stats {
+            font-size: 9px;
+            color: #6c757d;
+        }
+
+        #templateForm {
+            display: none;
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        #postContent {
+            display: none;
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        #postText {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AdReply - Modular Version</h1>
+        <div id="status" class="status inactive">Not connected</div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" data-tab="suggestions">Suggestions</button>
+            <button class="tab" data-tab="templates">Templates</button>
+            <button class="tab" data-tab="license">License</button>
+        </div>
+
+        <!-- Suggestions Tab -->
+        <div id="suggestions" class="tab-content active">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="defaultPromoUrl">Default Promotional URL:</label>
+                <input type="url" id="defaultPromoUrl" placeholder="https://yourwebsite.com">
+                <button id="saveDefaultUrlBtn" class="btn btn-small" style="margin-top: 4px;">Save URL</button>
+            </div>
+            
+            <div id="postContent">
+                <h3>Current Post:</h3>
+                <div id="postText"></div>
+            </div>
+            
+            <button id="analyzePostBtn" class="btn">Analyze Current Post</button>
+
+            
+            <div id="suggestionsList">
+                <div class="no-suggestions">No suggestions available. Navigate to a Facebook group and view posts to get started.</div>
+            </div>
+        </div>
+
+        <!-- Templates Tab -->
+        <div id="templates" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div id="templateCount">0 templates (10 max)</div>
+                <button id="addTemplateBtn" class="btn">Add Template</button>
+            </div>
+
+            <div id="templateForm">
+                <div class="form-group">
+                    <label for="templateLabel">Template Name:</label>
+                    <input type="text" id="templateLabel" placeholder="e.g., Car Services">
+                </div>
+                <div class="form-group">
+                    <label for="templateKeywords">Keywords (comma-separated):</label>
+                    <input type="text" id="templateKeywords" placeholder="e.g., car, auto, repair">
+                </div>
+                <div class="form-group">
+                    <label for="templateContent">Template Text:</label>
+                    <textarea id="templateContent" placeholder="Your comment template..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="templateVariants">Variants (one per line):</label>
+                    <textarea id="templateVariants" placeholder="Alternative versions of your template..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="templateUrl">Website URL (optional):</label>
+                    <input type="url" id="templateUrl" placeholder="https://yourwebsite.com">
+                </div>
+                <div>
+                    <button id="saveTemplateBtn" class="btn">Save Template</button>
+                    <button id="cancelTemplateBtn" class="btn secondary">Cancel</button>
+                </div>
+            </div>
+
+            <div id="templatesList"></div>
+
+            <div style="margin-top: 16px;">
+                <h4>Usage Statistics</h4>
+                <div style="margin-bottom: 8px;">
+                    <button id="refreshUsageBtn" class="btn btn-small">Refresh</button>
+                    <button id="exportUsageBtn" class="btn btn-small secondary">Export Data</button>
+                    <button id="clearUsageBtn" class="btn btn-small secondary">Clear History</button>
+                </div>
+                <div id="usageStatsContent">
+                    <div class="loading-message">Click "Refresh" to load usage statistics</div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- License Tab -->
+        <div id="license" class="tab-content">
+            <div id="licenseStatus" class="license-status invalid">License Status: Not Activated</div>
+            <div id="licenseDetails" style="margin: 8px 0; font-size: 12px;">
+                Please enter your license key to activate AdReply
+            </div>
+
+            <div class="form-group">
+                <label for="licenseKey">License Key:</label>
+                <input type="text" id="licenseKey" placeholder="Enter your license key">
+            </div>
+
+            <button id="activateLicense" class="btn">Activate License</button>
+            <button id="checkLicense" class="btn secondary">Check Status</button>
+        </div>
+    </div>
+
+    <!-- Include usage tracker if available -->
+    <script src="../scripts/usage-tracker.js"></script>
+    
+    <!-- Load modular application -->
+    <script type="module" src="sidepanel-modular.js"></script>
+</body>
+</html>
