@@ -387,43 +387,23 @@
 
         .template-item {
             background: white;
-            padding: 12px;
+            padding: 4px;
             border-radius: 6px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .template-item h4 {
-            margin: 0 0 4px 0;
+            margin: 0;
             font-size: 13px;
             color: #495057;
         }
 
-        .template-keywords {
-            font-size: 11px;
-            color: #6c757d;
-            margin-bottom: 8px;
-        }
 
-        .template-content {
-            font-size: 12px;
-            color: #495057;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        .template-url {
-            font-size: 11px;
-            color: #007bff;
-            margin-bottom: 8px;
-            word-break: break-all;
-        }
 
         .template-actions {
             display: flex;
-            gap: 8px;
+            gap: 4px;
         }
 
         .template-form {
@@ -560,14 +540,22 @@
     <div class="tabs">
         <button class="tab active" data-tab="adverts">Adverts</button>
         <button class="tab" data-tab="templates">Templates</button>
-        <button class="tab" data-tab="ai-settings">AI Settings</button>
         <button class="tab" data-tab="license">License</button>
     </div>
 
     <!-- Adverts Tab - Main comment suggestions -->
     <div id="adverts" class="tab-content active">
-        <div id="status" class="status inactive">
-            Navigate to a Facebook group to start
+        <div class="default-url-section">
+            <h3>Default Promotional URL</h3>
+            <div class="form-group">
+                <label for="defaultPromoUrl">Your Website/Business URL:</label>
+                <input type="url" id="defaultPromoUrl" placeholder="https://yourwebsite.com" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
+                <button class="btn btn-small" id="saveDefaultUrlBtn" style="margin-top: 8px;">Save URL</button>
+            </div>
+        </div>
+
+        <div id="status" class="status inactive" style="margin-top: 12px;">
+            Extension ready
         </div>
 
         <div id="currentGroup" class="current-group" style="display: none;">
@@ -668,55 +656,7 @@
         </div>
     </div>
 
-    <!-- AI Settings Tab -->
-    <div id="ai-settings" class="tab-content">
-        <div class="pro-notice" id="aiProNotice">
-            <strong>Pro Feature:</strong> AI-powered template enhancement and generation requires a Pro license.
-            <button class="btn btn-small upgrade-btn">Upgrade to Pro</button>
-        </div>
 
-        <div class="form-group">
-            <label for="aiProvider">AI Provider</label>
-            <select id="aiProvider">
-                <option value="off">Disabled</option>
-                <option value="gemini">Google Gemini</option>
-                <option value="openai">OpenAI GPT</option>
-            </select>
-        </div>
-
-        <div class="form-group" id="geminiKeyGroup" style="display: none;">
-            <label for="geminiApiKey">Gemini API Key</label>
-            <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key">
-        </div>
-
-        <div class="form-group" id="openaiKeyGroup" style="display: none;">
-            <label for="openaiApiKey">OpenAI API Key</label>
-            <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key">
-        </div>
-
-        <div class="ai-features" id="aiFeatures" style="display: none;">
-            <h4>AI Features</h4>
-            <div class="feature-item">
-                <input type="checkbox" id="enableRephrasing">
-                <label for="enableRephrasing">Template rephrasing</label>
-            </div>
-            <div class="feature-item">
-                <input type="checkbox" id="enableGeneration">
-                <label for="enableGeneration">Template generation from niche</label>
-            </div>
-            <div class="feature-item">
-                <input type="checkbox" id="enableEnhancedMatching">
-                <label for="enableEnhancedMatching">Enhanced template matching</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="defaultUrl">Default Website URL (for fallback suggestions)</label>
-            <input type="url" id="defaultUrl" placeholder="https://yourwebsite.com">
-        </div>
-
-        <button class="btn" id="saveAISettings">Save AI Settings</button>
-    </div>
 
     <!-- License Tab -->
     <div id="license" class="tab-content">
@@ -725,7 +665,7 @@
                 License Status: Free
             </div>
             <div id="licenseDetails" style="font-size: 11px; color: #6c757d;">
-                Free license: 10 templates maximum, no AI features
+                Free license: 10 templates maximum, basic features
             </div>
         </div>
 
@@ -733,7 +673,7 @@
             <h4>Pro Features</h4>
             <ul>
                 <li>Unlimited templates</li>
-                <li>AI-powered template enhancement</li>
+                <li>Advanced template features</li>
                 <li>Template generation from niche descriptions</li>
                 <li>Ad Pack import/export</li>
                 <li>Enhanced template matching</li>

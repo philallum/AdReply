@@ -159,14 +159,7 @@ class TemplateManager {
         this.editingTemplateId = null;
     }
 
-    async rephraseTemplate(templateId) {
-        if (!this.isProLicense) {
-            throw new Error('AI rephrasing requires a Pro license');
-        }
-        
-        // TODO: Implement AI rephrasing
-        throw new Error('AI rephrasing feature coming soon!');
-    }
+
 }
 
 export default TemplateManager;

@@ -38,7 +38,7 @@ class UIManager {
             statusEl.textContent = `Connected to: ${groupInfo.name}`;
         } else if (isConnected) {
             statusEl.className = 'status active';
-            statusEl.textContent = 'Extension active - Navigate to a Facebook group';
+            statusEl.textContent = 'Extension ready';
         } else {
             statusEl.className = 'status inactive';
             statusEl.textContent = 'Not connected to background script';
@@ -153,7 +153,7 @@ class UIManager {
         listEl.innerHTML = '<div class="no-suggestions">No suggestions available. Navigate to a Facebook group and view posts to get started.</div>';
     }
 
-    renderTemplatesList(templates, isProLicense, onEdit, onDelete, onRephrase) {
+    renderTemplatesList(templates, isProLicense, onEdit, onDelete) {
         const listEl = document.getElementById('templatesList');
         
         if (templates.length === 0) {
@@ -168,25 +168,22 @@ class UIManager {
             templateEl.className = 'template-item';
             
             templateEl.innerHTML = `
-                <h4>${template.label}</h4>
-                <div class="template-keywords">Keywords: ${template.keywords.join(', ')}</div>
-                <div class="template-content">${template.template}</div>
-                ${template.url ? `<div class="template-url">URL: ${template.url}</div>` : ''}
-                <div class="template-actions">
-                    <button class="btn btn-small edit-btn">Edit</button>
-                    <button class="btn btn-small secondary delete-btn">Delete</button>
-                    ${isProLicense ? `<button class="btn btn-small rephrase-btn">AI Rephrase</button>` : ''}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px;">
+                    <h4 style="margin: 0; font-size: 14px;">${template.label}</h4>
+                    <div class="template-actions">
+                        <button class="btn btn-small edit-btn">Edit</button>
+                        <button class="btn btn-small secondary delete-btn">Delete</button>
+
+                    </div>
                 </div>
             `;
             
             // Add event listeners
             const editBtn = templateEl.querySelector('.edit-btn');
             const deleteBtn = templateEl.querySelector('.delete-btn');
-            const rephraseBtn = templateEl.querySelector('.rephrase-btn');
             
             if (editBtn) editBtn.addEventListener('click', () => onEdit(template.id));
             if (deleteBtn) deleteBtn.addEventListener('click', () => onDelete(template.id));
-            if (rephraseBtn) rephraseBtn.addEventListener('click', () => onRephrase(template.id));
             
             listEl.appendChild(templateEl);
         });
@@ -240,40 +237,7 @@ class UIManager {
         };
     }
 
-    populateAISettings(settings) {
-        if (settings.aiProvider) {
-            document.getElementById('aiProvider').value = settings.aiProvider;
-            this.toggleAIProvider(settings.aiProvider);
-        }
-        if (settings.geminiApiKey) document.getElementById('geminiApiKey').value = settings.geminiApiKey;
-        if (settings.openaiApiKey) document.getElementById('openaiApiKey').value = settings.openaiApiKey;
-        if (settings.enableRephrasing) document.getElementById('enableRephrasing').checked = settings.enableRephrasing;
-        if (settings.enableGeneration) document.getElementById('enableGeneration').checked = settings.enableGeneration;
-        if (settings.enableEnhancedMatching) document.getElementById('enableEnhancedMatching').checked = settings.enableEnhancedMatching;
-        if (settings.defaultUrl) document.getElementById('defaultUrl').value = settings.defaultUrl;
-    }
 
-    getAISettings() {
-        return {
-            aiProvider: document.getElementById('aiProvider').value,
-            geminiApiKey: document.getElementById('geminiApiKey').value,
-            openaiApiKey: document.getElementById('openaiApiKey').value,
-            enableRephrasing: document.getElementById('enableRephrasing').checked,
-            enableGeneration: document.getElementById('enableGeneration').checked,
-            enableEnhancedMatching: document.getElementById('enableEnhancedMatching').checked,
-            defaultUrl: document.getElementById('defaultUrl').value
-        };
-    }
-
-    toggleAIProvider(provider) {
-        const geminiGroup = document.getElementById('geminiKeyGroup');
-        const openaiGroup = document.getElementById('openaiKeyGroup');
-        const aiFeatures = document.getElementById('aiFeatures');
-        
-        geminiGroup.style.display = provider === 'gemini' ? 'block' : 'none';
-        openaiGroup.style.display = provider === 'openai' ? 'block' : 'none';
-        aiFeatures.style.display = provider !== 'off' ? 'block' : 'none';
-    }
 
     updateLicenseStatus(licenseInfo) {
         const statusEl = document.getElementById('licenseStatus');

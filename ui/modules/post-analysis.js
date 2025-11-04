@@ -51,8 +51,8 @@ class PostAnalyzer {
         const suggestions = [];
         
         try {
-            const result = await chrome.storage.local.get(['defaultUrl']);
-            const defaultUrl = result.defaultUrl || '';
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            const defaultUrl = result.defaultPromoUrl || '';
             
             if (postContent.toLowerCase().includes('car') || postContent.toLowerCase().includes('auto')) {
                 suggestions.push({
@@ -90,9 +90,11 @@ class PostAnalyzer {
             console.log('AdReply: Generated fallback suggestions:', suggestions.length);
         } catch (error) {
             console.error('AdReply: Error generating fallback suggestions:', error);
-            // Provide a basic fallback
+            // Provide a basic fallback with URL
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            const defaultUrl = result.defaultPromoUrl || '';
             suggestions.push({
-                text: 'Great post! Check out our services if you need help with this!',
+                text: `Great post! Check out our services if you need help with this!${defaultUrl ? ' ' + defaultUrl : ''}`,
                 templateId: 'fallback',
                 templateLabel: 'Basic Fallback'
             });

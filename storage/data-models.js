@@ -5,16 +5,16 @@
 
 /**
  * Template Model
- * Represents an advertisement comment template with variants and metadata
+ * Represents an individual advertisement comment template without variants
  */
 class Template {
   constructor(data = {}) {
     this.id = data.id || '';
     this.label = data.label || '';
-    this.verticals = data.verticals || [];
+    this.category = data.category || 'custom';
     this.keywords = data.keywords || [];
     this.template = data.template || '';
-    this.variants = data.variants || [];
+    this.isPrebuilt = data.isPrebuilt || false;
     this.createdAt = data.createdAt || new Date().toISOString();
     this.updatedAt = data.updatedAt || new Date().toISOString();
     this.usageCount = data.usageCount || 0;
@@ -40,17 +40,12 @@ class Template {
       errors.push('Template content is required and must be a non-empty string');
     }
 
-    // Array fields
-    if (!Array.isArray(this.verticals)) {
-      errors.push('Verticals must be an array');
-    } else {
-      this.verticals.forEach((vertical, index) => {
-        if (typeof vertical !== 'string') {
-          errors.push(`Vertical at index ${index} must be a string`);
-        }
-      });
+    // Category validation
+    if (!this.category || typeof this.category !== 'string' || this.category.trim().length === 0) {
+      errors.push('Template category is required and must be a non-empty string');
     }
 
+    // Array fields
     if (!Array.isArray(this.keywords)) {
       errors.push('Keywords must be an array');
     } else {
@@ -61,14 +56,9 @@ class Template {
       });
     }
 
-    if (!Array.isArray(this.variants)) {
-      errors.push('Variants must be an array');
-    } else {
-      this.variants.forEach((variant, index) => {
-        if (typeof variant !== 'string') {
-          errors.push(`Variant at index ${index} must be a string`);
-        }
-      });
+    // Boolean fields
+    if (typeof this.isPrebuilt !== 'boolean') {
+      errors.push('isPrebuilt must be a boolean');
     }
 
     // Date fields
@@ -94,12 +84,12 @@ class Template {
       errors.push('Template content must be 1000 characters or less');
     }
 
-    if (this.variants && this.variants.length > 10) {
-      errors.push('Template can have at most 10 variants');
-    }
-
     if (this.keywords && this.keywords.length > 20) {
       errors.push('Template can have at most 20 keywords');
+    }
+
+    if (this.category && this.category.length > 50) {
+      errors.push('Template category must be 50 characters or less');
     }
 
     return {
@@ -116,10 +106,10 @@ class Template {
     const sanitized = new Template({
       id: this.sanitizeString(this.id),
       label: this.sanitizeString(this.label),
+      category: this.sanitizeString(this.category),
       template: this.sanitizeString(this.template),
-      verticals: this.verticals.map(v => this.sanitizeString(v)).filter(v => v.length > 0),
       keywords: this.keywords.map(k => this.sanitizeString(k)).filter(k => k.length > 0),
-      variants: this.variants.map(v => this.sanitizeString(v)).filter(v => v.length > 0),
+      isPrebuilt: this.isPrebuilt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       usageCount: this.usageCount
@@ -136,10 +126,10 @@ class Template {
     return {
       id: this.id,
       label: this.label,
-      verticals: this.verticals,
+      category: this.category,
       keywords: this.keywords,
       template: this.template,
-      variants: this.variants,
+      isPrebuilt: this.isPrebuilt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       usageCount: this.usageCount
@@ -153,6 +143,129 @@ class Template {
    */
   static fromObject(data) {
     return new Template(data);
+  }
+
+  // Utility methods
+  sanitizeString(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#x27;')
+              .replace(/\//g, '&#x2F;')
+              .trim();
+  }
+
+  isValidISODate(dateString) {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date) && date.toISOString() === dateString;
+  }
+}
+
+/**
+ * Category Model
+ * Represents a template category for organizing templates by business niche
+ */
+class Category {
+  constructor(data = {}) {
+    this.id = data.id || '';
+    this.name = data.name || '';
+    this.description = data.description || '';
+    this.isPrebuilt = data.isPrebuilt || false;
+    this.templateCount = data.templateCount || 0;
+    this.createdAt = data.createdAt || new Date().toISOString();
+  }
+
+  /**
+   * Validate category data
+   * @returns {Object} Validation result with isValid and errors
+   */
+  validate() {
+    const errors = [];
+
+    // Required fields
+    if (!this.id || typeof this.id !== 'string' || this.id.trim().length === 0) {
+      errors.push('Category ID is required and must be a non-empty string');
+    }
+
+    if (!this.name || typeof this.name !== 'string' || this.name.trim().length === 0) {
+      errors.push('Category name is required and must be a non-empty string');
+    }
+
+    // Optional fields validation
+    if (this.description && typeof this.description !== 'string') {
+      errors.push('Category description must be a string');
+    }
+
+    if (typeof this.isPrebuilt !== 'boolean') {
+      errors.push('isPrebuilt must be a boolean');
+    }
+
+    if (typeof this.templateCount !== 'number' || this.templateCount < 0) {
+      errors.push('Template count must be a non-negative number');
+    }
+
+    // Date fields
+    if (this.createdAt && !this.isValidISODate(this.createdAt)) {
+      errors.push('Created date must be a valid ISO date string');
+    }
+
+    // Business rules
+    if (this.name && this.name.length > 100) {
+      errors.push('Category name must be 100 characters or less');
+    }
+
+    if (this.description && this.description.length > 500) {
+      errors.push('Category description must be 500 characters or less');
+    }
+
+    if (this.id && this.id.length > 50) {
+      errors.push('Category ID must be 50 characters or less');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Sanitize category data
+   * @returns {Category} Sanitized category
+   */
+  sanitize() {
+    return new Category({
+      id: this.sanitizeString(this.id),
+      name: this.sanitizeString(this.name),
+      description: this.sanitizeString(this.description),
+      isPrebuilt: this.isPrebuilt,
+      templateCount: this.templateCount,
+      createdAt: this.createdAt
+    });
+  }
+
+  /**
+   * Convert to plain object for storage
+   * @returns {Object}
+   */
+  toObject() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      isPrebuilt: this.isPrebuilt,
+      templateCount: this.templateCount,
+      createdAt: this.createdAt
+    };
+  }
+
+  /**
+   * Create category from plain object
+   * @param {Object} data - Plain object data
+   * @returns {Category}
+   */
+  static fromObject(data) {
+    return new Category(data);
   }
 
   // Utility methods
@@ -628,18 +741,47 @@ class DataMigration {
    * @returns {Object} Migrated data
    */
   migrateToV1(data) {
-    // Example migration: Add missing fields, rename properties, etc.
+    // Migration: Convert variant-based templates to individual templates
     if (data.templates) {
-      data.templates = data.templates.map(template => {
-        // Ensure all templates have required fields
-        return {
+      const migratedTemplates = [];
+      
+      data.templates.forEach(template => {
+        // Create main template (convert from old structure)
+        const mainTemplate = {
           ...template,
+          category: template.category || 'custom',
+          isPrebuilt: template.isPrebuilt || false,
           usageCount: template.usageCount || 0,
-          variants: template.variants || [],
           createdAt: template.createdAt || new Date().toISOString(),
           updatedAt: template.updatedAt || new Date().toISOString()
         };
+        
+        // Remove old fields
+        delete mainTemplate.variants;
+        delete mainTemplate.verticals;
+        
+        migratedTemplates.push(mainTemplate);
+        
+        // Convert variants to individual templates if they exist
+        if (template.variants && Array.isArray(template.variants)) {
+          template.variants.forEach((variant, index) => {
+            const variantTemplate = {
+              id: `${template.id}_variant_${index + 1}`,
+              label: `${template.label} (Variant ${index + 1})`,
+              category: template.category || 'custom',
+              keywords: template.keywords || [],
+              template: variant,
+              isPrebuilt: template.isPrebuilt || false,
+              createdAt: template.createdAt || new Date().toISOString(),
+              updatedAt: template.updatedAt || new Date().toISOString(),
+              usageCount: 0
+            };
+            migratedTemplates.push(variantTemplate);
+          });
+        }
       });
+      
+      data.templates = migratedTemplates;
     }
 
     return data;
@@ -731,6 +873,7 @@ class DataMigration {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     Template,
+    Category,
     GroupHistory,
     License,
     Settings,
@@ -740,6 +883,7 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.AdReplyModels = {
     Template,
+    Category,
     GroupHistory,
     License,
     Settings,

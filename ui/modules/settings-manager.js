@@ -4,38 +4,7 @@ class SettingsManager {
         this.isProLicense = false;
     }
 
-    async loadAISettings() {
-        return new Promise((resolve) => {
-            chrome.storage.local.get([
-                'aiProvider', 'geminiApiKey', 'openaiApiKey', 
-                'enableRephrasing', 'enableGeneration', 'enableEnhancedMatching', 
-                'defaultUrl'
-            ], (result) => {
-                resolve(result);
-            });
-        });
-    }
 
-    async saveAISettings(settings) {
-        const { defaultUrl, aiProvider } = settings;
-        
-        // Validate default URL if provided
-        if (defaultUrl && !this.isValidUrl(defaultUrl)) {
-            throw new Error('Please enter a valid default URL');
-        }
-        
-        // Only check Pro license for AI features, not for default URL
-        if (aiProvider !== 'off' && !this.isProLicense) {
-            throw new Error('AI features require a Pro license');
-        }
-        
-        try {
-            await chrome.storage.local.set(settings);
-            return { success: true };
-        } catch (error) {
-            throw new Error('Failed to save settings');
-        }
-    }
 
     async checkLicense() {
         return new Promise((resolve) => {

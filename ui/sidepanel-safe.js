@@ -76,7 +76,7 @@ function updateStatus(groupInfo) {
         statusEl.textContent = `Connected to: ${groupInfo.name}`;
     } else if (isConnected) {
         statusEl.className = 'status active';
-        statusEl.textContent = 'Extension active - Navigate to a Facebook group';
+        statusEl.textContent = 'Extension ready';
     } else {
         statusEl.className = 'status inactive';
         statusEl.textContent = 'Not connected to background script';
@@ -166,10 +166,10 @@ async function generateSuggestions(postContent) {
     } else {
         console.log('AdReply: No template matches, using fallback suggestions');
 
-        // Fallback suggestions with default URL from settings
+        // Fallback suggestions with default promo URL from settings
         try {
-            const result = await chrome.storage.local.get(['defaultUrl']);
-            const defaultUrl = result.defaultUrl || '';
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            const defaultUrl = result.defaultPromoUrl || '';
 
             if (postContent.toLowerCase().includes('car') || postContent.toLowerCase().includes('auto')) {
                 suggestions.push({
@@ -207,9 +207,11 @@ async function generateSuggestions(postContent) {
             console.log('AdReply: Generated fallback suggestions:', suggestions.length);
         } catch (error) {
             console.error('AdReply: Error generating fallback suggestions:', error);
-            // Provide a basic fallback
+            // Provide a basic fallback with URL
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            const defaultUrl = result.defaultPromoUrl || '';
             suggestions.push({
-                text: 'Great post! Check out our services if you need help with this!',
+                text: `Great post! Check out our services if you need help with this!${defaultUrl ? ' ' + defaultUrl : ''}`,
                 templateId: 'fallback',
                 templateLabel: 'Basic Fallback'
             });
@@ -557,8 +559,6 @@ async function analyzeCurrentPost() {
                     groupId: response.groupId,
                     source: 'manual_analysis'
                 });
-
-                showNotification('Post analyzed successfully!');
             } else {
                 showNotification('No post content found on current page', 'error');
             }
@@ -868,32 +868,25 @@ function renderTemplatesList() {
         templateEl.className = 'template-item';
 
         templateEl.innerHTML = `
-            <h4>${template.label}</h4>
-            <div class="template-keywords">Keywords: ${template.keywords.join(', ')}</div>
-            <div class="template-content">${template.template}</div>
-            ${template.url ? `<div class="template-url">URL: ${template.url}</div>` : ''}
-            <div class="template-actions">
-                <button class="btn btn-small edit-btn">Edit</button>
-                <button class="btn btn-small secondary delete-btn">Delete</button>
-                ${isProLicense ? `<button class="btn btn-small rephrase-btn">AI Rephrase</button>` : ''}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px;">
+                <h4 style="margin: 0; font-size: 14px;">${template.label}</h4>
+                <div class="template-actions">
+                    <button class="btn btn-small edit-btn">Edit</button>
+                    <button class="btn btn-small secondary delete-btn">Delete</button>
+
+                </div>
             </div>
         `;
 
         // Add event listeners
         const editBtn = templateEl.querySelector('.edit-btn');
         const deleteBtn = templateEl.querySelector('.delete-btn');
-        const rephraseBtn = templateEl.querySelector('.rephrase-btn');
-
         if (editBtn) {
             editBtn.addEventListener('click', () => editTemplate(template.id));
         }
 
         if (deleteBtn) {
             deleteBtn.addEventListener('click', () => deleteTemplate(template.id));
-        }
-
-        if (rephraseBtn) {
-            rephraseBtn.addEventListener('click', () => rephraseTemplate(template.id));
         }
 
         listEl.appendChild(templateEl);
@@ -1075,77 +1068,49 @@ async function deleteTemplate(templateId) {
     }
 }
 
-function rephraseTemplate(templateId) {
-    if (!isProLicense) {
-        showNotification('AI rephrasing requires a Pro license', 'error');
-        return;
-    }
 
-    showNotification('AI rephrasing feature coming soon!');
-}
 
-// AI Settings management
-function loadAISettings() {
-    chrome.storage.local.get(['aiProvider', 'geminiApiKey', 'openaiApiKey', 'enableRephrasing', 'enableGeneration', 'enableEnhancedMatching', 'defaultUrl'], (result) => {
-        if (result.aiProvider) {
-            document.getElementById('aiProvider').value = result.aiProvider;
-            toggleAIProvider(result.aiProvider);
-        }
-        if (result.geminiApiKey) document.getElementById('geminiApiKey').value = result.geminiApiKey;
-        if (result.openaiApiKey) document.getElementById('openaiApiKey').value = result.openaiApiKey;
-        if (result.enableRephrasing) document.getElementById('enableRephrasing').checked = result.enableRephrasing;
-        if (result.enableGeneration) document.getElementById('enableGeneration').checked = result.enableGeneration;
-        if (result.enableEnhancedMatching) document.getElementById('enableEnhancedMatching').checked = result.enableEnhancedMatching;
-        if (result.defaultUrl) document.getElementById('defaultUrl').value = result.defaultUrl;
-    });
-}
 
-function toggleAIProvider(provider) {
-    const geminiGroup = document.getElementById('geminiKeyGroup');
-    const openaiGroup = document.getElementById('openaiKeyGroup');
-    const aiFeatures = document.getElementById('aiFeatures');
-
-    geminiGroup.style.display = provider === 'gemini' ? 'block' : 'none';
-    openaiGroup.style.display = provider === 'openai' ? 'block' : 'none';
-    aiFeatures.style.display = provider !== 'off' ? 'block' : 'none';
-}
-
-async function saveAISettings() {
-    const defaultUrl = document.getElementById('defaultUrl').value;
-
-    // Validate default URL if provided
-    if (defaultUrl && !isValidUrl(defaultUrl)) {
-        showNotification('Please enter a valid default URL', 'error');
-        return;
-    }
-
-    const settings = {
-        aiProvider: document.getElementById('aiProvider').value,
-        geminiApiKey: document.getElementById('geminiApiKey').value,
-        openaiApiKey: document.getElementById('openaiApiKey').value,
-        enableRephrasing: document.getElementById('enableRephrasing').checked,
-        enableGeneration: document.getElementById('enableGeneration').checked,
-        enableEnhancedMatching: document.getElementById('enableEnhancedMatching').checked,
-        defaultUrl: defaultUrl
-    };
-
-    // Only check Pro license for AI features, not for default URL
-    if (settings.aiProvider !== 'off' && !isProLicense) {
-        showNotification('AI features require a Pro license', 'error');
-        return;
-    }
-
-    try {
-        await chrome.storage.local.set(settings);
-        showNotification('Settings saved successfully!');
-    } catch (error) {
-        showNotification('Failed to save settings', 'error');
-    }
-}
 
 function showNotification(message, type = 'success') {
     // Simple notification - could be enhanced with a proper notification system
     alert(message);
+}
+
+// Default URL management
+async function saveDefaultUrl() {
+    const url = document.getElementById('defaultPromoUrl').value;
+
+    if (!url) {
+        showNotification('Please enter a URL', 'error');
+        return;
+    }
+
+    // Validate URL
+    try {
+        new URL(url);
+    } catch (error) {
+        showNotification('Please enter a valid URL (e.g., https://yourwebsite.com)', 'error');
+        return;
+    }
+
+    try {
+        await chrome.storage.local.set({ defaultPromoUrl: url });
+        showNotification('Default URL saved successfully!');
+    } catch (error) {
+        showNotification('Failed to save URL', 'error');
+    }
+}
+
+async function loadDefaultUrl() {
+    try {
+        const result = await chrome.storage.local.get(['defaultPromoUrl']);
+        if (result.defaultPromoUrl) {
+            document.getElementById('defaultPromoUrl').value = result.defaultPromoUrl;
+        }
+    } catch (error) {
+        console.error('Failed to load default URL:', error);
+    }
 }
 
 // License management
@@ -1194,8 +1159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('addTemplateBtn').addEventListener('click', showTemplateForm);
     document.getElementById('saveTemplateBtn').addEventListener('click', saveTemplate);
     document.getElementById('cancelTemplateBtn').addEventListener('click', hideTemplateForm);
-    document.getElementById('aiProvider').addEventListener('change', (e) => toggleAIProvider(e.target.value));
-    document.getElementById('saveAISettings').addEventListener('click', saveAISettings);
+
     document.getElementById('activateLicense').addEventListener('click', activateLicense);
     document.getElementById('checkLicense').addEventListener('click', checkLicense);
     document.getElementById('analyzePostBtn').addEventListener('click', analyzeCurrentPost);
@@ -1203,14 +1167,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('exportUsageBtn').addEventListener('click', exportUsageData);
     document.getElementById('refreshUsageBtn').addEventListener('click', refreshUsageStats);
     document.getElementById('clearUsageBtn').addEventListener('click', clearUsageHistory);
+    document.getElementById('saveDefaultUrlBtn').addEventListener('click', saveDefaultUrl);
 
     // Initialize usage tracker
     initializeUsageTracker();
 
     // Load saved data
     await loadTemplates();
-    loadAISettings();
+
     checkLicense();
+    loadDefaultUrl();
 
     // Initial data load
     await refreshData();

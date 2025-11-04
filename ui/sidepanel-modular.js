@@ -53,9 +53,7 @@ class AdReplySidePanel {
         document.getElementById('saveTemplateBtn').addEventListener('click', () => this.saveTemplate());
         document.getElementById('cancelTemplateBtn').addEventListener('click', () => this.hideTemplateForm());
         
-        // Settings
-        document.getElementById('aiProvider').addEventListener('change', (e) => this.uiManager.toggleAIProvider(e.target.value));
-        document.getElementById('saveAISettings').addEventListener('click', () => this.saveAISettings());
+
         
         // License
         document.getElementById('activateLicense').addEventListener('click', () => this.activateLicense());
@@ -71,6 +69,9 @@ class AdReplySidePanel {
         
         // Debug
         document.getElementById('debugBtn').addEventListener('click', () => this.debugTemplateMatching());
+        
+        // Default URL
+        document.getElementById('saveDefaultUrlBtn').addEventListener('click', () => this.saveDefaultUrl());
     }
 
     async loadInitialData() {
@@ -79,12 +80,13 @@ class AdReplySidePanel {
         this.renderTemplatesList();
         this.updateTemplateCount();
         
-        // Load AI settings
-        const aiSettings = await this.settingsManager.loadAISettings();
-        this.uiManager.populateAISettings(aiSettings);
+
         
         // Check license
         await this.checkLicense();
+        
+        // Load default URL
+        await this.loadDefaultUrl();
     }
 
     async refreshData() {
@@ -235,13 +237,7 @@ class AdReplySidePanel {
         }
     }
 
-    async rephraseTemplate(templateId) {
-        try {
-            await this.templateManager.rephraseTemplate(templateId);
-        } catch (error) {
-            this.uiManager.showNotification(error.message, 'error');
-        }
-    }
+
 
     renderTemplatesList() {
         const templates = this.templateManager.getTemplates();
@@ -251,8 +247,7 @@ class AdReplySidePanel {
             templates,
             isProLicense,
             (id) => this.editTemplate(id),
-            (id) => this.deleteTemplate(id),
-            (id) => this.rephraseTemplate(id)
+            (id) => this.deleteTemplate(id)
         );
     }
 
@@ -262,16 +257,7 @@ class AdReplySidePanel {
         this.uiManager.updateTemplateCount(count, maxTemplates);
     }
 
-    // Settings Management Methods
-    async saveAISettings() {
-        try {
-            const settings = this.uiManager.getAISettings();
-            await this.settingsManager.saveAISettings(settings);
-            this.uiManager.showNotification('Settings saved successfully!');
-        } catch (error) {
-            this.uiManager.showNotification(error.message, 'error');
-        }
-    }
+
 
     async checkLicense() {
         const licenseInfo = await this.settingsManager.checkLicense();
@@ -324,8 +310,6 @@ class AdReplySidePanel {
                     // Generate suggestions
                     const suggestions = await this.postAnalyzer.generateSuggestions(result.content);
                     this.uiManager.displaySuggestions(suggestions);
-                    
-                    this.uiManager.showNotification('Post analyzed successfully!');
                 }
             }
         } catch (error) {
@@ -392,6 +376,42 @@ class AdReplySidePanel {
         
         console.log('Usage tracker available:', !!this.usageTrackerManager.getUsageTracker());
         console.log('=== End Debug Info ===');
+    }
+
+    // Default URL Management
+    async saveDefaultUrl() {
+        const url = document.getElementById('defaultPromoUrl').value;
+        
+        if (!url) {
+            this.uiManager.showNotification('Please enter a URL', 'error');
+            return;
+        }
+        
+        // Validate URL
+        try {
+            new URL(url);
+        } catch (error) {
+            this.uiManager.showNotification('Please enter a valid URL (e.g., https://yourwebsite.com)', 'error');
+            return;
+        }
+        
+        try {
+            await chrome.storage.local.set({ defaultPromoUrl: url });
+            this.uiManager.showNotification('Default URL saved successfully!');
+        } catch (error) {
+            this.uiManager.showNotification('Failed to save URL', 'error');
+        }
+    }
+
+    async loadDefaultUrl() {
+        try {
+            const result = await chrome.storage.local.get(['defaultPromoUrl']);
+            if (result.defaultPromoUrl) {
+                document.getElementById('defaultPromoUrl').value = result.defaultPromoUrl;
+            }
+        } catch (error) {
+            console.error('Failed to load default URL:', error);
+        }
     }
 }
 

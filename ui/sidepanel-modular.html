@@ -199,29 +199,20 @@
             background: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 4px;
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-
-        .template-item h4 {
-            margin: 0 0 8px 0;
-            font-size: 14px;
-        }
-
-        .template-keywords,
-        .template-url {
-            font-size: 10px;
-            color: #6c757d;
+            padding: 4px;
             margin-bottom: 4px;
         }
 
-        .template-content {
-            font-size: 12px;
-            margin-bottom: 8px;
+        .template-item h4 {
+            margin: 0;
+            font-size: 14px;
         }
 
+
+
         .template-actions {
-            text-align: right;
+            display: flex;
+            gap: 4px;
         }
 
         .btn-small {
@@ -327,11 +318,7 @@
             margin-bottom: 8px;
         }
 
-        #geminiKeyGroup,
-        #openaiKeyGroup,
-        #aiFeatures {
-            display: none;
-        }
+
     </style>
 </head>
 <body>
@@ -344,12 +331,17 @@
         <div class="tabs">
             <button class="tab active" data-tab="suggestions">Suggestions</button>
             <button class="tab" data-tab="templates">Templates</button>
-            <button class="tab" data-tab="settings">Settings</button>
             <button class="tab" data-tab="license">License</button>
         </div>
 
         <!-- Suggestions Tab -->
         <div id="suggestions" class="tab-content active">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="defaultPromoUrl">Default Promotional URL:</label>
+                <input type="url" id="defaultPromoUrl" placeholder="https://yourwebsite.com">
+                <button id="saveDefaultUrlBtn" class="btn btn-small" style="margin-top: 4px;">Save URL</button>
+            </div>
+            
             <div id="postContent">
                 <h3>Current Post:</h3>
                 <div id="postText"></div>
@@ -412,52 +404,7 @@
             </div>
         </div>
 
-        <!-- Settings Tab -->
-        <div id="settings" class="tab-content">
-            <div class="form-group">
-                <label for="defaultUrl">Default Website URL:</label>
-                <input type="url" id="defaultUrl" placeholder="https://yourwebsite.com">
-            </div>
 
-            <div class="form-group">
-                <label for="aiProvider">AI Provider:</label>
-                <select id="aiProvider">
-                    <option value="off">Disabled</option>
-                    <option value="gemini">Google Gemini</option>
-                    <option value="openai">OpenAI</option>
-                </select>
-            </div>
-
-            <div id="geminiKeyGroup" class="form-group">
-                <label for="geminiApiKey">Gemini API Key:</label>
-                <input type="password" id="geminiApiKey" placeholder="Enter your Gemini API key">
-            </div>
-
-            <div id="openaiKeyGroup" class="form-group">
-                <label for="openaiApiKey">OpenAI API Key:</label>
-                <input type="password" id="openaiApiKey" placeholder="Enter your OpenAI API key">
-            </div>
-
-            <div id="aiFeatures">
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="enableRephrasing"> Enable AI Rephrasing
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="enableGeneration"> Enable AI Generation
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="enableEnhancedMatching"> Enable Enhanced Matching
-                    </label>
-                </div>
-            </div>
-
-            <button id="saveAISettings" class="btn">Save Settings</button>
-        </div>
 
         <!-- License Tab -->
         <div id="license" class="tab-content">

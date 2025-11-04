@@ -198,11 +198,9 @@ function showTabContextualHelp(tabName) {
         case 'adverts':
             helpMessage = 'Create and manage your advertisement templates here. Templates will automatically suggest relevant comments based on Facebook posts.';
             break;
-        case 'ai-settings':
-            helpMessage = 'Configure AI features to enhance your templates with rephrasing and generation capabilities (Pro feature).';
-            break;
+
         case 'license':
-            helpMessage = 'Manage your AdReply license and upgrade to Pro for unlimited templates and AI features.';
+            helpMessage = 'Manage your AdReply license and upgrade to Pro for unlimited templates and enhanced features.';
             break;
     }
     
@@ -281,42 +279,13 @@ function setupEventListeners() {
         });
     });
     
-    // AI Settings form handling
-    setupAISettingsHandlers();
+
     
     // Import/Export functionality
     setupImportExportHandlers();
 }
 
-function setupAISettingsHandlers() {
-    const aiProvider = document.getElementById('aiProvider');
-    const geminiApiKey = document.getElementById('geminiApiKey');
-    const openaiApiKey = document.getElementById('openaiApiKey');
-    
-    if (aiProvider) {
-        aiProvider.addEventListener('change', async (e) => {
-            const provider = e.target.value;
-            await saveAISetting('provider', provider);
-            console.log('AI provider changed to:', provider);
-        });
-    }
-    
-    if (geminiApiKey) {
-        geminiApiKey.addEventListener('blur', async (e) => {
-            const apiKey = e.target.value.trim();
-            await saveAISetting('geminiApiKey', apiKey);
-            console.log('Gemini API key updated');
-        });
-    }
-    
-    if (openaiApiKey) {
-        openaiApiKey.addEventListener('blur', async (e) => {
-            const apiKey = e.target.value.trim();
-            await saveAISetting('openaiApiKey', apiKey);
-            console.log('OpenAI API key updated');
-        });
-    }
-}
+
 
 // Template filtering and search functionality
 let allTemplates = []; // Will store all templates for filtering
@@ -386,25 +355,7 @@ function debounce(func, wait) {
     };
 }
 
-// AI Settings management
-async function saveAISetting(key, value) {
-    try {
-        const result = await chrome.storage.local.get(['settings']);
-        const settings = result.settings || {};
-        
-        if (!settings.ai) {
-            settings.ai = {};
-        }
-        
-        settings.ai[key] = value;
-        
-        await chrome.storage.local.set({ settings });
-        console.log(`AI setting ${key} saved`);
-    } catch (error) {
-        console.error('Failed to save AI setting:', error);
-        showErrorMessage('Failed to save AI settings');
-    }
-}
+
 
 async function loadLicenseStatus() {
     try {
@@ -887,14 +838,7 @@ function renderTemplates(templates) {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </button>
-                            <button onclick="event.stopPropagation(); rephraseTemplate('${template.id}')" 
-                                    title="Rephrase with AI (Pro)"
-                                    class="ai-rephrase-btn p-1 text-gray-400 hover:text-purple-600 transition-colors duration-200"
-                                    data-template-id="${template.id}">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </button>
+
                             <button onclick="event.stopPropagation(); duplicateTemplate('${template.id}')" 
                                     title="Duplicate template"
                                     class="p-1 text-gray-400 hover:text-green-600 transition-colors duration-200">
@@ -1054,32 +998,13 @@ async function loadSettings() {
         const result = await chrome.storage.local.get(['settings']);
         const settings = result.settings || {};
         
-        // Update AI settings UI based on license
-        const license = await getLicenseStatus();
-        updateAISettingsUI(settings, license);
+
     } catch (error) {
         console.error('Failed to load settings:', error);
     }
 }
 
-function updateAISettingsUI(settings, license) {
-    const aiProvider = document.getElementById('aiProvider');
-    const geminiApiKey = document.getElementById('geminiApiKey');
-    const openaiApiKey = document.getElementById('openaiApiKey');
-    
-    const isProUser = license.tier === 'pro';
-    
-    // Enable/disable AI settings based on license
-    aiProvider.disabled = !isProUser;
-    geminiApiKey.disabled = !isProUser;
-    openaiApiKey.disabled = !isProUser;
-    
-    if (settings.ai) {
-        aiProvider.value = settings.ai.provider || 'off';
-        geminiApiKey.value = settings.ai.geminiApiKey || '';
-        openaiApiKey.value = settings.ai.openaiApiKey || '';
-    }
-}
+
 
 async function getLicenseStatus() {
     try {
@@ -1511,8 +1436,7 @@ async function deleteTemplateById(templateId) {
 // License management functions
 async function initializeLicenseFeatures() {
     try {
-        // Update AI settings based on license
-        await updateAISettingsAvailability();
+
         
         // Update template limits
         await updateTemplateLimitDisplay();
@@ -1527,8 +1451,7 @@ async function initializeLicenseFeatures() {
 }
 
 async function updateFeatureAvailability(license) {
-    // Update AI settings availability
-    await updateAISettingsAvailability();
+
     
     // Update template management availability
     await updateTemplateManagementAvailability();
@@ -1537,57 +1460,7 @@ async function updateFeatureAvailability(license) {
     updateUpgradePrompts(license);
 }
 
-async function updateAISettingsAvailability() {
-    const hasAIAccess = await LicenseUtils.checkFeatureAccess('ai_integration');
-    
-    const aiProvider = document.getElementById('aiProvider');
-    const geminiApiKey = document.getElementById('geminiApiKey');
-    const openaiApiKey = document.getElementById('openaiApiKey');
-    const proNotice = document.querySelector('.pro-feature-notice');
-    
-    if (hasAIAccess) {
-        // Enable AI settings
-        if (aiProvider) aiProvider.disabled = false;
-        if (geminiApiKey) geminiApiKey.disabled = false;
-        if (openaiApiKey) openaiApiKey.disabled = false;
-        
-        // Hide pro notice
-        if (proNotice) proNotice.style.display = 'none';
-        
-        // Update styling
-        [aiProvider, geminiApiKey, openaiApiKey].forEach(element => {
-            if (element) {
-                element.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                element.classList.add('bg-white', 'text-gray-900');
-            }
-        });
-    } else {
-        // Disable AI settings
-        if (aiProvider) {
-            aiProvider.disabled = true;
-            aiProvider.value = 'off';
-        }
-        if (geminiApiKey) {
-            geminiApiKey.disabled = true;
-            geminiApiKey.value = '';
-        }
-        if (openaiApiKey) {
-            openaiApiKey.disabled = true;
-            openaiApiKey.value = '';
-        }
-        
-        // Show pro notice
-        if (proNotice) proNotice.style.display = 'block';
-        
-        // Update styling
-        [aiProvider, geminiApiKey, openaiApiKey].forEach(element => {
-            if (element) {
-                element.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                element.classList.remove('bg-white', 'text-gray-900');
-            }
-        });
-    }
-}
+
 
 async function updateTemplateManagementAvailability() {
     const canAdd = await LicenseUtils.canAddTemplate();
@@ -1846,38 +1719,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTemplateFormHandlers();
 });
 
-// ===== AI REPHRASING FUNCTIONALITY =====
 
-/**
- * Rephrase a template using AI
- * @param {string} templateId - Template ID to rephrase
- */
-async function rephraseTemplate(templateId) {
-    console.log('Rephrase template:', templateId);
-    
-    try {
-        // Check if user has AI access
-        const hasAIAccess = await LicenseUtils.checkFeatureAccess('ai_integration');
-        if (!hasAIAccess) {
-            showUpgradePromptForAI();
-            return;
-        }
-        
-        // Find the template
-        const template = allTemplates.find(t => t.id === templateId);
-        if (!template) {
-            showErrorMessage('Template not found');
-            return;
-        }
-        
-        // Show rephrasing modal
-        showRephraseModal(template);
-        
-    } catch (error) {
-        console.error('Failed to start rephrasing:', error);
-        showErrorMessage('Failed to start rephrasing. Please try again.');
-    }
-}
+
 
 /**
  * Show the rephrasing modal with template preview
@@ -2218,115 +2061,15 @@ async function applyRephrasedText() {
     }
 }
 
-/**
- * Show upgrade prompt for AI features
- */
-function showUpgradePromptForAI() {
-    const upgradeHTML = `
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="aiUpgradePrompt">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-                <div class="p-6 text-center">
-                    <div class="mb-4">
-                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">AI Features Require Pro</h3>
-                        <p class="text-gray-600 text-sm">
-                            AI-powered template rephrasing is available with AdReply Pro. 
-                            Upgrade to access advanced AI features and unlimited templates.
-                        </p>
-                    </div>
-                    
-                    <div class="bg-purple-50 rounded-lg p-4 mb-6">
-                        <h4 class="font-medium text-purple-900 mb-2">Pro Features Include:</h4>
-                        <ul class="text-sm text-purple-700 space-y-1">
-                            <li>✨ AI template rephrasing</li>
-                            <li>🎯 AI template generation</li>
-                            <li>📚 Unlimited templates</li>
-                            <li>📦 Ad Pack imports</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="flex space-x-3">
-                        <button onclick="closeAIUpgradePrompt()" class="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">
-                            Maybe Later
-                        </button>
-                        <button onclick="upgradeToProForAI()" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
-                            Upgrade to Pro
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', upgradeHTML);
-}
 
-/**
- * Close AI upgrade prompt
- */
-function closeAIUpgradePrompt() {
-    const prompt = document.getElementById('aiUpgradePrompt');
-    if (prompt) {
-        prompt.remove();
-    }
-}
 
-/**
- * Handle upgrade to Pro for AI features
- */
-function upgradeToProForAI() {
-    closeAIUpgradePrompt();
-    
-    // Switch to license tab
-    const licenseTab = document.querySelector('[data-tab="license"]');
-    if (licenseTab) {
-        licenseTab.click();
-    }
-    
-    // Focus on license key input
-    setTimeout(() => {
-        const licenseInput = document.getElementById('licenseKey');
-        if (licenseInput) {
-            licenseInput.focus();
-        }
-    }, 100);
-}
 
-// Initialize AI features when license status changes
-document.addEventListener('licenseStatusChanged', async (event) => {
-    const license = event.detail;
-    await updateAIFeatureAvailability(license);
-});
 
-/**
- * Update AI feature availability based on license
- * @param {Object} license - License information
- */
-async function updateAIFeatureAvailability(license) {
-    const hasAIAccess = license?.features?.includes('ai_integration') || false;
-    const rephraseButtons = document.querySelectorAll('.ai-rephrase-btn');
-    
-    rephraseButtons.forEach(button => {
-        if (hasAIAccess) {
-            button.classList.remove('opacity-50', 'cursor-not-allowed');
-            button.title = 'Rephrase with AI (Pro)';
-        } else {
-            button.classList.add('opacity-50', 'cursor-not-allowed');
-            button.title = 'Rephrase with AI (Pro) - Upgrade required';
-        }
-    });
-}
 
-// ===== BATCH REPHRASING FUNCTIONALITY =====
 
-/**
- * Show batch rephrasing interface
- */
-function showBatchRephraseInterface() {
+
+
+
     // Check if user has AI access
     LicenseUtils.checkFeatureAccess('ai_integration').then(hasAccess => {
         if (!hasAccess) {
@@ -2738,7 +2481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ===== AI TEMPLATE GENERATION FUNCTIONALITY =====
+
 
 /**
  * Show AI template generation interface
@@ -4207,7 +3950,7 @@ async function handleRestoreFileSelection(event) {
             message += `, ${result.templates.errors.length} errors`;
         }
         message += `\nSettings: ${result.settings.restored ? 'restored' : 'failed'}`;
-        message += `\nAI Settings: ${result.aiSettings.restored ? 'restored' : 'failed'}`;
+
         
         alert(message);
         
@@ -5264,7 +5007,7 @@ async function performAdvancedRestore(storageManager, backupData, options) {
     const results = {
         templates: { imported: 0, skipped: 0, errors: [] },
         settings: { restored: false, error: null },
-        aiSettings: { restored: false, error: null }
+
     };
     
     // Restore templates with conflict resolution
@@ -5323,15 +5066,7 @@ async function performAdvancedRestore(storageManager, backupData, options) {
         }
     }
     
-    // Restore AI settings
-    if (backupData.data.aiSettings) {
-        try {
-            await storageManager.saveAISettings(backupData.data.aiSettings);
-            results.aiSettings.restored = true;
-        } catch (error) {
-            results.aiSettings.error = error.message;
-        }
-    }
+
     
     return results;
 }

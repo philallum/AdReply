@@ -44,13 +44,7 @@
                     aria-controls="adverts-tab" 
                     id="tab-adverts"
                     tabindex="0">Adverts</button>
-            <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" 
-                    data-tab="ai-settings" 
-                    role="tab" 
-                    aria-selected="false" 
-                    aria-controls="ai-settings-tab" 
-                    id="tab-ai-settings"
-                    tabindex="-1">AI Settings</button>
+
             <button class="tab-button flex-1 px-2 py-3 text-xs font-medium text-facebook-gray border-b-2 border-transparent hover:bg-facebook-lightgray transition-all duration-200" 
                     data-tab="license" 
                     role="tab" 
@@ -183,65 +177,7 @@
                 </section>
             </div>
             
-            <!-- AI Settings Tab -->
-            <div class="tab-content p-4 space-y-6" id="ai-settings-tab" role="tabpanel" aria-labelledby="tab-ai-settings" tabindex="0">
-                <section class="ai-settings-section" aria-labelledby="ai-settings-heading">
-                    <h2 class="text-base font-semibold mb-3 text-gray-900" id="ai-settings-heading">AI Settings</h2>
-                    <div class="pro-feature-notice bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center mb-4" 
-                         role="alert" 
-                         aria-labelledby="pro-notice-heading">
-                        <div class="mb-2" aria-hidden="true">
-                            <svg class="w-6 h-6 mx-auto text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                        <p class="text-yellow-800 text-sm mb-2" id="pro-notice-heading">AI features are available with Pro license</p>
-                        <button class="btn btn-upgrade bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-xs font-medium transition-colors duration-200"
-                                aria-label="Upgrade to Pro license to access AI features">Upgrade to Pro</button>
-                    </div>
-                    
-                    <div class="ai-provider-selection mb-4">
-                        <label for="aiProvider" class="block text-sm font-medium text-gray-700 mb-2">AI Provider:</label>
-                        <select id="aiProvider" 
-                                disabled 
-                                class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
-                                aria-describedby="ai-provider-help">
-                            <option value="off">Disabled</option>
-                            <option value="gemini">Google Gemini</option>
-                            <option value="openai">OpenAI</option>
-                        </select>
-                        <div id="ai-provider-help" class="text-xs text-gray-500 mt-1">Choose your preferred AI service provider for template enhancement</div>
-                    </div>
-                    
-                    <fieldset class="api-key-inputs space-y-4" aria-labelledby="api-keys-legend">
-                        <legend id="api-keys-legend" class="text-sm font-medium text-gray-700 mb-3">API Keys</legend>
-                        
-                        <div class="input-group">
-                            <label for="geminiApiKey" class="block text-sm font-medium text-gray-700 mb-2">Gemini API Key:</label>
-                            <input type="password" 
-                                   id="geminiApiKey" 
-                                   placeholder="Enter your Gemini API key" 
-                                   disabled 
-                                   class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
-                                   aria-describedby="gemini-key-help"
-                                   autocomplete="off">
-                            <div id="gemini-key-help" class="text-xs text-gray-500 mt-1">Your API key is stored locally and never shared</div>
-                        </div>
-                        
-                        <div class="input-group">
-                            <label for="openaiApiKey" class="block text-sm font-medium text-gray-700 mb-2">OpenAI API Key:</label>
-                            <input type="password" 
-                                   id="openaiApiKey" 
-                                   placeholder="Enter your OpenAI API key" 
-                                   disabled 
-                                   class="w-full px-3 py-2 border border-facebook-border rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
-                                   aria-describedby="openai-key-help"
-                                   autocomplete="off">
-                            <div id="openai-key-help" class="text-xs text-gray-500 mt-1">Your API key is stored locally and never shared</div>
-                        </div>
-                    </fieldset>
-                </section>
-            </div>
+
             
             <!-- License Tab -->
             <div class="tab-content p-4 space-y-6" id="license-tab" role="tabpanel" aria-labelledby="tab-license" tabindex="0">
@@ -292,13 +228,13 @@
                                         <svg class="w-4 h-4 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                         </svg>
-                                        AI-powered rephrasing
+                                        Advanced template features
                                     </li>
                                     <li class="flex items-center">
                                         <svg class="w-4 h-4 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                         </svg>
-                                        AI template generation
+                                        Enhanced template management
                                     </li>
                                     <li class="flex items-center">
                                         <svg class="w-4 h-4 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
