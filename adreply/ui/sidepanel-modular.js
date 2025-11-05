@@ -49,11 +49,12 @@ class AdReplySidePanel {
 
     setupEventListeners() {
         // Template management
-        document.getElementById('addTemplateBtn').addEventListener('click', () => this.showTemplateForm());
+        document.getElementById('addTemplateBtn').addEventListener('click', async () => await this.showTemplateForm());
         document.getElementById('saveTemplateBtn').addEventListener('click', () => this.saveTemplate());
         document.getElementById('cancelTemplateBtn').addEventListener('click', () => this.hideTemplateForm());
         
-
+        // Category navigation
+        document.getElementById('backToCategoriesBtn').addEventListener('click', () => this.showCategoryView());
         
         // License
         document.getElementById('activateLicense').addEventListener('click', () => this.activateLicense());
@@ -62,25 +63,56 @@ class AdReplySidePanel {
         // Post analysis
         document.getElementById('analyzePostBtn').addEventListener('click', () => this.analyzeCurrentPost());
         
-        // Usage tracking
-        document.getElementById('exportUsageBtn').addEventListener('click', () => this.exportUsageData());
-        document.getElementById('refreshUsageBtn').addEventListener('click', () => this.refreshUsageStats());
-        document.getElementById('clearUsageBtn').addEventListener('click', () => this.clearUsageHistory());
+
         
-        // Debug
-        document.getElementById('debugBtn').addEventListener('click', () => this.debugTemplateMatching());
+
         
         // Default URL
         document.getElementById('saveDefaultUrlBtn').addEventListener('click', () => this.saveDefaultUrl());
+
+        // Custom category event listeners
+        document.getElementById('addCategoryBtn').addEventListener('click', () => this.showCustomCategoryForm());
+        document.getElementById('saveCategoryBtn').addEventListener('click', () => this.saveCustomCategory());
+        document.getElementById('cancelCategoryBtn').addEventListener('click', () => this.hideCustomCategoryForm());
+
+        // Template import event listener
+        const importAdPackBtn = document.getElementById('importAdPackBtn');
+        
+        if (importAdPackBtn) {
+            importAdPackBtn.addEventListener('click', () => this.importTemplates());
+        }
+
+        // Category selection
+        const categorySelect = document.getElementById('categorySelect');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', (e) => {
+                this.handleCategoryChange(e.target.value);
+            });
+        }
+
+        // Template category selection feedback
+        const templateCategorySelect = document.getElementById('templateCategory');
+        if (templateCategorySelect) {
+            templateCategorySelect.addEventListener('change', async (e) => {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const categoryName = selectedOption.textContent;
+                const categoryId = e.target.value;
+                
+                // Always save the selected category and show feedback
+                await this.uiManager.showCategorySelectionFeedback(categoryName, categoryId);
+            });
+        }
     }
 
     async loadInitialData() {
         // Load templates
         await this.templateManager.loadTemplates();
-        this.renderTemplatesList();
-        this.updateTemplateCount();
         
-
+        // Initialize category functionality (this will also show the category view)
+        await this.initializeCategoryFunctionality();
+        
+        // Update template counts
+        this.updateTemplateCount();
         
         // Check license
         await this.checkLicense();
@@ -102,7 +134,8 @@ class AdReplySidePanel {
         
         if (result.needsSuggestions && recentPost) {
             try {
-                const suggestions = await this.postAnalyzer.generateSuggestions(recentPost.content);
+                const isProLicense = this.settingsManager.getProLicenseStatus();
+                const suggestions = await this.postAnalyzer.generateSuggestions(recentPost.content, isProLicense);
                 this.uiManager.displaySuggestions(suggestions);
             } catch (error) {
                 console.error('AdReply: Error generating suggestions:', error);
@@ -112,17 +145,19 @@ class AdReplySidePanel {
     }
 
     onTabChange(tabName) {
-        if (tabName === 'templates') {
-            this.refreshUsageStats();
-        }
+        // Tab change handling - currently no special actions needed
     }
 
     async handleCopyClick(text, btnElement, suggestion) {
+        console.log('AdReply: Copy clicked!', { text, suggestion });
+        
         try {
             await navigator.clipboard.writeText(text);
             
             // Record usage if we have a valid template
             if (suggestion && typeof suggestion === 'object' && suggestion.templateId && suggestion.templateId !== 'fallback') {
+                console.log('AdReply: Recording usage for template:', suggestion.templateId);
+                
                 try {
                     const result = await this.usageTrackerManager.recordAdUsage(
                         suggestion.templateId, 
@@ -131,12 +166,20 @@ class AdReplySidePanel {
                         this.uiManager.getCurrentPost()
                     );
                     
-                    if (result.success) {
-                        this.uiManager.showNotification(`Ad usage recorded for ${result.groupId}`, 'success');
+                    console.log('AdReply: Usage recording result:', result);
+                    
+                    if (result && result.success) {
+                        console.log('AdReply: Usage recorded successfully for 24h tracking');
+                        // No user notification needed - usage tracking is silent
+                    } else {
+                        console.warn('AdReply: Usage recording failed - no success result');
                     }
                 } catch (error) {
-                    console.error('Failed to record usage:', error);
+                    console.error('AdReply: Failed to record usage:', error);
+                    this.uiManager.showNotification('❌ Failed to record usage: ' + error.message, 'error');
                 }
+            } else {
+                console.log('AdReply: Not recording usage - invalid suggestion:', suggestion);
             }
             
             // Show success feedback
@@ -184,13 +227,14 @@ class AdReplySidePanel {
     }
 
     // Template Management Methods
-    showTemplateForm() {
-        this.uiManager.showTemplateForm();
+    async showTemplateForm() {
+        await this.uiManager.showTemplateForm();
     }
 
     hideTemplateForm() {
         this.uiManager.hideTemplateForm();
         this.templateManager.clearEditingTemplate();
+        this.showCategoryView();
     }
 
     async saveTemplate() {
@@ -198,16 +242,23 @@ class AdReplySidePanel {
             const formData = this.uiManager.getTemplateFormData();
             const editingId = this.templateManager.getEditingTemplate();
             
+            // Debug: Log the form data to see if URL is being captured
+            console.log('AdReply: Saving template with form data:', formData);
+            
+            // Get category display name for feedback
+            const categoryDisplayName = this.uiManager.getCategoryDisplayName(formData.category);
+            
             if (editingId) {
-                await this.templateManager.updateTemplate(editingId, formData);
-                this.uiManager.showNotification('Template updated successfully!');
+                const updatedTemplate = await this.templateManager.updateTemplate(editingId, formData);
+                console.log('AdReply: Updated template:', updatedTemplate);
+                this.uiManager.showTemplateSavedFeedback(formData.label, categoryDisplayName);
             } else {
-                await this.templateManager.saveTemplate(formData);
-                this.uiManager.showNotification('Template saved successfully!');
+                const savedTemplate = await this.templateManager.saveTemplate(formData);
+                console.log('AdReply: Saved template:', savedTemplate);
+                this.uiManager.showTemplateSavedFeedback(formData.label, categoryDisplayName);
             }
             
             this.hideTemplateForm();
-            this.renderTemplatesList();
             this.updateTemplateCount();
             
         } catch (error) {
@@ -230,7 +281,7 @@ class AdReplySidePanel {
         try {
             await this.templateManager.deleteTemplate(templateId);
             this.uiManager.showNotification('Template deleted successfully!');
-            this.renderTemplatesList();
+            this.showCategoryView();
             this.updateTemplateCount();
         } catch (error) {
             this.uiManager.showNotification(error.message, 'error');
@@ -241,20 +292,34 @@ class AdReplySidePanel {
 
     renderTemplatesList() {
         const templates = this.templateManager.getTemplates();
-        const isProLicense = this.settingsManager.getProLicenseStatus();
         
-        this.uiManager.renderTemplatesList(
+        // Show category view by default
+        this.uiManager.renderCategoriesList(
             templates,
-            isProLicense,
+            (categoryId, categoryName, categoryTemplates) => this.showCategoryTemplates(categoryId, categoryName, categoryTemplates)
+        );
+        this.uiManager.showCategoryView();
+    }
+
+    showCategoryTemplates(categoryId, categoryName, categoryTemplates) {
+        this.uiManager.renderTemplatesInCategory(
+            categoryTemplates,
+            categoryName,
             (id) => this.editTemplate(id),
             (id) => this.deleteTemplate(id)
         );
+        this.uiManager.showTemplateView();
+    }
+
+    showCategoryView() {
+        this.renderTemplatesList();
     }
 
     updateTemplateCount() {
         const count = this.templateManager.getTemplateCount();
         const maxTemplates = this.templateManager.getMaxTemplates();
-        this.uiManager.updateTemplateCount(count, maxTemplates);
+        const isProLicense = this.settingsManager.getProLicenseStatus();
+        this.uiManager.updateTemplateCount(count, maxTemplates, isProLicense);
     }
 
 
@@ -308,7 +373,8 @@ class AdReplySidePanel {
                     });
                     
                     // Generate suggestions
-                    const suggestions = await this.postAnalyzer.generateSuggestions(result.content);
+                    const isProLicense = this.settingsManager.getProLicenseStatus();
+                    const suggestions = await this.postAnalyzer.generateSuggestions(result.content, isProLicense);
                     this.uiManager.displaySuggestions(suggestions);
                 }
             }
@@ -319,49 +385,36 @@ class AdReplySidePanel {
         }
     }
 
-    // Usage Tracking Methods
-    async refreshUsageStats() {
-        try {
-            this.uiManager.showLoadingMessage('usageStatsContent', 'Loading usage statistics...');
-            
-            const currentGroupId = await this.postAnalyzer.getCurrentGroupId();
-            const statsData = await this.usageTrackerManager.getUsageStats(currentGroupId);
-            const templates = this.templateManager.getTemplates();
-            
-            this.uiManager.renderUsageStats(statsData, templates);
-        } catch (error) {
-            console.error('AdReply: Error loading usage stats:', error);
-            this.uiManager.showLoadingMessage('usageStatsContent', 'Error loading usage statistics');
-        }
-    }
 
-    async exportUsageData() {
-        try {
-            await this.usageTrackerManager.exportUsageData();
-            this.uiManager.showNotification('Usage data exported successfully!', 'success');
-        } catch (error) {
-            this.uiManager.showNotification(error.message, 'error');
-        }
-    }
-
-    async clearUsageHistory() {
-        const confirmed = confirm('Are you sure you want to clear all usage history? This cannot be undone.');
-        if (!confirmed) return;
-
-        try {
-            await this.usageTrackerManager.clearUsageHistory();
-            await this.refreshUsageStats();
-            this.uiManager.showNotification('Usage history cleared successfully!', 'success');
-        } catch (error) {
-            this.uiManager.showNotification(error.message, 'error');
-        }
-    }
 
     // Debug Methods
     async debugTemplateMatching() {
         console.log('=== AdReply Debug Info ===');
         console.log('Templates loaded:', this.templateManager.getTemplateCount());
-        console.log('Templates:', this.templateManager.getTemplates());
+        
+        const templates = this.templateManager.getTemplates();
+        console.log('All templates:', templates);
+        
+        // Show template URLs specifically
+        const userTemplates = templates.filter(t => !t.isPrebuilt);
+        console.log('User templates with URLs:');
+        userTemplates.forEach(template => {
+            console.log(`- ${template.label}: URL="${template.url}", Content="${template.template}"`);
+        });
+        
+        // Debug usage tracker
+        console.log('Usage tracker manager:', this.usageTrackerManager);
+        console.log('Usage tracker available:', !!this.usageTrackerManager.getUsageTracker());
+        console.log('Usage tracker instance:', this.usageTrackerManager.getUsageTracker());
+        
+        // Check if we're on Facebook
+        try {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            console.log('Current tab URL:', tab.url);
+            console.log('On Facebook?', tab.url.includes('facebook.com'));
+        } catch (error) {
+            console.error('Error getting tab info:', error);
+        }
         
         const currentPost = this.uiManager.getCurrentPost();
         if (currentPost) {
@@ -374,7 +427,6 @@ class AdReplySidePanel {
             console.log('No current post available');
         }
         
-        console.log('Usage tracker available:', !!this.usageTrackerManager.getUsageTracker());
         console.log('=== End Debug Info ===');
     }
 
@@ -413,6 +465,270 @@ class AdReplySidePanel {
             console.error('Failed to load default URL:', error);
         }
     }
+
+    // Category Management Methods
+    async initializeCategoryFunctionality() {
+        try {
+            await this.loadCategories();
+            await this.loadSavedCategoryPreference();
+            
+            // Refresh the category view to ensure buttons are rendered with updated categories
+            this.showCategoryView();
+        } catch (error) {
+            console.error('Failed to initialize category functionality:', error);
+        }
+    }
+
+    async loadCategories() {
+        try {
+            // Get pre-built categories
+            const prebuiltCategories = [
+                { id: 'automotive', name: 'Automotive Services', description: 'Car repair, maintenance, detailing' },
+                { id: 'fitness', name: 'Fitness & Health', description: 'Gyms, personal training, nutrition' },
+                { id: 'food', name: 'Food & Restaurants', description: 'Restaurants, catering, food delivery' },
+                { id: 'home-services', name: 'Home Services', description: 'Cleaning, repairs, landscaping' },
+                { id: 'beauty', name: 'Beauty & Wellness', description: 'Salons, spas, cosmetics' },
+                { id: 'real-estate', name: 'Real Estate', description: 'Property sales, rentals' },
+                { id: 'technology', name: 'Technology Services', description: 'IT support, web design, software' },
+                { id: 'education', name: 'Education & Training', description: 'Courses, tutoring, workshops' },
+                { id: 'financial', name: 'Financial Services', description: 'Insurance, loans, accounting' },
+                { id: 'legal', name: 'Legal Services', description: 'Lawyers, legal consultants' },
+                { id: 'pet-services', name: 'Pet Services', description: 'Veterinary, grooming, pet sitting' },
+                { id: 'events', name: 'Event Planning', description: 'Weddings, parties, corporate events' },
+                { id: 'photography', name: 'Photography', description: 'Portrait, event, commercial photography' },
+                { id: 'crafts', name: 'Crafts & Handmade', description: 'Etsy sellers, artisans, crafters' },
+                { id: 'construction', name: 'Construction', description: 'Contractors, builders, renovations' },
+                { id: 'transportation', name: 'Transportation', description: 'Moving, delivery, ride services' },
+                { id: 'entertainment', name: 'Entertainment', description: 'Musicians, DJs, performers' },
+                { id: 'retail', name: 'Retail & E-commerce', description: 'Online stores, boutiques' },
+                { id: 'professional', name: 'Professional Services', description: 'Consulting, marketing, design' },
+                { id: 'healthcare', name: 'Healthcare', description: 'Medical, dental, therapy' },
+                { id: 'custom', name: 'Custom', description: 'User-created templates' }
+            ];
+
+            // Get custom categories from storage
+            const result = await chrome.storage.local.get(['customCategories']);
+            const customCategories = result.customCategories || [];
+
+            // Combine all categories
+            const allCategories = [...prebuiltCategories, ...customCategories];
+
+            // Update main category selector
+            const categorySelect = document.getElementById('categorySelect');
+            if (categorySelect) {
+                // Clear existing options and add placeholder
+                categorySelect.innerHTML = '<option value="">Select your business category</option>';
+
+                // Add categories to dropdown
+                allCategories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    option.title = category.description;
+                    categorySelect.appendChild(option);
+                });
+            }
+
+            // Update template form category selector
+            const templateCategorySelect = document.getElementById('templateCategory');
+            if (templateCategorySelect) {
+                const currentValue = templateCategorySelect.value;
+
+                // Clear and rebuild options
+                templateCategorySelect.innerHTML = '<option value="custom">Custom</option>';
+
+                // Add all categories except 'custom' (it's already added)
+                allCategories.filter(cat => cat.id !== 'custom').forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    templateCategorySelect.appendChild(option);
+                });
+
+                // Restore selected value if it still exists
+                if (currentValue && [...templateCategorySelect.options].some(opt => opt.value === currentValue)) {
+                    templateCategorySelect.value = currentValue;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load categories:', error);
+        }
+    }
+
+    async handleCategoryChange(categoryId) {
+        try {
+            // Save the category preference using Chrome storage API
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || { templates: {} };
+
+            if (!settings.templates) {
+                settings.templates = {};
+            }
+
+            settings.templates.preferredCategory = categoryId;
+            await chrome.storage.local.set({ settings });
+
+            // Show feedback to user
+            const categorySelect = document.getElementById('categorySelect');
+            const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+            const categoryName = selectedOption.textContent;
+
+            if (categoryId) {
+                this.uiManager.showNotification(`Category preference set to: ${categoryName}`, 'success');
+            } else {
+                this.uiManager.showNotification('Please select a business category for targeted suggestions', 'info');
+            }
+        } catch (error) {
+            console.error('Failed to save category preference:', error);
+            this.uiManager.showNotification('Failed to save category preference', 'error');
+        }
+    }
+
+    async loadSavedCategoryPreference() {
+        try {
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+
+            const categorySelect = document.getElementById('categorySelect');
+            if (categorySelect && settings.templates?.preferredCategory) {
+                categorySelect.value = settings.templates.preferredCategory;
+            }
+        } catch (error) {
+            console.error('Failed to load saved category preference:', error);
+        }
+    }
+
+    // Custom Category Management
+    showCustomCategoryForm() {
+        document.getElementById('customCategoryForm').style.display = 'block';
+        document.getElementById('newCategoryName').focus();
+    }
+
+    hideCustomCategoryForm() {
+        document.getElementById('customCategoryForm').style.display = 'none';
+        document.getElementById('newCategoryName').value = '';
+    }
+
+    async saveCustomCategory() {
+        const categoryName = document.getElementById('newCategoryName').value.trim();
+
+        if (!categoryName) {
+            this.uiManager.showNotification('Please enter a category name', 'error');
+            return;
+        }
+
+        // Create category ID from name
+        const categoryId = categoryName.toLowerCase()
+            .replace(/[^a-z0-9\s]/g, '')
+            .replace(/\s+/g, '-')
+            .substring(0, 30);
+
+        if (!categoryId) {
+            this.uiManager.showNotification('Please enter a valid category name', 'error');
+            return;
+        }
+
+        try {
+            // Get existing custom categories
+            const result = await chrome.storage.local.get(['customCategories']);
+            const customCategories = result.customCategories || [];
+
+            // Check category limit for free users
+            const isProLicense = this.settingsManager.getProLicenseStatus();
+            if (!isProLicense && customCategories.length >= 1) {
+                this.uiManager.showNotification('Free license limited to 1 custom category. Upgrade to Pro for unlimited categories and templates.', 'error');
+                return;
+            }
+
+            // Check if category already exists
+            if (customCategories.find(cat => cat.id === categoryId)) {
+                this.uiManager.showNotification('A category with this name already exists', 'error');
+                return;
+            }
+
+            // Add new category
+            const newCategory = {
+                id: categoryId,
+                name: categoryName,
+                description: `Custom category: ${categoryName}`,
+                isPrebuilt: false,
+                createdAt: new Date().toISOString()
+            };
+
+            customCategories.push(newCategory);
+            await chrome.storage.local.set({ customCategories });
+
+            // Add to dropdown
+            const categorySelect = document.getElementById('templateCategory');
+            const option = document.createElement('option');
+            option.value = categoryId;
+            option.textContent = categoryName;
+            categorySelect.appendChild(option);
+
+            // Select the new category and show visual feedback
+            categorySelect.value = categoryId;
+            await this.uiManager.showCategorySelectionFeedback(categoryName, categoryId);
+
+            // Hide form
+            this.hideCustomCategoryForm();
+
+            // Also update the main category selector
+            await this.loadCategories();
+
+        } catch (error) {
+            console.error('Failed to save custom category:', error);
+            this.uiManager.showNotification('Failed to create category', 'error');
+        }
+    }
+
+    // Template Import
+
+    async importTemplates() {
+        try {
+            // Create file input
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
+            
+            fileInput.onchange = async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                try {
+                    const fileContent = await this.readFileContent(file);
+                    const result = await this.templateManager.importTemplates(fileContent);
+                    
+                    let message = `Successfully imported ${result.imported} templates`;
+                    if (result.skipped > 0) {
+                        message += ` (${result.skipped} skipped as duplicates)`;
+                    }
+                    
+                    this.uiManager.showNotification(message, 'success');
+                    
+                    // Refresh the category view
+                    this.showCategoryView();
+                    this.updateTemplateCount();
+                    
+                } catch (error) {
+                    this.uiManager.showNotification(error.message, 'error');
+                }
+            };
+            
+            fileInput.click();
+            
+        } catch (error) {
+            this.uiManager.showNotification(error.message, 'error');
+        }
+    }
+
+    readFileContent(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(new Error('Failed to read file'));
+            reader.readAsText(file);
+        });
+    }
 }
 
 // Initialize when DOM is loaded
@@ -429,4 +745,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const suggestions = await app.postAnalyzer.generateSuggestions(testContent);
         app.uiManager.displaySuggestions(suggestions);
     };
+    window.testEtsySuggestions = async () => {
+        console.log('AdReply: Testing Etsy suggestion generation...');
+        const testContent = "Beautiful handmade jewelry! Love the craftsmanship.";
+        console.log('AdReply: Testing with Etsy content:', testContent);
+        const suggestions = await app.postAnalyzer.generateSuggestions(testContent);
+        app.uiManager.displaySuggestions(suggestions);
+    };
+
 });

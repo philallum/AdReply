@@ -316,8 +316,6 @@
             background: #e0a800;
         }
 
-
-
         .loading-message {
             text-align: center;
             color: #6c757d;
@@ -420,47 +418,6 @@
 
         .template-stats-buttons .btn {
             width: 100%;
-        }
-
-        .pro-notice {
-            background: #fff3cd;
-            color: #856404;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #ffeaa7;
-            margin-bottom: 16px;
-            font-size: 12px;
-        }
-
-        .pro-features {
-            display: flex;
-            gap: 8px;
-        }
-
-        .ai-features {
-            margin-top: 16px;
-        }
-
-        .ai-features h4 {
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            color: #495057;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .feature-item input {
-            margin-right: 8px;
-            width: auto;
-        }
-
-        .feature-item label {
-            font-size: 12px;
-            margin-bottom: 0;
         }
 
         .license-features {
@@ -632,12 +589,14 @@
             <div class="form-group">
                 <label for="categorySelect">Preferred Business Category:</label>
                 <select id="categorySelect" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
-                    <option value="">Select your business category</option>
+                    <option value="">All Categories</option>
                 </select>
             </div>
         </div>
 
-
+        <div id="status" class="status inactive" style="margin-top: 12px;">
+            Extension ready
+        </div>
 
         <div id="currentGroup" class="current-group" style="display: none;">
             <h3>Current Group</h3>
@@ -661,7 +620,8 @@
         </div>
 
         <div class="action-section">
-            <button class="btn" id="analyzePostBtn">Suggest advert</button>
+            <button class="btn" id="analyzePostBtn">Analyze Current Post</button>
+            <button class="btn secondary" id="debugBtn" style="margin-top: 8px;">Debug Templates & URLs</button>
         </div>
     </div>
 
@@ -671,6 +631,7 @@
             <h3>Custom Templates</h3>
             <div class="template-header-buttons">
                 <button class="btn btn-small" id="addTemplateBtn">+ Add Template</button>
+                <button class="btn btn-small secondary" id="managePacksBtn">Manage Template Packs</button>
             </div>
         </div>
 
@@ -685,30 +646,35 @@
 
             <div class="form-group">
                 <label for="templateCategory">Category</label>
-                <select id="templateCategory" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
-                    <option value="custom">Custom</option>
-                    <option value="automotive">Automotive Services</option>
-                    <option value="fitness">Fitness & Health</option>
-                    <option value="food">Food & Restaurants</option>
-                    <option value="home-services">Home Services</option>
-                    <option value="beauty">Beauty & Wellness</option>
-                    <option value="real-estate">Real Estate</option>
-                    <option value="technology">Technology Services</option>
-                    <option value="education">Education & Training</option>
-                    <option value="financial">Financial Services</option>
-                    <option value="legal">Legal Services</option>
-                    <option value="pet-services">Pet Services</option>
-                    <option value="events">Event Planning</option>
-                    <option value="photography">Photography</option>
-                    <option value="crafts">Crafts & Handmade</option>
-                    <option value="construction">Construction</option>
-                    <option value="transportation">Transportation</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="retail">Retail & E-commerce</option>
-                    <option value="professional">Professional Services</option>
-                    <option value="healthcare">Healthcare</option>
-                </select>
-                <button type="button" class="btn btn-small secondary" id="addCategoryBtn" style="margin-top: 8px; width: 100%;">+ Create New Category</button>
+                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                    <select id="templateCategory" style="flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
+                        <option value="custom">Custom</option>
+                        <option value="automotive">Automotive Services</option>
+                        <option value="fitness">Fitness & Health</option>
+                        <option value="food">Food & Restaurants</option>
+                        <option value="home-services">Home Services</option>
+                        <option value="beauty">Beauty & Wellness</option>
+                        <option value="real-estate">Real Estate</option>
+                        <option value="technology">Technology Services</option>
+                        <option value="education">Education & Training</option>
+                        <option value="financial">Financial Services</option>
+                        <option value="legal">Legal Services</option>
+                        <option value="pet-services">Pet Services</option>
+                        <option value="events">Event Planning</option>
+                        <option value="photography">Photography</option>
+                        <option value="crafts">Crafts & Handmade</option>
+                        <option value="construction">Construction</option>
+                        <option value="transportation">Transportation</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="retail">Retail & E-commerce</option>
+                        <option value="professional">Professional Services</option>
+                        <option value="healthcare">Healthcare</option>
+                    </select>
+                    <button type="button" class="btn btn-small secondary" id="addCategoryBtn" style="white-space: nowrap;">+ Category</button>
+                </div>
+                <div id="selectedCategoryIndicator" style="margin-top: 6px; font-size: 11px; color: #007bff; font-weight: 500; display: none;">
+                    📁 Selected: <span id="selectedCategoryName">Custom</span>
+                </div>
             </div>
 
             <!-- Custom Category Form (hidden by default) -->
@@ -724,7 +690,7 @@
             <div class="form-group">
                 <label for="templateKeywords">Keywords (comma separated)</label>
                 <input type="text" id="templateKeywords" placeholder="e.g., exhaust, garage, performance, -cheap">
-                <div style="color: #6c757d; margin-top: 4px;">
+                <div style="font-size: 11px; color: #6c757d; margin-top: 4px;">
                     Use negative keywords with "-" prefix to exclude posts (e.g., "-cheap" excludes posts containing "cheap")
                 </div>
             </div>
@@ -763,18 +729,14 @@
             </div>
         </div>
 
-        <!-- Template Stats Section -->
         <div class="template-stats">
             <div id="templateCount">0 templates</div>
             <div class="template-stats-buttons">
                 <button class="btn secondary btn-small" id="importAdPackBtn">Import Templates</button>
+                <button class="btn secondary btn-small" id="exportTemplatesBtn">Export Templates</button>
             </div>
         </div>
-
-
     </div>
-
-
 
     <!-- License Tab -->
     <div id="license" class="tab-content">
@@ -783,18 +745,18 @@
                 License Status: Free
             </div>
             <div id="licenseDetails" style="font-size: 11px; color: #6c757d;">
-                Free license: 3 templates maximum, 1 category only
+                Free license: 10 templates maximum, basic features
             </div>
         </div>
 
         <div class="license-features">
             <h4>Pro Features</h4>
             <ul>
-                <li>Unlimited templates & categories</li>
+                <li>Unlimited templates</li>
                 <li>Advanced template features</li>
                 <li>Template generation from niche descriptions</li>
+                <li>Ad Pack import/export</li>
                 <li>Enhanced template matching</li>
-                <li>Priority support</li>
             </ul>
         </div>
 

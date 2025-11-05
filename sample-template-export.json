@@ -1,0 +1,37 @@
+{
+  "exportDate": "2024-11-05T10:30:00.000Z",
+  "version": "1.0",
+  "templateCount": 3,
+  "templates": [
+    {
+      "id": "1730800000001",
+      "label": "Etsy Shop Promotion",
+      "category": "etsy-sellers",
+      "keywords": ["handmade", "craft", "etsy", "shop", "custom"],
+      "template": "Beautiful handmade work! 😍 I create similar custom pieces in my Etsy shop - check us out! {url}",
+      "url": "https://myetsyshop.etsy.com",
+      "createdAt": "2024-11-05T10:00:00.000Z",
+      "usageCount": 5
+    },
+    {
+      "id": "1730800000002", 
+      "label": "Automotive Service Offer",
+      "category": "automotive",
+      "keywords": ["car", "auto", "repair", "service", "-cheap"],
+      "template": "Nice ride! If you ever need professional automotive services, we offer quality work at fair prices. {url}",
+      "url": "https://mygarage.com",
+      "createdAt": "2024-11-05T09:30:00.000Z",
+      "usageCount": 12
+    },
+    {
+      "id": "1730800000003",
+      "label": "Fitness Coaching",
+      "category": "fitness", 
+      "keywords": ["gym", "workout", "fitness", "training"],
+      "template": "Great progress! 💪 If you're looking for personalized training plans, I offer online coaching. {url}",
+      "url": "https://myfitness.com",
+      "createdAt": "2024-11-05T08:45:00.000Z",
+      "usageCount": 8
+    }
+  ]
+}

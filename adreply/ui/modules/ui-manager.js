@@ -116,9 +116,19 @@ class UIManager {
             const suggestionText = typeof suggestion === 'string' ? suggestion : suggestion.text;
             const templateLabel = typeof suggestion === 'object' ? suggestion.templateLabel : 'Fallback';
             const isRecentlyUsed = typeof suggestion === 'object' && suggestion.recentlyUsed;
+            const isLimitMessage = typeof suggestion === 'object' && suggestion.isLimitMessage;
             
             const suggestionEl = document.createElement('div');
-            suggestionEl.className = isRecentlyUsed ? 'suggestion recently-used' : 'suggestion';
+            
+            // Special styling for limit messages
+            if (isLimitMessage) {
+                suggestionEl.className = 'suggestion limit-message';
+                suggestionEl.style.background = '#fff3cd';
+                suggestionEl.style.border = '1px solid #ffeaa7';
+                suggestionEl.style.color = '#856404';
+            } else {
+                suggestionEl.className = isRecentlyUsed ? 'suggestion recently-used' : 'suggestion';
+            }
             
             const labelDiv = document.createElement('div');
             labelDiv.className = 'suggestion-label';
@@ -130,20 +140,35 @@ class UIManager {
                 labelDiv.style.color = '#856404';
             } else {
                 labelDiv.textContent = templateLabel;
-                labelDiv.style.color = '#6c757d';
+                labelDiv.style.color = isLimitMessage ? '#856404' : '#6c757d';
             }
             
             const textDiv = document.createElement('div');
             textDiv.textContent = suggestionText;
             
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'copy-btn';
-            copyBtn.textContent = 'Copy to Clipboard';
-            copyBtn.addEventListener('click', () => this.onCopyClick(suggestionText, copyBtn, suggestion));
+            // Don't add copy button for limit messages
+            if (!isLimitMessage) {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'Copy to Clipboard';
+                copyBtn.addEventListener('click', () => this.onCopyClick(suggestionText, copyBtn, suggestion));
+                suggestionEl.appendChild(copyBtn);
+            } else {
+                // Add upgrade button for limit messages
+                const upgradeBtn = document.createElement('button');
+                upgradeBtn.className = 'copy-btn';
+                upgradeBtn.style.background = '#28a745';
+                upgradeBtn.textContent = 'Upgrade to Pro';
+                upgradeBtn.addEventListener('click', () => {
+                    // Switch to license tab
+                    const licenseTab = document.querySelector('[data-tab="license"]');
+                    if (licenseTab) licenseTab.click();
+                });
+                suggestionEl.appendChild(upgradeBtn);
+            }
             
             suggestionEl.appendChild(labelDiv);
             suggestionEl.appendChild(textDiv);
-            suggestionEl.appendChild(copyBtn);
             listEl.appendChild(suggestionEl);
         });
         
@@ -159,28 +184,67 @@ class UIManager {
         listEl.innerHTML = '<div class="no-suggestions">No suggestions available. Navigate to a Facebook group and view posts to get started.</div>';
     }
 
-    renderTemplatesList(templates, isProLicense, onEdit, onDelete) {
-        const listEl = document.getElementById('templatesList');
+    renderCategoriesList(templates, onCategoryClick) {
+        const categoriesEl = document.getElementById('categoriesList');
         
-        if (templates.length === 0) {
-            listEl.innerHTML = '<div class="no-suggestions">No templates created yet. Click "Add Template" to get started.</div>';
+        // Only show user-created templates
+        const userTemplates = templates.filter(template => !template.isPrebuilt);
+        
+        if (userTemplates.length === 0) {
+            categoriesEl.innerHTML = '<div class="no-suggestions">No custom templates created yet. Click "Add Template" to get started.</div>';
             return;
         }
         
+        // Group templates by category
+        const categoriesMap = {};
+        userTemplates.forEach(template => {
+            const categoryId = template.category || 'custom';
+            if (!categoriesMap[categoryId]) {
+                categoriesMap[categoryId] = [];
+            }
+            categoriesMap[categoryId].push(template);
+        });
+        
+        categoriesEl.innerHTML = '';
+        
+        // Render each category
+        Object.entries(categoriesMap).forEach(([categoryId, categoryTemplates]) => {
+            const categoryEl = document.createElement('div');
+            categoryEl.className = 'category-item';
+            
+            const categoryDisplay = this.getCategoryDisplayName(categoryId);
+            const templateCount = categoryTemplates.length;
+            
+            categoryEl.innerHTML = `
+                <h4>📁 ${categoryDisplay}</h4>
+                <div class="category-count">${templateCount} template${templateCount !== 1 ? 's' : ''}</div>
+            `;
+            
+            categoryEl.addEventListener('click', () => onCategoryClick(categoryId, categoryDisplay, categoryTemplates));
+            
+            categoriesEl.appendChild(categoryEl);
+        });
+    }
+
+    renderTemplatesInCategory(categoryTemplates, categoryName, onEdit, onDelete) {
+        const listEl = document.getElementById('templatesList');
+        const titleEl = document.getElementById('currentCategoryTitle');
+        
+        // Update title
+        titleEl.textContent = `${categoryName} Templates`;
+        
         listEl.innerHTML = '';
         
-        templates.forEach(template => {
+        categoryTemplates.forEach(template => {
             const templateEl = document.createElement('div');
             templateEl.className = 'template-item';
             
+            // Compact template display
             templateEl.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px;">
-                    <h4 style="margin: 0; font-size: 14px;">${template.label}</h4>
-                    <div class="template-actions">
-                        <button class="btn btn-small edit-btn">Edit</button>
-                        <button class="btn btn-small secondary delete-btn">Delete</button>
-
-                    </div>
+                <h4>${template.label}</h4>
+                <div class="template-actions">
+                    <button class="btn btn-small edit-btn">Edit</button>
+                    <button class="btn btn-small secondary delete-btn">Delete</button>
                 </div>
             `;
             
@@ -195,13 +259,133 @@ class UIManager {
         });
     }
 
-    updateTemplateCount(count, maxTemplates) {
-        const countEl = document.getElementById('templateCount');
-        countEl.textContent = `${count} templates (${maxTemplates} max)`;
+    showCategoryView() {
+        document.getElementById('categoryView').style.display = 'block';
+        document.getElementById('templateView').style.display = 'none';
     }
 
-    showTemplateForm() {
+    showTemplateView() {
+        document.getElementById('categoryView').style.display = 'none';
+        document.getElementById('templateView').style.display = 'block';
+    }
+
+    getCategoryDisplayName(categoryId) {
+        // Map category IDs to display names
+        const categoryMap = {
+            'custom': 'Custom',
+            'automotive': 'Automotive Services',
+            'fitness': 'Fitness & Health',
+            'food': 'Food & Restaurants',
+            'home-services': 'Home Services',
+            'beauty': 'Beauty & Wellness',
+            'real-estate': 'Real Estate',
+            'technology': 'Technology Services',
+            'education': 'Education & Training',
+            'financial': 'Financial Services',
+            'legal': 'Legal Services',
+            'pet-services': 'Pet Services',
+            'events': 'Event Planning',
+            'photography': 'Photography',
+            'crafts': 'Crafts & Handmade',
+            'construction': 'Construction',
+            'transportation': 'Transportation',
+            'entertainment': 'Entertainment',
+            'retail': 'Retail & E-commerce',
+            'professional': 'Professional Services',
+            'healthcare': 'Healthcare'
+        };
+        
+        return categoryMap[categoryId] || categoryId;
+    }
+
+    updateTemplateCount(count, maxTemplates, isProLicense = false) {
+        const countEl = document.getElementById('templateCount');
+        const userTemplates = count.userTemplates || 0;
+        const prebuiltTemplates = count.prebuiltTemplates || 0;
+        const maxTemplatesText = maxTemplates === 'unlimited' ? 'unlimited' : maxTemplates;
+        
+        if (isProLicense) {
+            countEl.textContent = `${userTemplates} custom templates (${maxTemplatesText} max) + ${prebuiltTemplates} prebuilt`;
+        } else {
+            countEl.textContent = `${userTemplates}/3 custom templates (1 category max) + ${prebuiltTemplates} prebuilt`;
+        }
+        
+        // Show the template stats buttons (they're now always visible for better mobile UX)
+        const statsButtonsEl = document.querySelector('.template-stats-buttons');
+        if (statsButtonsEl) {
+            statsButtonsEl.style.display = 'flex';
+        }
+    }
+
+    async showTemplateForm() {
         document.getElementById('templateForm').style.display = 'block';
+        
+        // Load and set the last selected category
+        await this.loadLastSelectedCategory();
+    }
+
+    async loadLastSelectedCategory() {
+        try {
+            // Get the last selected category from storage
+            const result = await chrome.storage.local.get(['lastSelectedCategory']);
+            const lastCategory = result.lastSelectedCategory || 'custom';
+            
+            // Set the dropdown to the last selected category
+            const categorySelect = document.getElementById('templateCategory');
+            if (categorySelect) {
+                // Check if the category option exists in the dropdown
+                const optionExists = [...categorySelect.options].some(opt => opt.value === lastCategory);
+                if (optionExists) {
+                    categorySelect.value = lastCategory;
+                } else {
+                    categorySelect.value = 'custom';
+                }
+            }
+            
+            // Update the category indicator
+            const categoryDisplayName = this.getCategoryDisplayName(categorySelect.value);
+            const indicator = document.getElementById('selectedCategoryIndicator');
+            const categoryNameSpan = document.getElementById('selectedCategoryName');
+            
+            if (indicator && categoryNameSpan) {
+                categoryNameSpan.textContent = categoryDisplayName;
+                indicator.style.display = 'block';
+            }
+            
+            // Show a subtle visual indicator if we remembered a non-default category
+            if (lastCategory !== 'custom' && categorySelect.value === lastCategory) {
+                // Add a subtle visual indicator to the dropdown
+                if (categorySelect) {
+                    categorySelect.style.borderColor = '#17a2b8';
+                    categorySelect.style.boxShadow = '0 0 0 2px rgba(23, 162, 184, 0.25)';
+                    
+                    setTimeout(() => {
+                        categorySelect.style.borderColor = '#ced4da';
+                        categorySelect.style.boxShadow = 'none';
+                    }, 2000);
+                }
+            }
+            
+        } catch (error) {
+            console.error('Failed to load last selected category:', error);
+            // Fallback to default
+            const indicator = document.getElementById('selectedCategoryIndicator');
+            const categoryNameSpan = document.getElementById('selectedCategoryName');
+            
+            if (indicator && categoryNameSpan) {
+                categoryNameSpan.textContent = 'Custom';
+                indicator.style.display = 'block';
+            }
+        }
+    }
+
+    async saveLastSelectedCategory(categoryId) {
+        try {
+            await chrome.storage.local.set({ lastSelectedCategory: categoryId });
+            console.log('AdReply: Saved last selected category:', categoryId);
+        } catch (error) {
+            console.error('Failed to save last selected category:', error);
+        }
     }
 
     hideTemplateForm() {
@@ -215,18 +399,34 @@ class UIManager {
 
     clearTemplateForm() {
         document.getElementById('templateLabel').value = '';
+        document.getElementById('templateCategory').value = 'custom';
         document.getElementById('templateKeywords').value = '';
         document.getElementById('templateContent').value = '';
-        document.getElementById('templateVariants').value = '';
         document.getElementById('templateUrl').value = '';
+        
+        // Hide category indicator
+        const indicator = document.getElementById('selectedCategoryIndicator');
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
     }
 
     populateTemplateForm(template) {
         document.getElementById('templateLabel').value = template.label;
+        document.getElementById('templateCategory').value = template.category || 'custom';
         document.getElementById('templateKeywords').value = template.keywords.join(', ');
         document.getElementById('templateContent').value = template.template;
-        document.getElementById('templateVariants').value = template.variants.join('\n');
         document.getElementById('templateUrl').value = template.url || '';
+        
+        // Show category indicator
+        const categoryDisplayName = this.getCategoryDisplayName(template.category || 'custom');
+        const indicator = document.getElementById('selectedCategoryIndicator');
+        const categoryNameSpan = document.getElementById('selectedCategoryName');
+        
+        if (indicator && categoryNameSpan) {
+            categoryNameSpan.textContent = categoryDisplayName;
+            indicator.style.display = 'block';
+        }
         
         // Change save button to update mode
         const saveBtn = document.getElementById('saveTemplateBtn');
@@ -236,9 +436,9 @@ class UIManager {
     getTemplateFormData() {
         return {
             label: document.getElementById('templateLabel').value,
+            category: document.getElementById('templateCategory').value,
             keywords: document.getElementById('templateKeywords').value,
             content: document.getElementById('templateContent').value,
-            variants: document.getElementById('templateVariants').value,
             url: document.getElementById('templateUrl').value
         };
     }
@@ -264,82 +464,7 @@ class UIManager {
         return document.getElementById('licenseKey').value;
     }
 
-    renderUsageStats(statsData, templates) {
-        const contentEl = document.getElementById('usageStatsContent');
-        
-        if (!statsData) {
-            contentEl.innerHTML = '<div class="loading-message">Usage tracker not available</div>';
-            return;
-        }
 
-        const { usageData, groupSummary, currentGroupId } = statsData;
-        let html = '';
-        
-        // Current group stats
-        if (groupSummary.totalUsages > 0) {
-            html += `<div class="usage-group">
-                <div class="usage-group-header">Current Group: ${currentGroupId.split('/').pop()}</div>
-                <div style="color: #6c757d; font-size: 10px; margin-bottom: 8px;">
-                    Total: ${groupSummary.totalUsages} uses | Recent (24h): ${groupSummary.recentUsages} uses
-                </div>`;
-            
-            // Show template usage in this group
-            for (const [templateId, stats] of Object.entries(groupSummary.usedTemplates)) {
-                const template = templates.find(t => t.id === templateId);
-                const templateName = template ? template.label : templateId;
-                const isRecentlyUsed = groupSummary.recentUsages > 0;
-                
-                html += `<div class="usage-template ${isRecentlyUsed ? 'recently-used' : ''}">
-                    <div class="usage-template-name">${templateName}</div>
-                    <div class="usage-template-stats">
-                        Used ${stats.totalUsage} times | Last: ${new Date(stats.lastUsed).toLocaleDateString()}
-                    </div>
-                </div>`;
-            }
-            
-            html += '</div>';
-        }
-        
-        // All groups summary
-        const allGroups = Object.keys(usageData);
-        if (allGroups.length > 1) {
-            html += `<div class="usage-group">
-                <div class="usage-group-header">All Groups (${allGroups.length} total)</div>`;
-            
-            for (const groupId of allGroups.slice(0, 5)) { // Show top 5
-                if (groupId === currentGroupId) continue;
-                
-                const groupUsage = usageData[groupId] || [];
-                const recentUsage = groupUsage.filter(usage => {
-                    const usageTime = new Date(usage.timestamp);
-                    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-                    return usageTime > dayAgo;
-                });
-                
-                html += `<div style="margin: 4px 0; padding: 4px; background: white; border-radius: 3px;">
-                    <div style="font-size: 10px; font-weight: bold;">${groupId.split('/').pop()}</div>
-                    <div style="font-size: 9px; color: #6c757d;">
-                        Total: ${groupUsage.length} | Recent: ${recentUsage.length}
-                    </div>
-                </div>`;
-            }
-            
-            html += '</div>';
-        }
-        
-        if (html === '') {
-            html = '<div class="loading-message">No usage data found. Start using templates to see statistics.</div>';
-        }
-        
-        contentEl.innerHTML = html;
-    }
-
-    showLoadingMessage(elementId, message = 'Loading...') {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.innerHTML = `<div class="loading-message">${message}</div>`;
-        }
-    }
 
     setButtonState(buttonId, text, disabled = false) {
         const button = document.getElementById(buttonId);
@@ -350,8 +475,112 @@ class UIManager {
     }
 
     showNotification(message, type = 'success') {
-        // Simple notification - could be enhanced with a proper notification system
-        alert(message);
+        // Create a better notification system instead of alert
+        this.showToast(message, type);
+    }
+
+    showToast(message, type = 'success') {
+        // Remove any existing toast
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 10000;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+        `;
+
+        // Set background color based on type
+        const colors = {
+            success: '#28a745',
+            error: '#dc3545',
+            info: '#17a2b8',
+            warning: '#ffc107'
+        };
+        toast.style.backgroundColor = colors[type] || colors.success;
+        if (type === 'warning') {
+            toast.style.color = '#212529';
+        }
+
+        toast.textContent = message;
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(toast);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-in';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+                if (style.parentNode) {
+                    style.remove();
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    async showCategorySelectionFeedback(categoryName, categoryId) {
+        // Show visual feedback when category is selected
+        const categorySelect = document.getElementById('templateCategory');
+        const indicator = document.getElementById('selectedCategoryIndicator');
+        const categoryNameSpan = document.getElementById('selectedCategoryName');
+        
+        if (categorySelect) {
+            // Add a temporary visual indicator
+            categorySelect.style.borderColor = '#28a745';
+            categorySelect.style.boxShadow = '0 0 0 2px rgba(40, 167, 69, 0.25)';
+            
+            setTimeout(() => {
+                categorySelect.style.borderColor = '#ced4da';
+                categorySelect.style.boxShadow = 'none';
+            }, 1500);
+        }
+        
+        // Show the category indicator
+        if (indicator && categoryNameSpan) {
+            categoryNameSpan.textContent = categoryName;
+            indicator.style.display = 'block';
+        }
+        
+        // Save the selected category for next time
+        if (categoryId) {
+            await this.saveLastSelectedCategory(categoryId);
+        }
+        
+        this.showToast(`Category selected: ${categoryName}`, 'success');
+    }
+
+    showTemplateSavedFeedback(templateName, categoryName) {
+        this.showToast(`Template "${templateName}" saved to category: ${categoryName}`, 'success');
     }
 
     getCurrentPost() {

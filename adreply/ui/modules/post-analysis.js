@@ -7,8 +7,42 @@ class PostAnalyzer {
         this.currentPost = null;
     }
 
-    async generateSuggestions(postContent) {
+    async generateSuggestions(postContent, isProLicense = false) {
         console.log('AdReply: Generating suggestions for post:', postContent.substring(0, 50) + '...');
+        
+        // Check daily usage limit for free users
+        if (!isProLicense) {
+            try {
+                // Import the usage tracker manager to check limits
+                const usageResult = await chrome.storage.local.get(['usageHistory']);
+                const usageHistory = usageResult.usageHistory || [];
+                
+                // Count usage in last 24 hours
+                const now = new Date();
+                const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                const recentUsage = usageHistory.filter(record => {
+                    const recordTime = new Date(record.timestamp);
+                    return recordTime >= yesterday;
+                });
+                
+                if (recentUsage.length >= 3) {
+                    // User has exceeded daily limit
+                    const oldestUsage = Math.min(...recentUsage.map(r => new Date(r.timestamp).getTime()));
+                    const resetTime = new Date(oldestUsage + 24 * 60 * 60 * 1000);
+                    const hoursUntilReset = Math.ceil((resetTime - now) / (1000 * 60 * 60));
+                    
+                    return [{
+                        text: `⏰ Daily limit reached (3/3 suggestions used). Upgrade to Pro for unlimited suggestions or wait ${hoursUntilReset} hours for reset.`,
+                        templateId: 'limit_reached',
+                        templateLabel: 'Usage Limit',
+                        isLimitMessage: true
+                    }];
+                }
+            } catch (error) {
+                console.error('AdReply: Error checking usage limit:', error);
+            }
+        }
+        
         const suggestions = [];
 
         // Get default promo URL from settings
@@ -26,19 +60,45 @@ class PostAnalyzer {
         
         if (matchedTemplates.length > 0) {
             // Use matched templates
-            for (const match of matchedTemplates.slice(0, 3)) { // Top 3 matches
+            for (const match of matchedTemplates) { // All matches - 24h usage tracking provides natural rotation
                 const template = match.template;
                 const variant = match.variant;
                 
                 // Format the suggestion with URL replacement
                 let suggestion = variant || template.template;
 
-                // Replace {url} placeholder with default promo URL or template URL
+                // Get the URL to use (template URL takes priority over default)
                 const urlToUse = template.url || defaultPromoUrl;
-                suggestion = suggestion.replace(/{url}/g, urlToUse);
                 
-                // Also replace {site} placeholder for backward compatibility
-                suggestion = suggestion.replace(/{site}/g, urlToUse || 'our website');
+                console.log('AdReply: Processing template:', template.label);
+                console.log('AdReply: Template URL:', template.url);
+                console.log('AdReply: Default URL:', defaultPromoUrl);
+                console.log('AdReply: URL to use:', urlToUse);
+                console.log('AdReply: Original suggestion:', suggestion);
+
+                // Replace {url} placeholder with the URL
+                if (suggestion.includes('{url}')) {
+                    suggestion = suggestion.replace(/{url}/g, urlToUse);
+                    console.log('AdReply: After {url} replacement:', suggestion);
+                }
+                
+                // Replace {site} placeholder for backward compatibility
+                if (suggestion.includes('{site}')) {
+                    suggestion = suggestion.replace(/{site}/g, urlToUse || 'our website');
+                    console.log('AdReply: After {site} replacement:', suggestion);
+                }
+                
+                // If no placeholder was found but we have a URL, append it
+                if (!suggestion.includes('{url}') && !suggestion.includes('{site}') && urlToUse) {
+                    // Check if the suggestion already ends with a URL
+                    const urlPattern = /https?:\/\/[^\s]+$/;
+                    if (!urlPattern.test(suggestion.trim())) {
+                        suggestion = suggestion.trim() + ' ' + urlToUse;
+                        console.log('AdReply: After URL append:', suggestion);
+                    }
+                }
+                
+                console.log('AdReply: Final suggestion:', suggestion);
                 
                 suggestions.push({
                     text: suggestion,
@@ -118,6 +178,17 @@ class PostAnalyzer {
         console.log('AdReply: Available templates:', templates.length);
         
         const matches = [];
+        
+        // Get user's preferred category
+        let preferredCategory = null;
+        try {
+            const result = await chrome.storage.local.get(['settings']);
+            preferredCategory = result.settings?.templates?.preferredCategory || null;
+            console.log('AdReply: User preferred category:', preferredCategory);
+        } catch (error) {
+            console.warn('AdReply: Could not get preferred category:', error);
+        }
+        
         // Clean and split post content, removing punctuation for better matching
         const cleanedContent = postContent.toLowerCase().replace(/[^\w\s]/g, ' ');
         const postWords = cleanedContent.split(/\s+/).filter(word => word.length > 0);
@@ -150,24 +221,58 @@ class PostAnalyzer {
             }
             
             // Calculate relevance score based on keyword matches
+            let hasNegativeMatch = false;
+
             for (const keyword of template.keywords) {
                 const keywordLower = keyword.toLowerCase().trim();
                 if (!keywordLower) continue; // Skip empty keywords
-                
-                // Check for exact word matches and partial matches
-                const exactMatch = postWords.includes(keywordLower);
-                const partialMatch = postWords.some(word => word.includes(keywordLower) && keywordLower.length > 2);
-                
-                console.log(`AdReply: Testing keyword "${keyword}" (${keywordLower}) against post words:`, postWords);
-                console.log(`AdReply: Exact match for "${keywordLower}":`, exactMatch);
-                console.log(`AdReply: Partial match for "${keywordLower}":`, partialMatch);
-                
-                if (exactMatch || partialMatch) {
-                    score += exactMatch ? 2 : 1; // Exact matches get higher score
-                    console.log('AdReply: ✅ Keyword match found:', keyword, exactMatch ? '(exact)' : '(partial)', 'in post words');
+
+                // Check if this is a negative keyword (starts with -)
+                if (keywordLower.startsWith('-')) {
+                    const negativeKeyword = keywordLower.substring(1); // Remove the - prefix
+                    if (!negativeKeyword) continue; // Skip if empty after removing -
+
+                    // Check if negative keyword is present in post
+                    const exactNegativeMatch = postWords.includes(negativeKeyword);
+                    const partialNegativeMatch = postWords.some(word => word.includes(negativeKeyword) && negativeKeyword.length > 2);
+
+                    console.log(`AdReply: Testing negative keyword "${keyword}" (${negativeKeyword}) against post words:`, postWords);
+                    console.log(`AdReply: Negative exact match for "${negativeKeyword}":`, exactNegativeMatch);
+                    console.log(`AdReply: Negative partial match for "${negativeKeyword}":`, partialNegativeMatch);
+
+                    if (exactNegativeMatch || partialNegativeMatch) {
+                        hasNegativeMatch = true;
+                        console.log('AdReply: ❌ Negative keyword match found:', keyword, '- template excluded');
+                        break; // Exit early if negative keyword found
+                    }
                 } else {
-                    console.log('AdReply: ❌ No match for keyword:', keyword);
+                    // Regular positive keyword matching
+                    const exactMatch = postWords.includes(keywordLower);
+                    const partialMatch = postWords.some(word => word.includes(keywordLower) && keywordLower.length > 2);
+
+                    console.log(`AdReply: Testing keyword "${keyword}" (${keywordLower}) against post words:`, postWords);
+                    console.log(`AdReply: Exact match for "${keywordLower}":`, exactMatch);
+                    console.log(`AdReply: Partial match for "${keywordLower}":`, partialMatch);
+
+                    if (exactMatch || partialMatch) {
+                        score += exactMatch ? 2 : 1; // Exact matches get higher score
+                        console.log('AdReply: ✅ Keyword match found:', keyword, exactMatch ? '(exact)' : '(partial)', 'in post words');
+                    } else {
+                        console.log('AdReply: ❌ No match for keyword:', keyword);
+                    }
                 }
+            }
+
+            // If negative keyword matched, exclude this template completely
+            if (hasNegativeMatch) {
+                console.log('AdReply: Template excluded due to negative keyword match:', template.label);
+                continue; // Skip this template entirely
+            }
+
+            // Add category priority bonus
+            if (preferredCategory && template.category === preferredCategory) {
+                score += 3; // Significant bonus for preferred category
+                console.log('AdReply: Category bonus applied for:', template.label, 'Category:', template.category);
             }
             
             console.log('AdReply: Template score:', template.label, score);
