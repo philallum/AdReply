@@ -502,8 +502,7 @@ class AdReplySidePanel {
                 { id: 'entertainment', name: 'Entertainment', description: 'Musicians, DJs, performers' },
                 { id: 'retail', name: 'Retail & E-commerce', description: 'Online stores, boutiques' },
                 { id: 'professional', name: 'Professional Services', description: 'Consulting, marketing, design' },
-                { id: 'healthcare', name: 'Healthcare', description: 'Medical, dental, therapy' },
-                { id: 'custom', name: 'Custom', description: 'User-created templates' }
+                { id: 'healthcare', name: 'Healthcare', description: 'Medical, dental, therapy' }
             ];
 
             // Get custom categories from storage
