@@ -82,6 +82,13 @@ class AdReplySidePanel {
             importAdPackBtn.addEventListener('click', () => this.importTemplates());
         }
 
+        // Backup & Restore event listeners
+        document.getElementById('backupRestoreBtn').addEventListener('click', () => this.showBackupView());
+        document.getElementById('backFromBackupBtn').addEventListener('click', () => this.hideBackupView());
+        document.getElementById('exportDataBtn').addEventListener('click', () => this.exportData());
+        document.getElementById('importDataBtn').addEventListener('click', () => document.getElementById('backupFileInput').click());
+        document.getElementById('backupFileInput').addEventListener('change', (e) => this.importData(e));
+
         // Category selection
         const categorySelect = document.getElementById('categorySelect');
         if (categorySelect) {
@@ -727,6 +734,189 @@ class AdReplySidePanel {
             reader.onerror = (e) => reject(new Error('Failed to read file'));
             reader.readAsText(file);
         });
+    }
+
+    // Backup & Restore Methods
+    showBackupView() {
+        // Hide category and template views
+        document.getElementById('categoryView').style.display = 'none';
+        document.getElementById('templateView').style.display = 'none';
+        document.getElementById('templateForm').style.display = 'none';
+        document.getElementById('templateCount').parentElement.style.display = 'none';
+        
+        // Show backup view
+        document.getElementById('backupView').style.display = 'block';
+        
+        // Load last backup time
+        this.loadLastBackupTime();
+    }
+
+    hideBackupView() {
+        // Hide backup view
+        document.getElementById('backupView').style.display = 'none';
+        
+        // Show category view and stats
+        document.getElementById('templateCount').parentElement.style.display = 'block';
+        this.showCategoryView();
+    }
+
+    loadLastBackupTime() {
+        chrome.storage.local.get(['lastBackup'], (result) => {
+            const lastBackupEl = document.getElementById('lastBackupTime');
+            if (result.lastBackup) {
+                const date = new Date(result.lastBackup);
+                lastBackupEl.textContent = this.formatBackupDate(date);
+            } else {
+                lastBackupEl.textContent = 'Never';
+            }
+        });
+    }
+
+    formatBackupDate(date) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        const timeStr = date.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+        });
+        
+        if (targetDate.getTime() === today.getTime()) {
+            return `Today, ${timeStr}`;
+        } else if (targetDate.getTime() === today.getTime() - 86400000) {
+            return `Yesterday, ${timeStr}`;
+        } else {
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+    }
+
+    showBackupMessage(text, type = 'success') {
+        const messageEl = document.getElementById('backupMessage');
+        messageEl.textContent = text;
+        messageEl.className = `message ${type}`;
+        messageEl.style.display = 'block';
+        
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 5000);
+    }
+
+    exportData() {
+        chrome.storage.local.get(null, (data) => {
+            if (chrome.runtime.lastError) {
+                this.showBackupMessage('Error reading data: ' + chrome.runtime.lastError.message, 'error');
+                return;
+            }
+
+            // Create backup object with metadata
+            const backup = {
+                version: '1.0',
+                timestamp: new Date().toISOString(),
+                data: data
+            };
+
+            // Convert to JSON
+            const jsonStr = JSON.stringify(backup, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            // Generate filename with timestamp
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            const filename = `adreply-backup-${timestamp}.json`;
+
+            // Download file
+            chrome.downloads.download({
+                url: url,
+                filename: filename,
+                saveAs: true
+            }, (downloadId) => {
+                if (chrome.runtime.lastError) {
+                    this.showBackupMessage('Error downloading file: ' + chrome.runtime.lastError.message, 'error');
+                    URL.revokeObjectURL(url);
+                    return;
+                }
+
+                // Save backup timestamp
+                const now = new Date().toISOString();
+                chrome.storage.local.set({ lastBackup: now }, () => {
+                    this.loadLastBackupTime();
+                    this.showBackupMessage('✓ Data exported successfully!');
+                    URL.revokeObjectURL(url);
+                });
+            });
+        });
+    }
+
+    importData(event) {
+        const file = event.target.files[0];
+        
+        if (!file) {
+            return;
+        }
+
+        // Reset file input
+        event.target.value = '';
+
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const content = e.target.result;
+                const backup = JSON.parse(content);
+
+                // Validate backup structure
+                if (!backup.data || typeof backup.data !== 'object') {
+                    throw new Error('Invalid backup file format');
+                }
+
+                // Confirm before overwriting
+                const confirmMsg = 'This will replace all current data. Continue?';
+                if (!confirm(confirmMsg)) {
+                    this.showBackupMessage('Import cancelled', 'error');
+                    return;
+                }
+
+                // Clear existing data and import new data
+                chrome.storage.local.clear(() => {
+                    chrome.storage.local.set(backup.data, () => {
+                        if (chrome.runtime.lastError) {
+                            this.showBackupMessage('Error importing data: ' + chrome.runtime.lastError.message, 'error');
+                            return;
+                        }
+
+                        // Save import timestamp
+                        const now = new Date().toISOString();
+                        chrome.storage.local.set({ lastBackup: now }, () => {
+                            this.loadLastBackupTime();
+                            this.showBackupMessage('✓ Data imported successfully!');
+                            
+                            // Reload the page to reflect imported data
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        });
+                    });
+                });
+
+            } catch (error) {
+                this.showBackupMessage('Invalid JSON file: ' + error.message, 'error');
+            }
+        };
+
+        reader.onerror = () => {
+            this.showBackupMessage('Error reading file', 'error');
+        };
+
+        reader.readAsText(file);
     }
 }
 

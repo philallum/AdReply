@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup & Restore - AdReply</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-width: 400px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            color: #495057;
+        }
+
+        .subtitle {
+            margin: 0 0 24px 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .status {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .status strong {
+            color: #495057;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .info-box ul {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 4px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Backup & Restore</h1>
+        <p class="subtitle">Export and import your AdReply data</p>
+
+        <div id="message" class="message"></div>
+
+        <div class="status">
+            <strong>Last backup:</strong> <span id="lastBackup">Never</span>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" id="exportBtn">📥 Export Data (.json)</button>
+            <button class="btn btn-secondary" id="importBtn">📤 Import Data (.json)</button>
+        </div>
+
+        <div class="info-box">
+            <strong>ℹ️ What gets backed up:</strong>
+            <ul>
+                <li>All custom templates</li>
+                <li>Template categories</li>
+                <li>License information</li>
+                <li>Settings and preferences</li>
+            </ul>
+        </div>
+
+        <input type="file" id="fileInput" accept=".json">
+    </div>
+
+    <script src="backup.js"></script>
+</body>
+</html>
