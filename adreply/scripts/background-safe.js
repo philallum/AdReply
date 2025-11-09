@@ -1,9 +1,38 @@
 // Facebook-Safe Background Script for AdReply
 console.log('AdReply: Background script loaded');
 
+// Import required scripts
+importScripts(
+  '../storage/indexeddb-manager.js',
+  '../storage/chrome-storage-manager.js',
+  '../storage/data-models.js',
+  '../storage/data-migration.js',
+  '../storage/storage-manager.js',
+  'license-manager.js'
+);
+
 // Store recent posts for side panel access
 let recentPosts = [];
 let currentGroupInfo = null;
+
+// Initialize managers
+let storageManager = null;
+let licenseManager = null;
+
+// Initialize on startup
+(async function initializeManagers() {
+  try {
+    storageManager = new StorageManager();
+    await storageManager.initialize();
+    
+    licenseManager = new LicenseManager(storageManager);
+    await licenseManager.initialize();
+    
+    console.log('AdReply: Managers initialized successfully');
+  } catch (error) {
+    console.error('AdReply: Failed to initialize managers:', error);
+  }
+})();
 
 // Handle messages from content script and side panel
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -14,6 +43,122 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case 'PING':
         sendResponse({ success: true, active: true, background: 'working' });
         break;
+
+      // License management messages
+      case 'CHECK_LICENSE':
+        (async () => {
+          try {
+            const summary = await licenseManager.getLicenseStatusSummary();
+            sendResponse({
+              success: true,
+              valid: licenseManager.isValid(),
+              entitlements: licenseManager.getEntitlements(),
+              status: summary
+            });
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'SET_LICENSE':
+        (async () => {
+          try {
+            const result = await licenseManager.setLicense(message.token);
+            sendResponse(result);
+          } catch (error) {
+            sendResponse({ valid: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'VERIFY_LICENSE':
+        (async () => {
+          try {
+            const result = await licenseManager.verify(message.testMode || false);
+            sendResponse(result);
+          } catch (error) {
+            sendResponse({ valid: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'CLEAR_LICENSE':
+        (async () => {
+          try {
+            await licenseManager.clearLicense();
+            sendResponse({ success: true });
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'checkFeatureAccess':
+        (async () => {
+          try {
+            const hasAccess = await licenseManager.checkFeatureAccess(message.feature);
+            sendResponse({ success: true, hasAccess });
+          } catch (error) {
+            sendResponse({ success: false, hasAccess: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'getLicenseStatus':
+        (async () => {
+          try {
+            const status = await licenseManager.getLicenseStatusSummary();
+            sendResponse({ success: true, status });
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'validateLicense':
+        (async () => {
+          try {
+            const result = await licenseManager.validateLicense();
+            sendResponse(result);
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'upgradeLicense':
+        (async () => {
+          try {
+            const result = await licenseManager.upgradeToPro(message.token);
+            sendResponse(result);
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'getTemplateLimit':
+        (async () => {
+          try {
+            const limit = await licenseManager.getTemplateLimit();
+            sendResponse({ success: true, limit });
+          } catch (error) {
+            sendResponse({ success: false, limit: 10, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'canAddTemplate':
+        (async () => {
+          try {
+            const canAdd = await licenseManager.canAddTemplate();
+            sendResponse({ success: true, canAdd });
+          } catch (error) {
+            sendResponse({ success: false, canAdd: false, error: error.message });
+          }
+        })();
+        return true; // Async response;
 
       case 'NEW_POST':
         // Store new post from content script

@@ -1,30 +1,35 @@
 /**
  * License Manager for AdReply Extension
  * Handles JWT token validation, license verification, and feature gating
+ * Implements JWT integration as per browser-extension-jwt-integration.md specification
  */
 
 class LicenseManager {
   constructor(storageManager) {
     this.storageManager = storageManager;
-    this.publicKey = null;
-    this.licenseServerUrl = 'https://teamhandso.me/api/license';
+    this.apiEndpoint = 'https://teamhandso.me/api/verify';
+    this.verificationInterval = 24 * 60 * 60 * 1000; // 24 hours
     this.gracePeriodDays = 7;
     
     // Feature definitions
     this.features = {
-      unlimited_templates: { free: false, pro: true },
-      ai_integration: { free: false, pro: true },
-      ad_packs: { free: false, pro: true },
-      priority_support: { free: false, pro: true }
+      unlimited_templates: { free: false, pro: true, admin: true },
+      ai_integration: { free: false, pro: true, admin: true },
+      ad_packs: { free: false, pro: true, admin: true },
+      priority_support: { free: false, pro: true, admin: true }
     };
     
     // Template limits
     this.templateLimits = {
       free: 10,
-      pro: Infinity
+      pro: Infinity,
+      admin: Infinity
     };
     
     this.initialized = false;
+    this.token = null;
+    this.entitlements = null;
+    this.lastVerification = null;
   }
 
   /**
@@ -35,154 +40,200 @@ class LicenseManager {
     if (this.initialized) return;
     
     try {
-      await this.loadPublicKey();
+      // Load stored token and entitlements
+      const stored = await this.storageManager.getLicenseData();
+      
+      if (stored) {
+        this.token = stored.token;
+        this.entitlements = stored.entitlements;
+        this.lastVerification = stored.lastVerification;
+      }
+      
       this.initialized = true;
+      
+      // Verify on startup if we have a token
+      if (this.token) {
+        await this.verify();
+      }
+      
+      // Set up periodic verification
+      this.startPeriodicVerification();
     } catch (error) {
       console.error('Failed to initialize license manager:', error);
-      throw error;
+      this.initialized = true; // Continue with free tier
     }
   }
 
   /**
-   * Load public key for JWT verification
+   * Start periodic license verification
+   */
+  startPeriodicVerification() {
+    setInterval(async () => {
+      if (this.token && this.needsVerification()) {
+        await this.verify();
+      }
+    }, this.verificationInterval);
+  }
+
+  /**
+   * Check if license needs verification
+   * @returns {boolean}
+   */
+  needsVerification() {
+    if (!this.lastVerification) return true;
+    return Date.now() - this.lastVerification > this.verificationInterval;
+  }
+
+  /**
+   * Collect device information for fingerprinting
+   * @returns {Object} Device info
+   */
+  collectDeviceInfo() {
+    return {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screenResolution: `${screen.width}x${screen.height}`
+    };
+  }
+
+  /**
+   * Verify license with server (implements JWT token rotation)
+   * @param {boolean} testMode - If true, performs read-only verification without activation
+   * @returns {Promise<Object>} Verification result
+   */
+  async verify(testMode = false) {
+    if (!this.token) {
+      return { 
+        valid: false, 
+        error: 'No license token',
+        license: this.determineLicenseStatus(null)
+      };
+    }
+
+    try {
+      const response = await fetch(this.apiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          licenseToken: this.token,
+          deviceInfo: this.collectDeviceInfo(),
+          testMode
+        })
+      });
+
+      if (!response.ok) {
+        // Handle HTTP errors
+        if (response.status === 400) {
+          return { valid: false, error: 'Invalid request format' };
+        }
+        if (response.status === 500) {
+          return { valid: false, error: 'Server error. Please try again later.' };
+        }
+        return { valid: false, error: 'Unexpected error occurred' };
+      }
+
+      const result = await response.json();
+
+      if (result.isValid) {
+        // Update stored token with rotated token
+        this.token = result.rotatedToken;
+        this.entitlements = result.entitlements;
+        this.lastVerification = Date.now();
+
+        // Save to storage
+        await this.storageManager.saveLicenseData({
+          token: this.token,
+          entitlements: this.entitlements,
+          lastVerification: this.lastVerification,
+          status: 'pro',
+          tier: result.entitlements.plan,
+          plan: result.entitlements.plan,
+          features: this.getFeaturesByPlan(result.entitlements.plan),
+          activationInfo: result.activationInfo
+        });
+
+        return {
+          valid: true,
+          entitlements: result.entitlements,
+          activationInfo: result.activationInfo,
+          license: this.determineLicenseStatus({ plan: result.entitlements.plan })
+        };
+      } else {
+        // License invalid - clear stored data if not an activation issue
+        if (!result.activationInfo) {
+          await this.clearLicense();
+        }
+
+        return {
+          valid: false,
+          error: result.message,
+          activationInfo: result.activationInfo,
+          license: this.determineLicenseStatus(null)
+        };
+      }
+    } catch (error) {
+      console.error('License verification failed:', error);
+      return {
+        valid: false,
+        error: 'Network error',
+        details: error.message,
+        license: this.determineLicenseStatus(null)
+      };
+    }
+  }
+
+  /**
+   * Set new license token and verify it
+   * @param {string} token - JWT license token
+   * @returns {Promise<Object>} Verification result
+   */
+  async setLicense(token) {
+    this.token = token;
+    return await this.verify();
+  }
+
+  /**
+   * Clear license data
    * @returns {Promise<void>}
    */
-  async loadPublicKey() {
-    // In a real implementation, this would fetch the public key from a secure endpoint
-    // For now, we'll use a hardcoded public key (this should be replaced with actual key)
-    this.publicKey = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4f5wg5l2hKsTeNem/V41
-fGnJm6gOdrj8ym3rFkEjWT2btf02VoBtzS9ze4gRZDvHuuBXxxbgLzllS7dxdsYy
-i0QhAzFuS0Ag4iKQsE9RF6Dn7fBmVVRtn8R9ipNiPSw36C0jKYEjMZxd+7u8Ux6C
-WDgKXSAh1Dk6cXaLV4uvNeDp9Y7VYyoRPiGWWzJs5wMzx4YUtMxXn5FRnlJvNn6j
-whB1L0eqsI1L6omyZGZ6s7nyt+TO90ovFoiNjFhh72MGvF/W9+2HVqnQBmpvvqaL
-b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
-+QIDAQAB
------END PUBLIC KEY-----`;
-  }
-
-  /**
-   * Validate JWT token locally
-   * @param {string} token - JWT token to validate
-   * @returns {Promise<Object>} Validation result
-   */
-  async validateJWTToken(token) {
-    await this.initialize();
+  async clearLicense() {
+    this.token = null;
+    this.entitlements = null;
+    this.lastVerification = null;
     
-    if (!token || typeof token !== 'string') {
-      return {
-        isValid: false,
-        error: 'Invalid token format',
-        payload: null
-      };
-    }
-
-    try {
-      // Parse JWT token
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        return {
-          isValid: false,
-          error: 'Invalid JWT format',
-          payload: null
-        };
-      }
-
-      const [headerB64, payloadB64, signatureB64] = parts;
-      
-      // Decode header and payload
-      const header = JSON.parse(this.base64UrlDecode(headerB64));
-      const payload = JSON.parse(this.base64UrlDecode(payloadB64));
-      
-      // Verify signature (simplified - in production use crypto.subtle)
-      const isSignatureValid = await this.verifySignature(
-        `${headerB64}.${payloadB64}`,
-        signatureB64
-      );
-      
-      if (!isSignatureValid) {
-        return {
-          isValid: false,
-          error: 'Invalid signature',
-          payload: null
-        };
-      }
-      
-      // Check expiration
-      const now = Math.floor(Date.now() / 1000);
-      if (payload.exp && payload.exp < now) {
-        return {
-          isValid: false,
-          error: 'Token expired',
-          payload: payload,
-          expired: true
-        };
-      }
-      
-      // Check not before
-      if (payload.nbf && payload.nbf > now) {
-        return {
-          isValid: false,
-          error: 'Token not yet valid',
-          payload: payload
-        };
-      }
-      
-      // Validate required claims
-      const requiredClaims = ['sub', 'tier', 'exp'];
-      for (const claim of requiredClaims) {
-        if (!payload[claim]) {
-          return {
-            isValid: false,
-            error: `Missing required claim: ${claim}`,
-            payload: payload
-          };
-        }
-      }
-      
-      return {
-        isValid: true,
-        error: null,
-        payload: payload
-      };
-      
-    } catch (error) {
-      return {
-        isValid: false,
-        error: `Token parsing failed: ${error.message}`,
-        payload: null
-      };
-    }
+    await this.storageManager.saveLicenseData({
+      token: '',
+      status: 'free',
+      tier: 'free',
+      plan: null,
+      expiresAt: null,
+      lastVerification: null,
+      features: [],
+      entitlements: null,
+      activationInfo: null
+    });
   }
 
   /**
-   * Verify JWT signature (simplified implementation)
-   * @param {string} data - Data to verify
-   * @param {string} signature - Base64 URL encoded signature
-   * @returns {Promise<boolean>}
+   * Get features by plan
+   * @param {string} plan - Plan type (pro or admin)
+   * @returns {Array<string>} List of available features
    */
-  async verifySignature(data, signature) {
-    // In a real implementation, this would use crypto.subtle.verify
-    // For now, we'll do a basic validation
-    try {
-      // Convert signature from base64url to base64
-      const signatureBytes = this.base64UrlDecode(signature);
-      
-      // In production, use:
-      // const key = await crypto.subtle.importKey(...)
-      // const isValid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', key, signature, data)
-      
-      // For now, just check if signature exists and has reasonable length
-      return signatureBytes && signatureBytes.length > 100;
-    } catch (error) {
-      console.error('Signature verification failed:', error);
-      return false;
+  getFeaturesByPlan(plan) {
+    const features = [];
+    for (const [feature, access] of Object.entries(this.features)) {
+      if (access[plan]) {
+        features.push(feature);
+      }
     }
+    return features;
   }
 
   /**
-   * Determine license status from token payload
-   * @param {Object} payload - JWT payload
+   * Determine license status from payload
+   * @param {Object} payload - License payload (can be JWT payload or entitlements)
    * @returns {Object} License status information
    */
   determineLicenseStatus(payload) {
@@ -196,61 +247,33 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
       };
     }
 
-    const now = new Date();
-    const expiryDate = payload.exp ? new Date(payload.exp * 1000) : null;
-    
-    let status = 'free';
-    let tier = payload.tier || 'free';
-    
-    if (tier === 'pro') {
-      if (expiryDate && now > expiryDate) {
-        status = 'expired';
-      } else {
-        status = 'pro';
-      }
-    }
-    
-    // Map features based on tier
-    const features = [];
-    for (const [feature, access] of Object.entries(this.features)) {
-      if (access[tier]) {
-        features.push(feature);
-      }
-    }
+    const plan = payload.plan || 'free';
+    const features = this.getFeaturesByPlan(plan);
     
     return {
-      status: status,
-      tier: tier,
-      plan: payload.plan || null,
+      status: plan === 'free' ? 'free' : 'pro',
+      tier: plan,
+      plan: plan,
       features: features,
-      expiresAt: expiryDate ? expiryDate.toISOString() : null,
+      expiresAt: null, // Server handles expiration
       userId: payload.sub || null
     };
   }
 
   /**
-   * Validate current license
-   * @param {string} token - JWT token to validate
+   * Validate current license (alias for verify)
    * @returns {Promise<Object>} License validation result
    */
-  async validateLicense(token) {
-    const validation = await this.validateJWTToken(token);
-    
-    if (!validation.isValid) {
-      return {
-        isValid: false,
-        error: validation.error,
-        license: this.determineLicenseStatus(null)
-      };
-    }
-    
-    const licenseStatus = this.determineLicenseStatus(validation.payload);
-    
-    return {
-      isValid: true,
-      error: null,
-      license: licenseStatus
-    };
+  async validateLicense() {
+    return await this.verify();
+  }
+
+  /**
+   * Check if license is currently valid
+   * @returns {boolean}
+   */
+  isValid() {
+    return this.token && this.entitlements;
   }
 
   /**
@@ -262,15 +285,13 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
     try {
       const licenseData = await this.storageManager.getLicenseData();
       
-      if (!licenseData) {
+      if (!licenseData || !licenseData.features) {
         return this.features[feature]?.free || false;
       }
       
-      // Check if license is still valid (including grace period)
-      const isLicenseValid = await this.isLicenseCurrentlyValid(licenseData);
-      
-      if (!isLicenseValid) {
-        return this.features[feature]?.free || false;
+      // Check if we need to verify license
+      if (this.needsVerification()) {
+        await this.verify();
       }
       
       return licenseData.features.includes(feature);
@@ -281,33 +302,20 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
   }
 
   /**
-   * Check if license is currently valid (including grace period)
-   * @param {Object} licenseData - License data
+   * Check if license is currently valid
+   * @param {Object} licenseData - License data (optional, will fetch if not provided)
    * @returns {Promise<boolean>}
    */
-  async isLicenseCurrentlyValid(licenseData) {
-    if (!licenseData) return false;
-    
-    if (licenseData.status === 'revoked') return false;
-    if (licenseData.status === 'free') return true;
-    
-    const now = new Date();
-    
-    // Check main expiration
-    if (licenseData.expiresAt) {
-      const expiryDate = new Date(licenseData.expiresAt);
-      
-      if (now > expiryDate) {
-        // Check grace period
-        if (licenseData.gracePeriodEnds) {
-          const gracePeriodEnd = new Date(licenseData.gracePeriodEnds);
-          return now <= gracePeriodEnd;
-        }
-        return false;
-      }
+  async isLicenseCurrentlyValid(licenseData = null) {
+    if (!licenseData) {
+      licenseData = await this.storageManager.getLicenseData();
     }
     
-    return licenseData.status === 'pro';
+    if (!licenseData) return false;
+    if (licenseData.status === 'free') return true;
+    
+    // For pro/admin licenses, check if we have valid entitlements
+    return licenseData.status === 'pro' && licenseData.entitlements !== null;
   }
 
   /**
@@ -318,17 +326,17 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
     try {
       const licenseData = await this.storageManager.getLicenseData();
       
-      if (!licenseData) {
+      if (!licenseData || licenseData.tier === 'free') {
         return this.templateLimits.free;
       }
       
       const isValid = await this.isLicenseCurrentlyValid(licenseData);
       
-      if (!isValid || licenseData.tier === 'free') {
+      if (!isValid) {
         return this.templateLimits.free;
       }
       
-      return this.templateLimits.pro;
+      return this.templateLimits[licenseData.tier] || this.templateLimits.free;
     } catch (error) {
       console.error('Failed to get template limit:', error);
       return this.templateLimits.free;
@@ -360,39 +368,21 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
    */
   async upgradeToPro(token) {
     try {
-      const validation = await this.validateLicense(token);
+      const result = await this.setLicense(token);
       
-      if (!validation.isValid) {
+      if (!result.valid) {
         return {
           success: false,
-          error: validation.error
+          error: result.error,
+          activationInfo: result.activationInfo
         };
       }
-      
-      if (validation.license.tier !== 'pro') {
-        return {
-          success: false,
-          error: 'Token is not for Pro tier'
-        };
-      }
-      
-      // Save license data
-      const licenseData = {
-        token: token,
-        status: validation.license.status,
-        tier: validation.license.tier,
-        plan: validation.license.plan,
-        expiresAt: validation.license.expiresAt,
-        lastValidatedAt: new Date().toISOString(),
-        gracePeriodEnds: null,
-        features: validation.license.features
-      };
-      
-      await this.storageManager.saveLicenseData(licenseData);
       
       return {
         success: true,
-        license: licenseData
+        license: result.license,
+        entitlements: result.entitlements,
+        activationInfo: result.activationInfo
       };
       
     } catch (error) {
@@ -408,76 +398,26 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
    * @returns {Promise<void>}
    */
   async downgradeLicense() {
-    const freeLicenseData = {
-      token: '',
-      status: 'free',
-      tier: 'free',
-      plan: null,
-      expiresAt: null,
-      lastValidatedAt: new Date().toISOString(),
-      gracePeriodEnds: null,
-      features: []
-    };
-    
-    await this.storageManager.saveLicenseData(freeLicenseData);
+    await this.clearLicense();
   }
 
   /**
-   * Get grace period status
-   * @returns {Promise<Object>} Grace period information
+   * Get activation info
+   * @returns {Promise<Object>} Activation information
    */
-  async getGracePeriodStatus() {
+  async getActivationInfo() {
     try {
       const licenseData = await this.storageManager.getLicenseData();
       
-      if (!licenseData || !licenseData.gracePeriodEnds) {
-        return {
-          inGracePeriod: false,
-          daysRemaining: 0,
-          endsAt: null
-        };
+      if (!licenseData || !licenseData.activationInfo) {
+        return null;
       }
       
-      const now = new Date();
-      const gracePeriodEnd = new Date(licenseData.gracePeriodEnds);
-      const daysRemaining = Math.max(0, Math.ceil((gracePeriodEnd - now) / (1000 * 60 * 60 * 24)));
-      
-      return {
-        inGracePeriod: now <= gracePeriodEnd,
-        daysRemaining: daysRemaining,
-        endsAt: licenseData.gracePeriodEnds
-      };
+      return licenseData.activationInfo;
       
     } catch (error) {
-      console.error('Failed to get grace period status:', error);
-      return {
-        inGracePeriod: false,
-        daysRemaining: 0,
-        endsAt: null
-      };
-    }
-  }
-
-  /**
-   * Start grace period for expired license
-   * @returns {Promise<void>}
-   */
-  async startGracePeriod() {
-    try {
-      const licenseData = await this.storageManager.getLicenseData();
-      
-      if (!licenseData) return;
-      
-      const gracePeriodEnd = new Date();
-      gracePeriodEnd.setDate(gracePeriodEnd.getDate() + this.gracePeriodDays);
-      
-      licenseData.gracePeriodEnds = gracePeriodEnd.toISOString();
-      licenseData.status = 'expired';
-      
-      await this.storageManager.saveLicenseData(licenseData);
-      
-    } catch (error) {
-      console.error('Failed to start grace period:', error);
+      console.error('Failed to get activation info:', error);
+      return null;
     }
   }
 
@@ -496,22 +436,22 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
           isValid: true,
           features: [],
           templateLimit: this.templateLimits.free,
-          gracePeriod: null
+          activationInfo: null,
+          entitlements: null
         };
       }
       
       const isValid = await this.isLicenseCurrentlyValid(licenseData);
-      const gracePeriod = await this.getGracePeriodStatus();
       const templateLimit = await this.getTemplateLimit();
       
       return {
-        tier: licenseData.tier,
-        status: licenseData.status,
+        tier: licenseData.tier || 'free',
+        status: licenseData.status || 'free',
         isValid: isValid,
-        features: licenseData.features,
+        features: licenseData.features || [],
         templateLimit: templateLimit,
-        expiresAt: licenseData.expiresAt,
-        gracePeriod: gracePeriod.inGracePeriod ? gracePeriod : null
+        activationInfo: licenseData.activationInfo || null,
+        entitlements: licenseData.entitlements || null
       };
       
     } catch (error) {
@@ -522,9 +462,18 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
         isValid: true,
         features: [],
         templateLimit: this.templateLimits.free,
-        gracePeriod: null
+        activationInfo: null,
+        entitlements: null
       };
     }
+  }
+
+  /**
+   * Get entitlements
+   * @returns {Object|null} Current entitlements
+   */
+  getEntitlements() {
+    return this.entitlements;
   }
 
   // Utility methods
@@ -557,17 +506,21 @@ b1Iwi+5aPVo7l9AoHf8Lp7stfn5gQjjeh5NAcVuuQHxHnLn7cQHsUdPiQEpDNWTD
    */
   generateTestToken(payload = {}) {
     const header = {
-      alg: 'RS256',
+      alg: 'ES256',
       typ: 'JWT'
     };
     
     const defaultPayload = {
-      sub: 'test-user-123',
-      tier: 'pro',
-      plan: 'monthly',
-      exp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60), // 30 days
+      iss: 'ExtensionPro by Team Handsome',
       iat: Math.floor(Date.now() / 1000),
-      iss: 'teamhandso.me'
+      exp: Math.floor(Date.now() / 1000) + (370 * 24 * 60 * 60), // 370 days
+      sub: 'lic_test123',
+      uid: 'user_test123',
+      ext: 'adreply',
+      plan: 'pro',
+      purchaseDate: new Date().toISOString(),
+      isAdmin: false,
+      licenseType: 'one-time'
     };
     
     const finalPayload = { ...defaultPayload, ...payload };
