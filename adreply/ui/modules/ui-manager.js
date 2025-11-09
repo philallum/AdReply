@@ -300,14 +300,22 @@ class UIManager {
 
     updateTemplateCount(count, maxTemplates, isProLicense = false) {
         const countEl = document.getElementById('templateCount');
+        if (!countEl) return;
+        
         const userTemplates = count.userTemplates || 0;
         const prebuiltTemplates = count.prebuiltTemplates || 0;
-        const maxTemplatesText = maxTemplates === 'unlimited' ? 'unlimited' : maxTemplates;
         
-        if (isProLicense) {
-            countEl.textContent = `${userTemplates} custom templates (${maxTemplatesText} max) + ${prebuiltTemplates} prebuilt`;
+        // Check if Pro license by multiple indicators
+        const isPro = isProLicense || maxTemplates === 'unlimited' || maxTemplates === Infinity;
+        
+        if (isPro) {
+            countEl.textContent = `${userTemplates} custom templates (unlimited categories & templates) + ${prebuiltTemplates} prebuilt`;
+            countEl.style.color = '#28a745'; // Green for Pro
+            countEl.style.fontWeight = '500';
         } else {
-            countEl.textContent = `${userTemplates}/3 custom templates (1 category max) + ${prebuiltTemplates} prebuilt`;
+            countEl.textContent = `${userTemplates}/${maxTemplates} custom templates (1 category max) + ${prebuiltTemplates} prebuilt`;
+            countEl.style.color = '#6c757d'; // Gray for Free
+            countEl.style.fontWeight = 'normal';
         }
         
         // Show the template stats buttons (they're now always visible for better mobile UX)
@@ -449,14 +457,32 @@ class UIManager {
         const statusEl = document.getElementById('licenseStatus');
         const detailsEl = document.getElementById('licenseDetails');
         
-        if (licenseInfo.isValid) {
-            statusEl.textContent = 'License Status: Active';
+        if (licenseInfo && licenseInfo.isValid) {
+            const plan = licenseInfo.tier || licenseInfo.plan || 'Pro';
+            const planDisplay = plan.charAt(0).toUpperCase() + plan.slice(1);
+            
+            statusEl.textContent = `License Status: ${planDisplay} (Active)`;
             statusEl.className = 'license-status valid';
-            detailsEl.textContent = `License Key: ${licenseInfo.licenseKey.substring(0, 8)}...`;
+            
+            // Show detailed license info
+            let details = `✓ Unlimited custom templates\n✓ Unlimited categories\n✓ All premium features`;
+            
+            // Add activation info if available
+            if (licenseInfo.activationInfo) {
+                const { currentActivations, maxActivations } = licenseInfo.activationInfo;
+                if (maxActivations !== Infinity && maxActivations > 0) {
+                    details += `\n✓ Device activations: ${currentActivations}/${maxActivations}`;
+                }
+            }
+            
+            detailsEl.textContent = details;
+            detailsEl.style.whiteSpace = 'pre-line';
+            detailsEl.style.color = '#28a745';
         } else {
-            statusEl.textContent = 'License Status: Not Activated';
+            statusEl.textContent = 'License Status: Free';
             statusEl.className = 'license-status invalid';
-            detailsEl.textContent = 'Please enter your license key to activate AdReply';
+            detailsEl.textContent = 'Free license: 10 templates maximum, 1 category only';
+            detailsEl.style.color = '#6c757d';
         }
     }
 

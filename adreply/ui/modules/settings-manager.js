@@ -7,18 +7,53 @@ class SettingsManager {
 
 
     async checkLicense() {
-        return new Promise((resolve) => {
-            chrome.storage.local.get(['licenseKey', 'licenseStatus'], (result) => {
-                const isValid = result.licenseKey && result.licenseStatus === 'valid';
-                this.isProLicense = isValid;
-                
-                resolve({
-                    isValid,
-                    licenseKey: result.licenseKey,
-                    status: result.licenseStatus
-                });
+        try {
+            // Check license status with background script
+            const response = await chrome.runtime.sendMessage({
+                type: 'CHECK_LICENSE'
             });
-        });
+            
+            if (response && response.success) {
+                this.isProLicense = response.valid;
+                
+                return {
+                    isValid: response.valid,
+                    tier: response.status?.tier || 'free',
+                    plan: response.status?.tier || 'free',
+                    status: response.status?.status || 'free',
+                    features: response.status?.features || [],
+                    templateLimit: response.status?.templateLimit || 10,
+                    activationInfo: response.status?.activationInfo || null,
+                    entitlements: response.entitlements || null
+                };
+            }
+            
+            // Fallback to free tier
+            this.isProLicense = false;
+            return {
+                isValid: false,
+                tier: 'free',
+                plan: 'free',
+                status: 'free',
+                features: [],
+                templateLimit: 10,
+                activationInfo: null,
+                entitlements: null
+            };
+        } catch (error) {
+            console.error('Failed to check license:', error);
+            this.isProLicense = false;
+            return {
+                isValid: false,
+                tier: 'free',
+                plan: 'free',
+                status: 'free',
+                features: [],
+                templateLimit: 10,
+                activationInfo: null,
+                entitlements: null
+            };
+        }
     }
 
     async activateLicense(licenseKey) {
@@ -26,21 +61,33 @@ class SettingsManager {
             throw new Error('Please enter a license key');
         }
         
-        // Simple validation - in real app this would validate with server
-        if (licenseKey.length >= 16) {
-            try {
-                await chrome.storage.local.set({ 
-                    licenseKey, 
-                    licenseStatus: 'valid' 
-                });
-                
+        try {
+            // Activate license with background script
+            const response = await chrome.runtime.sendMessage({
+                type: 'SET_LICENSE',
+                token: licenseKey.trim()
+            });
+            
+            if (response && response.valid) {
                 this.isProLicense = true;
-                return { success: true };
-            } catch (error) {
-                throw new Error('Failed to save license');
+                return { 
+                    success: true,
+                    plan: response.entitlements?.plan || 'pro',
+                    activationInfo: response.activationInfo
+                };
+            } else {
+                this.isProLicense = false;
+                
+                // Check if it's an activation limit error
+                if (response.activationInfo) {
+                    throw new Error(`Activation limit reached (${response.activationInfo.currentActivations}/${response.activationInfo.maxActivations} devices). Please request an unlock in your account dashboard.`);
+                }
+                
+                throw new Error(response.error || 'License activation failed');
             }
-        } else {
-            throw new Error('Invalid license key format');
+        } catch (error) {
+            this.isProLicense = false;
+            throw error;
         }
     }
 

@@ -1,0 +1,190 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-11-09T20:47:36.029Z",
+  "data": {
+    "customCategories": [
+      {
+        "createdAt": "2025-11-09T20:42:05.419Z",
+        "description": "Custom category: Etsy Sellers",
+        "id": "etsy-sellers",
+        "isPrebuilt": false,
+        "name": "Etsy Sellers"
+      }
+    ],
+    "defaultPromoUrl": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk",
+    "lastSelectedCategory": "etsy-sellers",
+    "licenseKey": "eyJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJRREFLYXIxUHhWWFNieWlPdW1jbyIsInVpZCI6Ik9ra0RsbmxrVE9ldHZGWlVIa3pKOTYyVjdsNjIiLCJleHQiOiJhZHJlcGx5IiwicGxhbiI6InBybyIsInB1cmNoYXNlRGF0ZSI6IjIwMjUtMTEtMDlUMTc6MTM6NDQuMzg4WiIsImlzQWRtaW4iOmZhbHNlLCJsaWNlbnNlVHlwZSI6InN1YnNjcmlwdGlvbiIsImlhdCI6MTc2MjcwODQyNCwiaXNzIjoiRXh0ZW5zaW9uUHJvIGJ5IFRlYW0gSGFuZHNvbWUiLCJleHAiOjE3OTQ2NzY0MjR9.tnmolQEkDBcOYIxq3iRJj0Vwn8pIsagCxGOpleOTeue6jT-T8OmP5UwUI8mkdHOqa_CrBqeQuVQJXsa1Sp0HSw",
+    "licenseStatus": "valid",
+    "settings": {
+      "templates": {
+        "preferredCategory": "automotive"
+      }
+    },
+    "templates": [
+      {
+        "category": "etsy-sellers",
+        "createdAt": "2025-11-09T20:42:35.781Z",
+        "id": "1762720955780",
+        "isPrebuilt": false,
+        "keywords": ["Pinterest","Etsy","traffic","handmade","shop","SEO","marketing","product","pin","automation","listing","growth","sales","store","crafts","-setup","-error","-refund","-manager","-broken","-support","-help"],
+        "label": "Pinterest Traffic Booster",
+        "template": "Pinterest is perfect for products like yours — Pinterest Product Pinner helps you post instantly with SEO text and high-res images. Easy win for Etsy sellers.",
+        "updatedAt": "2025-11-09T20:43:04.196Z",
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk",
+        "usageCount": 0
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955781",
+        "label": "Lovely Handmade",
+        "template": "Your products are beautiful — they’d look amazing on Pinterest too! It’s such a great way to reach new shoppers. I use Pinterest Product Pinner — it turns any product page into a ready-to-post pin with one click.",
+        "keywords": ["shop","handmade","crafts","prints","jewelry","candle","art","pottery","Etsy","product","listing","pin","board","Pinterest","traffic","sales","-setup","-error","-support","-problem","-manager","-policy","-review","-complaint"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955782",
+        "label": "Gorgeous Store Growth",
+        "template": "Your shop looks fantastic! Have you tried sharing your listings on Pinterest? It’s a whole new traffic source. The Pinterest Product Pinner extension does it all automatically — image, SEO text, everything.",
+        "keywords": ["Etsy","store","shop","listing","crafts","handmade","home decor","gift","art","pins","SEO","Pinterest","marketing","traffic","sales","automation","-setup","-bug","-issue","-error","-refund","-policy","-review","-manager"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955783",
+        "label": "Perfect for Pinterest",
+        "template": "This would perform so well on Pinterest — the colors and style are spot on! If you want to try it, Pinterest Product Pinner makes posting effortless and totally automated.",
+        "keywords": ["Pinterest","art","decor","jewelry","print","handmade","shop","Etsy","listing","product","crafts","pins","image","traffic","SEO","-error","-complaint","-support","-setup","-refund","-manager","-broken","-help"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955784",
+        "label": "Quick Pin Boost",
+        "template": "These would make amazing pins! Pinterest is such a powerful traffic source for Etsy shops — and you can post instantly with Pinterest Product Pinner. One click, done.",
+        "keywords": ["Etsy","pin","Pinterest","traffic","sales","shop","handmade","gift","product","automation","SEO","image","listing","small business","-setup","-support","-error","-refund","-policy","-issue","-manager","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955785",
+        "label": "Beautiful Products, Easy Promotion",
+        "template": "Love your product photos! They’d do great on Pinterest. The Pinterest Product Pinner browser tool can post them with one click — it even rewrites your title and description for SEO.",
+        "keywords": ["handmade","photo","Etsy","listing","image","SEO","Pinterest","traffic","shop","crafts","decor","jewelry","art","marketing","sales","-setup","-bug","-error","-manager","-refund","-complaint","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955786",
+        "label": "Etsy to Pinterest Magic",
+        "template": "Your Etsy listings are stunning — they deserve to be seen on Pinterest! Pinterest Product Pinner automates posting, rewriting, and optimizing in seconds.",
+        "keywords": ["Etsy","listing","pin","Pinterest","shop","handmade","marketing","traffic","automation","SEO","photo","image","product","small business","crafts","-setup","-problem","-manager","-refund","-support","-broken","-help","-review"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955787",
+        "label": "New Audience Hack",
+        "template": "You’ve nailed your Etsy store — next step, Pinterest! It’s a great way to get a whole new audience. Pinterest Product Pinner makes it effortless to post your listings as pins.",
+        "keywords": ["Etsy","store","shop","audience","Pinterest","product","pin","SEO","handmade","crafts","small business","marketing","automation","traffic","growth","-setup","-error","-refund","-support","-complaint","-manager","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955788",
+        "label": "Your Art Deserves More Eyes",
+        "template": "Your designs are gorgeous — they’d reach so many more people on Pinterest. I use Pinterest Product Pinner to automate everything from image grabbing to SEO titles.",
+        "keywords": ["Etsy","art","print","handmade","decor","shop","product","pin","Pinterest","SEO","traffic","automation","marketing","growth","creative","-setup","-manager","-error","-support","-refund","-review","-problem","-help"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955789",
+        "label": "One-Click Pinterest Marketing",
+        "template": "That product is Pinterest-perfect! You can post it instantly using Pinterest Product Pinner — it scrapes, rewrites, and posts for you automatically.",
+        "keywords": ["Pinterest","Etsy","product","listing","automation","SEO","handmade","shop","image","pin","marketing","traffic","small business","store","growth","-setup","-bug","-manager","-support","-refund","-error","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955790",
+        "label": "Smart Traffic Tip",
+        "template": "Your shop looks amazing! Pinterest is such an underrated traffic source for Etsy sellers — Pinterest Product Pinner makes it effortless to tap into.",
+        "keywords": ["Etsy","shop","Pinterest","traffic","seller","marketing","product","handmade","SEO","automation","pin","growth","small business","creative","listing","-setup","-error","-policy","-refund","-manager","-issue","-broken","-complaint"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955791",
+        "label": "Effortless Pinning",
+        "template": "This would get so much engagement on Pinterest! Pinterest Product Pinner can post it for you in seconds — no manual uploads, no copy-paste.",
+        "keywords": ["Etsy","Pinterest","pin","handmade","crafts","shop","listing","automation","product","image","marketing","SEO","seller","store","audience","-setup","-error","-manager","-refund","-support","-broken","-problem"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955792",
+        "label": "Instant Exposure",
+        "template": "Pinterest is amazing for Etsy sellers — your listings could get tons of exposure there. Pinterest Product Pinner does all the work for you automatically.",
+        "keywords": ["Pinterest","Etsy","listing","product","automation","traffic","handmade","SEO","marketing","sales","growth","shop","audience","creative","pin","-setup","-refund","-error","-manager","-support","-problem","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955793",
+        "label": "Handmade Hero",
+        "template": "Your handmade pieces deserve to go viral! Pinterest Product Pinner makes that possible — one click and it creates SEO-friendly pins for you.",
+        "keywords": ["handmade","Etsy","crafts","shop","art","jewelry","pin","Pinterest","SEO","marketing","product","store","small business","automation","growth","-setup","-error","-refund","-manager","-support","-help","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955794",
+        "label": "Simple Pinterest Growth",
+        "template": "Beautiful work! Pinterest can bring in a steady flow of new visitors — and Pinterest Product Pinner automates everything with one click.",
+        "keywords": ["Pinterest","Etsy","traffic","shop","marketing","SEO","pin","listing","product","handmade","store","crafts","automation","sales","creative","-setup","-problem","-manager","-refund","-error","-support","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955795",
+        "label": "Easy SEO Win",
+        "template": "Your product descriptions are great — Pinterest Product Pinner even rewrites them for Pinterest SEO when you post. Totally hands-free!",
+        "keywords": ["SEO","Pinterest","Etsy","product","shop","handmade","pin","marketing","traffic","automation","listing","creative","growth","small business","exposure","-setup","-bug","-manager","-error","-support","-refund","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955796",
+        "label": "Auto-Pin Power",
+        "template": "Love your listings! Pinterest Product Pinner can automatically post them to your Pinterest boards — it even grabs the best image and title for you.",
+        "keywords": ["Pinterest","Etsy","listing","automation","handmade","shop","crafts","art","SEO","marketing","traffic","product","small business","store","pins","-setup","-manager","-error","-support","-refund","-broken","-complaint"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955797",
+        "label": "Gorgeous & Pinterest Ready",
+        "template": "Your photos are stunning — Pinterest Product Pinner can turn each product page into a ready-to-post pin with SEO text and image in seconds.",
+        "keywords": ["Pinterest","Etsy","photo","product","handmade","art","listing","crafts","SEO","marketing","automation","shop","growth","traffic","seller","-setup","-manager","-error","-support","-refund","-policy","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955798",
+        "label": "Save Time, Get Traffic",
+        "template": "Your Etsy store is on point — you could save hours and boost traffic using Pinterest Product Pinner. It posts optimized pins for you automatically.",
+        "keywords": ["Etsy","Pinterest","automation","product","SEO","shop","handmade","traffic","sales","listing","marketing","store","growth","pin","exposure","-setup","-error","-manager","-refund","-broken","-help","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "etsy-sellers",
+        "id": "1762720955799",
+        "label": "Pinterest Potential",
+        "template": "That’s the kind of product Pinterest users love — you can post it straight from your Etsy store with Pinterest Product Pinner, no extra steps needed.",
+        "keywords": ["Pinterest","Etsy","product","handmade","crafts","listing","SEO","automation","shop","traffic","pin","marketing","small business","store","sales","-setup","-manager","-error","-refund","-policy","-broken","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      }
+    ]
+  }
+}

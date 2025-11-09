@@ -322,10 +322,17 @@ class AdReplySidePanel {
         this.renderTemplatesList();
     }
 
-    updateTemplateCount() {
+    async updateTemplateCount() {
+        // Get fresh license status
+        const licenseInfo = await this.settingsManager.checkLicense();
+        const isProLicense = licenseInfo.isValid;
+        
+        // Update template manager
+        this.templateManager.setProLicense(isProLicense);
+        
         const count = this.templateManager.getTemplateCount();
         const maxTemplates = this.templateManager.getMaxTemplates();
-        const isProLicense = this.settingsManager.getProLicenseStatus();
+        
         this.uiManager.updateTemplateCount(count, maxTemplates, isProLicense);
     }
 
@@ -337,14 +344,28 @@ class AdReplySidePanel {
         
         // Update template manager with license status
         this.templateManager.setProLicense(licenseInfo.isValid);
+        
+        // Update template count display
+        this.updateTemplateCount();
     }
 
     async activateLicense() {
         try {
             const licenseKey = this.uiManager.getLicenseKey();
-            await this.settingsManager.activateLicense(licenseKey);
-            this.uiManager.showNotification('License activated successfully!');
+            const result = await this.settingsManager.activateLicense(licenseKey);
+            
+            // Update license status
             await this.checkLicense();
+            
+            // Update template manager with new license status
+            this.templateManager.setProLicense(this.settingsManager.getProLicenseStatus());
+            
+            // Update template count display
+            this.updateTemplateCount();
+            
+            // Show success message with plan info
+            const planDisplay = result.plan ? result.plan.charAt(0).toUpperCase() + result.plan.slice(1) : 'Pro';
+            this.uiManager.showNotification(`${planDisplay} license activated successfully! You now have unlimited templates and categories.`, 'success');
         } catch (error) {
             this.uiManager.showNotification(error.message, 'error');
         }
@@ -711,11 +732,18 @@ class AdReplySidePanel {
                     
                     this.uiManager.showNotification(message, 'success');
                     
+                    // IMPORTANT: Reload templates from storage to refresh the UI
+                    console.log('🔄 Reloading templates after import...');
+                    await this.templateManager.loadTemplates();
+                    
                     // Refresh the category view
                     this.showCategoryView();
-                    this.updateTemplateCount();
+                    await this.updateTemplateCount();
+                    
+                    console.log('✅ Import complete and UI refreshed');
                     
                 } catch (error) {
+                    console.error('❌ Import error:', error);
                     this.uiManager.showNotification(error.message, 'error');
                 }
             };
@@ -833,25 +861,27 @@ class AdReplySidePanel {
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
             const filename = `adreply-backup-${timestamp}.json`;
 
-            // Download file
-            chrome.downloads.download({
-                url: url,
-                filename: filename,
-                saveAs: true
-            }, (downloadId) => {
-                if (chrome.runtime.lastError) {
-                    this.showBackupMessage('Error downloading file: ' + chrome.runtime.lastError.message, 'error');
-                    URL.revokeObjectURL(url);
-                    return;
-                }
+            // Create temporary download link (no downloads permission needed)
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = filename;
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+            
+            // Trigger download
+            downloadLink.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(url);
+            }, 100);
 
-                // Save backup timestamp
-                const now = new Date().toISOString();
-                chrome.storage.local.set({ lastBackup: now }, () => {
-                    this.loadLastBackupTime();
-                    this.showBackupMessage('✓ Data exported successfully!');
-                    URL.revokeObjectURL(url);
-                });
+            // Save backup timestamp
+            const now = new Date().toISOString();
+            chrome.storage.local.set({ lastBackup: now }, () => {
+                this.loadLastBackupTime();
+                this.showBackupMessage('✓ Data exported successfully!');
             });
         });
     }
