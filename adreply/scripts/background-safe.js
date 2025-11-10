@@ -6,7 +6,6 @@ importScripts(
   '../storage/indexeddb-manager.js',
   '../storage/chrome-storage-manager.js',
   '../storage/data-models.js',
-  '../storage/data-migration.js',
   '../storage/storage-manager.js',
   'license-manager.js'
 );

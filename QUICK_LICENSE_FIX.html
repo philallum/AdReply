@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick License Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log div {
+            margin: 5px 0;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .info { color: #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 AdReply License Fix</h1>
+        <p>This tool will help you fix the license issue after importing a backup.</p>
+        
+        <button id="checkBtn">1. Check Current Status</button>
+        <button id="fixBtn">2. Fix License</button>
+        <button id="reloadBtn" disabled>3. Reload Extension</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        const checkBtn = document.getElementById('checkBtn');
+        const fixBtn = document.getElementById('fixBtn');
+        const reloadBtn = document.getElementById('reloadBtn');
+
+        function addLog(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        checkBtn.addEventListener('click', async () => {
+            addLog('Checking current status...', 'info');
+            
+            try {
+                // Check storage
+                const storage = await chrome.storage.local.get(null);
+                addLog(`Storage keys found: ${Object.keys(storage).length}`, 'info');
+                
+                if (storage.licenseKey) {
+                    addLog('✓ Found licenseKey (old format)', 'success');
+                    addLog(`  Key: ${storage.licenseKey.substring(0, 50)}...`, 'info');
+                }
+                
+                if (storage.adreply_license) {
+                    addLog('✓ Found adreply_license (new format)', 'success');
+                    addLog(`  Status: ${storage.adreply_license.status}`, 'info');
+                }
+                
+                if (storage.templates) {
+                    addLog(`✓ Found ${storage.templates.length} templates`, 'success');
+                }
+                
+                // Check license via background
+                const response = await chrome.runtime.sendMessage({ type: 'CHECK_LICENSE' });
+                if (response && response.success) {
+                    addLog(`✓ License check: ${response.valid ? 'VALID' : 'INVALID'}`, response.valid ? 'success' : 'error');
+                    if (response.status) {
+                        addLog(`  Tier: ${response.status.tier}`, 'info');
+                        addLog(`  Plan: ${response.status.plan}`, 'info');
+                    }
+                } else {
+                    addLog('✗ License check failed', 'error');
+                }
+                
+            } catch (error) {
+                addLog(`✗ Error: ${error.message}`, 'error');
+            }
+        });
+
+        fixBtn.addEventListener('click', async () => {
+            addLog('Starting license fix...', 'info');
+            
+            try {
+                // Get license key from old format
+                const storage = await chrome.storage.local.get(['licenseKey']);
+                
+                if (!storage.licenseKey) {
+                    addLog('✗ No license key found in storage', 'error');
+                    addLog('  Please import your backup file first', 'info');
+                    return;
+                }
+                
+                addLog('✓ Found license key', 'success');
+                addLog('  Activating license...', 'info');
+                
+                // Activate license
+                const response = await chrome.runtime.sendMessage({
+                    type: 'SET_LICENSE',
+                    token: storage.licenseKey
+                });
+                
+                if (response && response.valid) {
+                    addLog('✓ License activated successfully!', 'success');
+                    addLog(`  Plan: ${response.entitlements?.plan}`, 'success');
+                    addLog(`  Features: ${response.entitlements?.features?.join(', ')}`, 'success');
+                    
+                    reloadBtn.disabled = false;
+                    addLog('  Click "Reload Extension" to complete', 'info');
+                } else {
+                    addLog('✗ License activation failed', 'error');
+                    addLog(`  Error: ${response.error}`, 'error');
+                }
+                
+            } catch (error) {
+                addLog(`✗ Error: ${error.message}`, 'error');
+            }
+        });
+
+        reloadBtn.addEventListener('click', () => {
+            addLog('Reloading extension...', 'info');
+            chrome.runtime.reload();
+        });
+
+        // Auto-check on load
+        setTimeout(() => checkBtn.click(), 500);
+    </script>
+</body>
+</html>

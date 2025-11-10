@@ -734,13 +734,16 @@ class AdReplySidePanel {
                     
                     // IMPORTANT: Reload templates from storage to refresh the UI
                     console.log('🔄 Reloading templates after import...');
-                    await this.templateManager.loadTemplates();
+                    const reloadedTemplates = await this.templateManager.loadTemplates();
+                    console.log('🔄 Reloaded templates count:', reloadedTemplates.length);
                     
                     // Refresh the category view
                     this.showCategoryView();
                     await this.updateTemplateCount();
                     
-                    console.log('✅ Import complete and UI refreshed');
+                    const finalCount = this.templateManager.getTemplateCount();
+                    console.log('✅ Import complete and UI refreshed. Final count:', finalCount);
+                    console.log('✅ Template manager templates array length:', this.templateManager.templates.length);
                     
                 } catch (error) {
                     console.error('❌ Import error:', error);
@@ -916,11 +919,31 @@ class AdReplySidePanel {
                 }
 
                 // Clear existing data and import new data
-                chrome.storage.local.clear(() => {
-                    chrome.storage.local.set(backup.data, () => {
+                chrome.storage.local.clear(async () => {
+                    // First, set all the backup data
+                    chrome.storage.local.set(backup.data, async () => {
                         if (chrome.runtime.lastError) {
                             this.showBackupMessage('Error importing data: ' + chrome.runtime.lastError.message, 'error');
                             return;
+                        }
+
+                        // If there's a license key in the old format, activate it properly
+                        if (backup.data.licenseKey) {
+                            console.log('🔐 Found license key in backup, activating...');
+                            try {
+                                const response = await chrome.runtime.sendMessage({
+                                    type: 'SET_LICENSE',
+                                    token: backup.data.licenseKey
+                                });
+                                
+                                if (response && response.valid) {
+                                    console.log('✅ License activated from backup');
+                                } else {
+                                    console.warn('⚠️ License activation failed:', response.error);
+                                }
+                            } catch (error) {
+                                console.error('❌ Error activating license:', error);
+                            }
                         }
 
                         // Save import timestamp

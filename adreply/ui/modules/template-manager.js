@@ -10,25 +10,63 @@ class TemplateManager {
         try {
             // Check license status FIRST before loading templates
             console.log('🔐 Checking license status before loading templates...');
+            
+            // Try background script first
             try {
-                const licenseResponse = await chrome.runtime.sendMessage({ type: 'CHECK_LICENSE' });
+                const licenseResponse = await Promise.race([
+                    chrome.runtime.sendMessage({ type: 'CHECK_LICENSE' }),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('License check timeout')), 2000))
+                ]);
+                console.log('🔐 License response received:', licenseResponse);
                 if (licenseResponse && licenseResponse.success) {
-                    const wasProLicense = this.isProLicense;
                     this.isProLicense = licenseResponse.valid;
-                    console.log('🔐 License check result:', {
+                    console.log('🔐 License check result (from background):', {
                         valid: licenseResponse.valid,
-                        tier: licenseResponse.status?.tier,
-                        wasProLicense: wasProLicense,
-                        nowProLicense: this.isProLicense
+                        tier: licenseResponse.status?.tier
                     });
                 }
             } catch (error) {
-                console.warn('⚠️ Could not check license during template load:', error);
+                console.warn('⚠️ Background script not responding, checking storage directly:', error.message);
+                
+                // Fallback: Check storage directly
+                try {
+                    const storage = await chrome.storage.local.get(['adreply_license', 'licenseToken', 'entitlements']);
+                    console.log('🔐 Storage check:', {
+                        hasAdreplyLicense: !!storage.adreply_license,
+                        hasLicenseToken: !!storage.licenseToken,
+                        hasEntitlements: !!storage.entitlements
+                    });
+                    
+                    // Check new format first
+                    if (storage.adreply_license && storage.adreply_license.status === 'pro') {
+                        this.isProLicense = true;
+                        console.log('✅ Pro license found in storage (adreply_license)');
+                    }
+                    // Check old format
+                    else if (storage.entitlements && storage.entitlements.plan === 'pro') {
+                        this.isProLicense = true;
+                        console.log('✅ Pro license found in storage (entitlements)');
+                    }
+                    // Check if license token exists (assume pro if present)
+                    else if (storage.licenseToken) {
+                        this.isProLicense = true;
+                        console.log('✅ License token found in storage, assuming pro');
+                    }
+                    else {
+                        this.isProLicense = false;
+                        console.log('⚠️ No valid license found in storage');
+                    }
+                } catch (storageError) {
+                    console.error('❌ Error checking storage:', storageError);
+                    this.isProLicense = false;
+                }
             }
             
             // Load user-created templates from Chrome storage
+            console.log('📂 Loading templates from storage...');
             const result = await chrome.storage.local.get(['templates']);
             const userTemplates = result.templates || [];
+            console.log('📂 Loaded from storage:', userTemplates.length, 'user templates');
 
             // Load prebuilt templates from JSON files
             let prebuiltTemplates = [];
@@ -325,14 +363,30 @@ class TemplateManager {
                 throw new Error('Invalid JSON file format');
             }
 
-            // Validate import data structure
-            if (!importData.templates || !Array.isArray(importData.templates)) {
+            // Handle both export format and backup format
+            let templatesToImport;
+            
+            // Check for export format: { templates: [...] }
+            if (importData.templates && Array.isArray(importData.templates)) {
+                templatesToImport = importData.templates;
+                console.log('📦 Detected export format');
+            }
+            // Check for backup format: { data: { templates: [...] } }
+            else if (importData.data && importData.data.templates && Array.isArray(importData.data.templates)) {
+                templatesToImport = importData.data.templates;
+                console.log('📦 Detected backup format');
+            }
+            // Invalid format
+            else {
                 console.error('❌ Invalid structure:', importData);
+                console.error('❌ Keys in importData:', Object.keys(importData));
+                if (importData.data) {
+                    console.error('❌ Keys in importData.data:', Object.keys(importData.data));
+                }
                 throw new Error('Invalid template file format - missing templates array');
             }
-
-            const templatesToImport = importData.templates;
             console.log(`📥 Templates to import: ${templatesToImport.length}`);
+            console.log(`📥 First template sample:`, templatesToImport[0]);
             
             if (templatesToImport.length === 0) {
                 throw new Error('No templates found in import file');
@@ -443,7 +497,9 @@ class TemplateManager {
             console.log(`💾 Saving ${userTemplatesOnly.length} user templates to storage`);
             await chrome.storage.local.set({ templates: userTemplatesOnly });
             
-            console.log('✅ Templates saved to storage successfully');
+            // Verify storage was updated
+            const verifyStorage = await chrome.storage.local.get(['templates']);
+            console.log(`✅ Templates saved to storage successfully. Verified count: ${verifyStorage.templates?.length || 0}`);
             console.log('🔍 === IMPORT DEBUG END ===\n');
 
             return { 

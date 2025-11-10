@@ -68,20 +68,21 @@ Love the setup! If you ever need professional tuning, we're local and offer dyno
 ```
 
 #### Keyword Strategy
-- Use 5-10 relevant keywords per template
+- Use 10-15 relevant keywords per template
+- Use 5-10 negative keywords for enhanced filtering per template (e.g. -motorcycle)
 - Include both general terms (e.g., "car") and specific terms (e.g., "exhaust")
 - Think about what words appear in posts you want to respond to
 - Include synonyms and variations
 
 ### Template Limits
-- **Free Users**: Up to 10 templates
-- **Pro Users**: Unlimited templates
+- **Free Users**: Up to 10 ad templates and one category
+- **Pro Users**: Unlimited templates and categories
 
 ## Using Comment Suggestions
 
 ### How Suggestions Work
-1. **Post Detection**: AdReply analyzes Facebook posts as you scroll
-2. **Keyword Matching**: Posts are matched against your template keywords
+1. **Post Detection**: AdReply analyzes Facebook posts
+2. **Keyword Matching**: Posts are matched against your advert template keywords
 3. **Relevance Scoring**: Templates are ranked by relevance (0-100%)
 4. **Top Suggestions**: The 3 most relevant templates are displayed
 

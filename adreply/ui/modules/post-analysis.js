@@ -318,12 +318,16 @@ class PostAnalyzer {
         });
         
         // Return unused first, then recently used as fallback
-        const result = [...unusedMatches, ...recentlyUsedMatches];
+        const allMatches = [...unusedMatches, ...recentlyUsedMatches];
+        
+        // Limit to top 3 suggestions
+        const result = allMatches.slice(0, 3);
         
         console.log('AdReply: Template matching results:', {
-            totalMatches: result.length,
+            totalMatches: allMatches.length,
             unusedMatches: unusedMatches.length,
-            recentlyUsedMatches: recentlyUsedMatches.length
+            recentlyUsedMatches: recentlyUsedMatches.length,
+            returned: result.length
         });
         
         return result;

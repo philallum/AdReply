@@ -41,14 +41,30 @@ class ConnectionManager {
     }
 
     async clearPosts() {
-        return await chrome.runtime.sendMessage({ type: 'CLEAR_POSTS' });
+        try {
+            return await Promise.race([
+                chrome.runtime.sendMessage({ type: 'CLEAR_POSTS' }),
+                new Promise((resolve) => setTimeout(() => resolve({ success: true }), 1000))
+            ]);
+        } catch (error) {
+            console.warn('⚠️ Background not responding for clearPosts, continuing anyway');
+            return { success: true };
+        }
     }
 
     async storePost(postData) {
-        return await chrome.runtime.sendMessage({
-            type: 'NEW_POST',
-            data: postData
-        });
+        try {
+            return await Promise.race([
+                chrome.runtime.sendMessage({
+                    type: 'NEW_POST',
+                    data: postData
+                }),
+                new Promise((resolve) => setTimeout(() => resolve({ success: true }), 1000))
+            ]);
+        } catch (error) {
+            console.warn('⚠️ Background not responding for storePost, continuing anyway');
+            return { success: true };
+        }
     }
 }
 
