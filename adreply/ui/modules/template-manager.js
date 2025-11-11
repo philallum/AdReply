@@ -397,7 +397,10 @@ class TemplateManager {
             console.log(`🔐 Initial license status (cached): ${isProLicense}`);
             
             try {
-                const licenseResponse = await chrome.runtime.sendMessage({ type: 'CHECK_LICENSE' });
+                const licenseResponse = await Promise.race([
+                    chrome.runtime.sendMessage({ type: 'CHECK_LICENSE' }),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('License check timeout')), 2000))
+                ]);
                 console.log('🔐 License response:', licenseResponse);
                 
                 if (licenseResponse && licenseResponse.success) {
@@ -409,6 +412,7 @@ class TemplateManager {
                 }
             } catch (error) {
                 console.warn('⚠️ Could not check license status, using cached value:', error);
+                console.log(`🔐 Continuing with cached license: ${isProLicense}`);
             }
 
             // Check template limit for free users

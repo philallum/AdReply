@@ -1,0 +1,180 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-11-09T21:15:42.029Z",
+  "data": {
+    "customCategories": [
+      {
+        "createdAt": "2025-11-09T21:12:05.419Z",
+        "description": "Custom category: Social Media Marketing",
+        "id": "social-media-marketing",
+        "isPrebuilt": false,
+        "name": "Social Media Marketing"
+      }
+    ],
+    "defaultPromoUrl": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk",
+    "lastSelectedCategory": "social-media-marketing",
+    "licenseStatus": "valid",
+    "templates": [
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955800",
+        "label": "Pinterest Strategy Question",
+        "template": "Is Pinterest part of your marketing strategy yet? It’s an underrated traffic driver for online stores — and with Pinterest Product Pinner, it only takes one click to create optimized pins for clients.",
+        "keywords": ["social media","marketing","Pinterest","clients","traffic","strategy","automation","ecommerce","growth","brand","promotion","SMMA","SEO","posts","-setup","-error","-manager","-broken","-refund","-bug","-problem"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955801",
+        "label": "Client Traffic Idea",
+        "template": "Do you manage clients with online stores? Pinterest can quietly bring them new traffic — Pinterest Product Pinner makes it fully automated with just one click.",
+        "keywords": ["Pinterest","clients","traffic","social media","freelancer","marketing","growth","online store","SMMA","SEO","automation","pins","content","strategy","promotion","-setup","-error","-refund","-broken","-policy","-issue"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955802",
+        "label": "Pinterest Marketing Tip",
+        "template": "If you’re running social media campaigns, Pinterest might be the easiest channel to add. Pinterest Product Pinner handles image scraping, SEO, and posting automatically — total time saver.",
+        "keywords": ["social media","Pinterest","marketing","freelancer","SMMA","automation","time saver","clients","SEO","posting","content","growth","brand","strategy","pins","-setup","-error","-refund","-broken","-manager","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955803",
+        "label": "Scale Pinterest Services",
+        "template": "Pinterest marketing is a great add-on for client packages — and Pinterest Product Pinner makes it scalable. One click turns any product page into a fully optimized pin.",
+        "keywords": ["Pinterest","marketing","freelancer","agency","clients","automation","SEO","social media","SMMA","posts","brand","growth","traffic","content","time","-setup","-error","-refund","-policy","-manager","-broken"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955804",
+        "label": "Freelancer Time Saver",
+        "template": "Freelancers — if you manage multiple client stores, this saves hours. Pinterest Product Pinner posts optimized pins automatically from any product page.",
+        "keywords": ["freelancer","clients","Pinterest","social media","automation","time saver","ecommerce","SMMA","SEO","marketing","pins","growth","content","strategy","traffic","-setup","-error","-manager","-broken","-refund","-bug"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955805",
+        "label": "Add Pinterest to Packages",
+        "template": "Offering Pinterest as part of your social media packages could be a nice upsell — Pinterest Product Pinner makes it effortless to manage and post for clients.",
+        "keywords": ["Pinterest","marketing","packages","clients","freelancer","SMMA","social media","automation","posting","SEO","pins","growth","strategy","time saver","promotion","-setup","-error","-manager","-refund","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955806",
+        "label": "Hidden Traffic Channel",
+        "template": "A lot of marketers overlook Pinterest, but it’s a real traffic goldmine for product-based businesses. Pinterest Product Pinner makes it effortless to manage pins at scale.",
+        "keywords": ["Pinterest","marketing","social media","freelancer","SMMA","traffic","ecommerce","clients","SEO","automation","growth","content","brand","posting","scale","-setup","-error","-manager","-broken","-refund","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955807",
+        "label": "Pinterest Efficiency",
+        "template": "Ever wish Pinterest posting was as easy as scheduling to IG or FB? Pinterest Product Pinner gives you that — one click from the product page and you’re done.",
+        "keywords": ["Pinterest","posting","automation","social media","freelancer","SMMA","clients","marketing","product","pins","growth","time saver","SEO","strategy","content","-setup","-error","-refund","-manager","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955808",
+        "label": "Pinterest for Clients",
+        "template": "Do your clients sell products? Pinterest can bring them steady traffic — and Pinterest Product Pinner automates the whole process for you.",
+        "keywords": ["Pinterest","clients","freelancer","social media","marketing","ecommerce","traffic","SEO","automation","SMMA","growth","product","posts","brand","promotion","-setup","-error","-manager","-refund","-broken","-bug"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955809",
+        "label": "Expand Your Reach",
+        "template": "If you’re already managing FB and IG, adding Pinterest to your mix takes minutes. Pinterest Product Pinner automates everything — great value for clients.",
+        "keywords": ["social media","Pinterest","marketing","clients","freelancer","SMMA","automation","growth","SEO","content","traffic","brand","strategy","time saver","posts","-setup","-error","-refund","-manager","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955810",
+        "label": "Client Value Add",
+        "template": "Want an easy value add for clients? Pinterest Product Pinner lets you turn any product into a high-performing pin — no extra effort, total automation.",
+        "keywords": ["Pinterest","clients","marketing","automation","freelancer","SMMA","social media","growth","SEO","traffic","content","brand","pins","strategy","store","-setup","-error","-manager","-broken","-refund","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955811",
+        "label": "Easy Pinterest Automation",
+        "template": "If Pinterest feels like extra work, check out Pinterest Product Pinner — it handles everything from scraping images to SEO text and posting automatically.",
+        "keywords": ["Pinterest","automation","posting","freelancer","SMMA","social media","marketing","clients","SEO","content","growth","time saver","strategy","brand","product","-setup","-error","-refund","-manager","-broken","-help"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955812",
+        "label": "Marketing Shortcut",
+        "template": "If you’re managing multiple brands, this is a must-have — Pinterest Product Pinner automates pin creation so you can add Pinterest marketing without extra workload.",
+        "keywords": ["Pinterest","marketing","brands","freelancer","clients","SMMA","social media","automation","pins","SEO","content","growth","traffic","time saver","strategy","-setup","-error","-manager","-refund","-broken","-bug"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955813",
+        "label": "Social Media Pro Tip",
+        "template": "Pro tip — Pinterest drives long-term traffic that Instagram and TikTok don’t. Pinterest Product Pinner makes it dead simple to automate posts for clients.",
+        "keywords": ["Pinterest","marketing","social media","freelancer","clients","SMMA","automation","traffic","growth","content","SEO","brand","strategy","pins","time saver","-setup","-error","-refund","-manager","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955814",
+        "label": "New Traffic Stream",
+        "template": "Looking for a new traffic stream for your clients? Pinterest drives consistent product clicks — Pinterest Product Pinner makes posting automatic.",
+        "keywords": ["Pinterest","clients","marketing","freelancer","SMMA","automation","traffic","SEO","growth","content","posts","brand","strategy","social media","pins","-setup","-error","-refund","-manager","-broken","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955815",
+        "label": "Pinterest Side Channel",
+        "template": "Ever think about adding Pinterest as a side channel for your clients? Pinterest Product Pinner automates it so it doesn’t add to your workload.",
+        "keywords": ["Pinterest","clients","marketing","SMMA","freelancer","social media","automation","pins","SEO","content","growth","strategy","traffic","brand","store","-setup","-error","-manager","-refund","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955816",
+        "label": "Freelancer Growth Tool",
+        "template": "Freelancers — want to offer Pinterest marketing without the hassle? Pinterest Product Pinner does it automatically with optimized posts from product pages.",
+        "keywords": ["freelancer","Pinterest","marketing","automation","clients","SMMA","social media","SEO","growth","posts","content","brand","traffic","strategy","store","-setup","-error","-refund","-manager","-broken","-support"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955817",
+        "label": "Automate Client Pins",
+        "template": "Automating Pinterest for clients has never been easier — Pinterest Product Pinner creates SEO-ready pins straight from their product pages in seconds.",
+        "keywords": ["Pinterest","clients","automation","marketing","SEO","freelancer","social media","SMMA","growth","content","brand","traffic","posts","strategy","store","-setup","-error","-manager","-refund","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955818",
+        "label": "Pinterest ROI",
+        "template": "Pinterest has one of the best ROIs for ecom clients — and Pinterest Product Pinner lets you post optimized pins instantly. Perfect for scaling your social media offers.",
+        "keywords": ["Pinterest","ROI","clients","freelancer","social media","SMMA","marketing","automation","SEO","growth","content","brand","ecommerce","traffic","pins","-setup","-error","-manager","-refund","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      },
+      {
+        "category": "social-media-marketing",
+        "id": "1762721955819",
+        "label": "Pinterest Client Hack",
+        "template": "Helping clients grow traffic? Add Pinterest! Pinterest Product Pinner automates the whole process — it’s one of the easiest marketing wins out there.",
+        "keywords": ["Pinterest","clients","freelancer","social media","marketing","SMMA","automation","growth","traffic","SEO","content","brand","posts","strategy","promotion","-setup","-error","-refund","-manager","-broken","-policy"],
+        "url": "https://chromewebstore.google.com/detail/pinterest-product-pinner/kjamocobcdmieljjlppbeiknchkgeckk"
+      }
+    ]
+  }
+}

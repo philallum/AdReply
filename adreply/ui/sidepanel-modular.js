@@ -537,8 +537,42 @@ class AdReplySidePanel {
             const result = await chrome.storage.local.get(['customCategories']);
             const customCategories = result.customCategories || [];
 
+            // Get categories from templates (for imported templates with new categories)
+            const templates = this.templateManager.getAllTemplates();
+            const userTemplates = templates.filter(t => !t.isPrebuilt);
+            const templateCategories = new Set();
+            
+            userTemplates.forEach(template => {
+                const categoryId = template.category || 'custom';
+                if (categoryId !== 'custom') {
+                    templateCategories.add(categoryId);
+                }
+            });
+            
+            // Create category objects for template-based categories that aren't in customCategories
+            const prebuiltIds = new Set(prebuiltCategories.map(c => c.id));
+            const customIds = new Set(customCategories.map(c => c.id));
+            const templateBasedCategories = [];
+            
+            templateCategories.forEach(categoryId => {
+                if (!prebuiltIds.has(categoryId) && !customIds.has(categoryId)) {
+                    // Create a display name from the category ID
+                    const displayName = categoryId
+                        .split('-')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    
+                    templateBasedCategories.push({
+                        id: categoryId,
+                        name: displayName,
+                        description: `Custom category: ${displayName}`,
+                        isPrebuilt: false
+                    });
+                }
+            });
+
             // Combine all categories
-            const allCategories = [...prebuiltCategories, ...customCategories];
+            const allCategories = [...prebuiltCategories, ...customCategories, ...templateBasedCategories];
 
             // Update main category selector
             const categorySelect = document.getElementById('categorySelect');
