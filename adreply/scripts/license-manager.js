@@ -402,6 +402,61 @@ class LicenseManager {
   }
 
   /**
+   * Deactivate license on current device
+   * @returns {Promise<Object>} Deactivation result
+   */
+  async deactivateLicense() {
+    if (!this.token) {
+      return {
+        success: false,
+        error: 'No license token found'
+      };
+    }
+
+    try {
+      const response = await fetch('https://teamhandso.me/api/deactivate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          licenseToken: this.token,
+          deviceInfo: this.collectDeviceInfo()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Clear stored license token
+        await this.clearLicense();
+        
+        return {
+          success: true,
+          message: result.message,
+          activationInfo: result.activationInfo
+        };
+      } else {
+        return {
+          success: false,
+          error: result.message || 'Deactivation failed',
+          errorCode: result.error
+        };
+      }
+    } catch (error) {
+      console.error('License deactivation failed:', error);
+      return {
+        success: false,
+        error: 'Network error. Please check your connection and try again.',
+        errorCode: 'NETWORK_ERROR',
+        details: error.message
+      };
+    }
+  }
+
+  /**
    * Get activation info
    * @returns {Promise<Object>} Activation information
    */

@@ -159,6 +159,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })();
         return true; // Async response;
 
+      case 'DEACTIVATE_LICENSE':
+        (async () => {
+          try {
+            const result = await licenseManager.deactivateLicense();
+            sendResponse(result);
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
       case 'NEW_POST':
         // Store new post from content script
         if (message.data) {

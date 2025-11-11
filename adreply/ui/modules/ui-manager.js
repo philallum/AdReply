@@ -456,6 +456,7 @@ class UIManager {
     updateLicenseStatus(licenseInfo) {
         const statusEl = document.getElementById('licenseStatus');
         const detailsEl = document.getElementById('licenseDetails');
+        const removeLicenseSection = document.getElementById('removeLicenseSection');
         
         if (licenseInfo && licenseInfo.isValid) {
             const plan = licenseInfo.tier || licenseInfo.plan || 'Pro';
@@ -478,11 +479,21 @@ class UIManager {
             detailsEl.textContent = details;
             detailsEl.style.whiteSpace = 'pre-line';
             detailsEl.style.color = '#28a745';
+            
+            // Show remove license section
+            if (removeLicenseSection) {
+                removeLicenseSection.style.display = 'block';
+            }
         } else {
             statusEl.textContent = 'License Status: Free';
             statusEl.className = 'license-status invalid';
             detailsEl.textContent = 'Free license: 10 templates maximum, 1 category only';
             detailsEl.style.color = '#6c757d';
+            
+            // Hide remove license section
+            if (removeLicenseSection) {
+                removeLicenseSection.style.display = 'none';
+            }
         }
     }
 

@@ -215,6 +215,57 @@ class SettingsManager {
         }
     }
 
+    async deactivateLicense() {
+        try {
+            // Try background script first with timeout
+            const response = await Promise.race([
+                chrome.runtime.sendMessage({ type: 'DEACTIVATE_LICENSE' }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Background script timeout')), 5000))
+            ]);
+            
+            if (response && response.success) {
+                this.isProLicense = false;
+                return {
+                    success: true,
+                    message: response.message,
+                    activationInfo: response.activationInfo
+                };
+            } else {
+                return {
+                    success: false,
+                    error: response.error || 'Deactivation failed',
+                    errorCode: response.errorCode
+                };
+            }
+        } catch (error) {
+            // If background script fails, offer local removal
+            if (error.message.includes('timeout') || error.message.includes('background')) {
+                console.warn('⚠️ Background script not responding for deactivation');
+                return {
+                    success: false,
+                    error: 'Unable to contact server. Please try again or contact support.',
+                    allowLocalRemoval: true
+                };
+            }
+            
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    async forceRemoveLicense() {
+        // Remove license locally without server deactivation
+        try {
+            await chrome.storage.local.remove(['adreply_license', 'licenseToken', 'entitlements']);
+            this.isProLicense = false;
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+
     getProLicenseStatus() {
         return this.isProLicense;
     }

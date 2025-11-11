@@ -59,6 +59,8 @@ class AdReplySidePanel {
         // License
         document.getElementById('activateLicense').addEventListener('click', () => this.activateLicense());
         document.getElementById('checkLicense').addEventListener('click', () => this.checkLicense());
+        document.getElementById('removeLicenseBtn').addEventListener('click', () => this.removeLicense());
+        document.getElementById('upgradeBtn').addEventListener('click', () => this.openUpgradePage());
         
         // Post analysis
         document.getElementById('analyzePostBtn').addEventListener('click', () => this.analyzeCurrentPost());
@@ -369,6 +371,85 @@ class AdReplySidePanel {
         } catch (error) {
             this.uiManager.showNotification(error.message, 'error');
         }
+    }
+
+    async removeLicense() {
+        // Show confirmation dialog
+        const confirmed = confirm(
+            'Remove License from This Device?\n\n' +
+            'This will remove your license from this device and free up an activation slot.\n\n' +
+            'You can reactivate on this device or install on a different device using your ' +
+            'license token from your account dashboard at teamhandso.me/account.\n\n' +
+            'Are you sure you want to continue?'
+        );
+        
+        if (!confirmed) return;
+        
+        const removeBtn = document.getElementById('removeLicenseBtn');
+        const originalText = removeBtn.textContent;
+        
+        try {
+            // Show loading state
+            removeBtn.disabled = true;
+            removeBtn.textContent = 'Removing...';
+            
+            // Perform deactivation
+            const result = await this.settingsManager.deactivateLicense();
+            
+            if (result.success) {
+                // Update license status
+                await this.checkLicense();
+                
+                // Update template manager with new license status
+                this.templateManager.setProLicense(false);
+                
+                // Update template count display
+                this.updateTemplateCount();
+                
+                // Show success message
+                this.uiManager.showNotification('License removed successfully! You can now install on a new device.', 'success');
+            } else {
+                // Handle specific error cases
+                if (result.errorCode === 'ACTIVATION_NOT_FOUND') {
+                    // License already deactivated on server, clear locally
+                    await this.settingsManager.forceRemoveLicense();
+                    await this.checkLicense();
+                    this.templateManager.setProLicense(false);
+                    this.updateTemplateCount();
+                    this.uiManager.showNotification('License was already removed. Local data cleared.', 'info');
+                } else if (result.allowLocalRemoval) {
+                    // Offer local removal if server is unreachable
+                    const forceRemove = confirm(
+                        'Unable to contact server. Remove license locally?\n\n' +
+                        'This will clear the license from this device, but may not free up ' +
+                        'the activation slot on the server. You may need to contact support.\n\n' +
+                        'Continue with local removal?'
+                    );
+                    
+                    if (forceRemove) {
+                        await this.settingsManager.forceRemoveLicense();
+                        await this.checkLicense();
+                        this.templateManager.setProLicense(false);
+                        this.updateTemplateCount();
+                        this.uiManager.showNotification('License removed locally. Contact support if you have issues activating on another device.', 'warning');
+                    }
+                } else {
+                    // Show error message
+                    this.uiManager.showNotification(`Failed to remove license: ${result.error}`, 'error');
+                }
+            }
+        } catch (error) {
+            this.uiManager.showNotification('Error removing license: ' + error.message, 'error');
+        } finally {
+            // Restore button state
+            removeBtn.disabled = false;
+            removeBtn.textContent = originalText;
+        }
+    }
+
+    openUpgradePage() {
+        // Open the upgrade page in a new tab
+        chrome.tabs.create({ url: 'https://teamhandso.me/extensions/adreply' });
     }
 
     // Post Analysis Methods

@@ -150,7 +150,7 @@ interface VerifyFailureResponse {
 ### Example Request
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/verify', {
+const response = await fetch('https://teamhandso.me/api/verify', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -296,7 +296,7 @@ Token rotation provides:
 
 ```javascript
 async function verifyAndRotateToken(currentToken) {
-  const response = await fetch('https://your-domain.com/api/verify', {
+  const response = await fetch('https://teamhandso.me/api/verify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -336,7 +336,7 @@ Recommended verification intervals:
 ```javascript
 async function verifyLicense(token) {
   try {
-    const response = await fetch('https://your-domain.com/api/verify', {
+    const response = await fetch('https://teamhandso.me/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -420,7 +420,7 @@ async function verifyLicense(token) {
 ```javascript
 // background.js or service worker
 
-const API_ENDPOINT = 'https://your-domain.com/api/verify';
+const API_ENDPOINT = 'https://teamhandso.me/api/verify';
 const VERIFICATION_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
 class LicenseManager {
@@ -717,7 +717,7 @@ async function verifyWithGracePeriod() {
 Use test mode to verify tokens without creating activations:
 
 ```javascript
-const result = await fetch('https://your-domain.com/api/verify', {
+const result = await fetch('https://teamhandso.me/api/verify', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({

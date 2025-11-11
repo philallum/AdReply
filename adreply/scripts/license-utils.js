@@ -77,6 +77,23 @@ class LicenseUtils {
   }
 
   /**
+   * Deactivate license on current device
+   * @returns {Promise<Object>}
+   */
+  static async deactivateLicense() {
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: 'DEACTIVATE_LICENSE'
+      });
+      
+      return response;
+    } catch (error) {
+      console.error('Failed to deactivate license:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
    * Get template limit for current license
    * @returns {Promise<number>}
    */
@@ -178,7 +195,7 @@ class LicenseUtils {
   static openUpgradeFlow(feature) {
     // In a real implementation, this would open the upgrade page
     // For now, we'll just show an alert with instructions
-    const upgradeUrl = 'https://teamhandso.me/adreply/upgrade';
+    const upgradeUrl = 'https://teamhandso.me/extensions/adreply';
     
     if (confirm(`To access ${feature}, you need to upgrade to Pro.\n\nWould you like to visit the upgrade page?`)) {
       chrome.tabs.create({ url: upgradeUrl });
