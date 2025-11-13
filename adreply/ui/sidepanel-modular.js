@@ -5,6 +5,7 @@ import TemplateManager from './modules/template-manager.js';
 import UsageTrackerManager from './modules/usage-tracker.js';
 import SettingsManager from './modules/settings-manager.js';
 import UIManager from './modules/ui-manager.js';
+import PostPublisherUI from './modules/post-publisher-ui.js';
 
 class AdReplySidePanel {
     constructor() {
@@ -15,17 +16,88 @@ class AdReplySidePanel {
         this.settingsManager = new SettingsManager();
         this.uiManager = new UIManager();
         
+        // Initialize keyword learning engine
+        this.keywordLearningEngine = null;
+        this.initializeKeywordLearning();
+        
         // Initialize post analyzer with dependencies
         this.postAnalyzer = new PostAnalyzer(
             this.connectionManager,
             this.templateManager,
-            this.usageTrackerManager.getUsageTracker()
+            this.usageTrackerManager.getUsageTracker(),
+            this.keywordLearningEngine
         );
+        
+        // Initialize post publisher (loaded from script tag in HTML)
+        this.postPublisher = null;
+        this.postPublisherUI = null;
+        this.initializePostPublisher();
         
         // Bind methods to preserve context
         this.refreshData = this.refreshData.bind(this);
         this.onTabChange = this.onTabChange.bind(this);
         this.handleCopyClick = this.handleCopyClick.bind(this);
+    }
+
+    /**
+     * Initialize keyword learning engine
+     */
+    initializeKeywordLearning() {
+        try {
+            // Create instance (script is loaded in HTML)
+            if (typeof KeywordLearningEngine !== 'undefined') {
+                this.keywordLearningEngine = new KeywordLearningEngine();
+                console.log('AdReply: Keyword Learning Engine initialized');
+            } else {
+                console.warn('AdReply: KeywordLearningEngine not available');
+            }
+        } catch (error) {
+            console.error('AdReply: Failed to initialize Keyword Learning Engine:', error);
+        }
+    }
+
+    /**
+     * Initialize post publisher
+     */
+    initializePostPublisher() {
+        try {
+            // Create instance (script is loaded in HTML)
+            if (typeof PostPublisher !== 'undefined') {
+                this.postPublisher = new PostPublisher();
+                this.postPublisherUI = new PostPublisherUI(this.postPublisher);
+                console.log('AdReply: Post Publisher initialized');
+            } else {
+                console.warn('AdReply: PostPublisher not available');
+            }
+        } catch (error) {
+            console.error('AdReply: Failed to initialize Post Publisher:', error);
+        }
+    }
+
+    /**
+     * Initialize post publisher UI for template editor
+     */
+    initializePostPublisherEditor() {
+        if (!this.postPublisherUI) {
+            return;
+        }
+
+        try {
+            const templateForm = document.getElementById('templateForm');
+            if (templateForm) {
+                // Add button to editor with function to get current template content
+                this.postPublisherUI.addButtonToEditor(
+                    templateForm,
+                    () => {
+                        const content = document.getElementById('templateContent');
+                        return content ? content.value : '';
+                    }
+                );
+                console.log('AdReply: Post Publisher button added to template editor');
+            }
+        } catch (error) {
+            console.error('AdReply: Failed to add Post Publisher button to editor:', error);
+        }
     }
 
     async initialize() {
@@ -36,6 +108,9 @@ class AdReplySidePanel {
         
         // Set up event listeners
         this.setupEventListeners();
+        
+        // Initialize post publisher UI for template editor
+        this.initializePostPublisherEditor();
         
         // Load saved data
         await this.loadInitialData();
@@ -52,6 +127,7 @@ class AdReplySidePanel {
         document.getElementById('addTemplateBtn').addEventListener('click', async () => await this.showTemplateForm());
         document.getElementById('saveTemplateBtn').addEventListener('click', () => this.saveTemplate());
         document.getElementById('cancelTemplateBtn').addEventListener('click', () => this.hideTemplateForm());
+        document.getElementById('previewTemplateBtn').addEventListener('click', () => this.previewTemplate());
         
         // Category navigation
         document.getElementById('backToCategoriesBtn').addEventListener('click', () => this.showCategoryView());
@@ -61,6 +137,22 @@ class AdReplySidePanel {
         document.getElementById('checkLicense').addEventListener('click', () => this.checkLicense());
         document.getElementById('removeLicenseBtn').addEventListener('click', () => this.removeLicense());
         document.getElementById('upgradeBtn').addEventListener('click', () => this.openUpgradePage());
+        
+        // AI Setup Wizard
+        document.getElementById('runAIWizardBtn').addEventListener('click', () => this.openAIWizard());
+        
+        // Keyword Performance Dashboard
+        document.getElementById('viewKeywordPerformanceBtn').addEventListener('click', () => this.openKeywordPerformance());
+        
+        // Marketplace link in settings
+        const marketplaceLinkBtn = document.getElementById('marketplaceLinkBtn');
+        if (marketplaceLinkBtn) {
+            marketplaceLinkBtn.addEventListener('click', () => this.openMarketplace());
+        }
+        
+        // Affiliate Links
+        document.getElementById('saveAffiliateLinkBtn').addEventListener('click', () => this.saveAffiliateLink());
+        document.getElementById('clearAffiliateLinkBtn').addEventListener('click', () => this.clearAffiliateLink());
         
         // Post analysis
         document.getElementById('analyzePostBtn').addEventListener('click', () => this.analyzeCurrentPost());
@@ -82,6 +174,12 @@ class AdReplySidePanel {
         
         if (importAdPackBtn) {
             importAdPackBtn.addEventListener('click', () => this.importTemplates());
+        }
+
+        // Marketplace event listener
+        const marketplaceBtn = document.getElementById('marketplaceBtn');
+        if (marketplaceBtn) {
+            marketplaceBtn.addEventListener('click', () => this.openMarketplace());
         }
 
         // Backup & Restore event listeners
@@ -128,6 +226,9 @@ class AdReplySidePanel {
         
         // Load default URL
         await this.loadDefaultUrl();
+        
+        // Load affiliate link
+        await this.loadAffiliateLink();
     }
 
     async refreshData() {
@@ -145,7 +246,12 @@ class AdReplySidePanel {
             try {
                 const isProLicense = this.settingsManager.getProLicenseStatus();
                 const suggestions = await this.postAnalyzer.generateSuggestions(recentPost.content, isProLicense);
-                this.uiManager.displaySuggestions(suggestions);
+                this.uiManager.displaySuggestions(suggestions, this.postPublisherUI);
+                
+                // Start ignore timers for keyword learning
+                if (this.keywordLearningEngine) {
+                    this.startIgnoreTimersForSuggestions(suggestions);
+                }
             } catch (error) {
                 console.error('AdReply: Error generating suggestions:', error);
                 this.uiManager.clearSuggestions();
@@ -186,6 +292,19 @@ class AdReplySidePanel {
                 } catch (error) {
                     console.error('AdReply: Failed to record usage:', error);
                     this.uiManager.showNotification('❌ Failed to record usage: ' + error.message, 'error');
+                }
+                
+                // Record template selection for keyword learning
+                if (this.keywordLearningEngine) {
+                    try {
+                        const template = this.templateManager.getTemplate(suggestion.templateId);
+                        if (template) {
+                            await this.postAnalyzer.recordTemplateSelection(suggestion.templateId, template);
+                            console.log('AdReply: Recorded template selection for keyword learning');
+                        }
+                    } catch (error) {
+                        console.error('AdReply: Failed to record selection for learning:', error);
+                    }
                 }
             } else {
                 console.log('AdReply: Not recording usage - invalid suggestion:', suggestion);
@@ -257,6 +376,11 @@ class AdReplySidePanel {
             // Get category display name for feedback
             const categoryDisplayName = this.uiManager.getCategoryDisplayName(formData.category);
             
+            // Save category-specific affiliate link if provided
+            if (formData.affiliateLink && formData.affiliateLink.trim().length > 0) {
+                await this.saveCategoryAffiliateLink(formData.category, formData.affiliateLink.trim());
+            }
+            
             if (editingId) {
                 const updatedTemplate = await this.templateManager.updateTemplate(editingId, formData);
                 console.log('AdReply: Updated template:', updatedTemplate);
@@ -274,10 +398,116 @@ class AdReplySidePanel {
             this.uiManager.showNotification(error.message, 'error');
         }
     }
+    
+    async saveCategoryAffiliateLink(categoryId, url) {
+        try {
+            // Validate URL
+            if (!url.match(/^https?:\/\//i)) {
+                console.warn('AdReply: Invalid affiliate link URL format');
+                return;
+            }
+            
+            // Get current settings
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+            
+            // Initialize affiliateLinks if not exists
+            if (!settings.affiliateLinks) {
+                settings.affiliateLinks = {
+                    default: '',
+                    categoryOverrides: {}
+                };
+            }
+            
+            // Update category override
+            settings.affiliateLinks.categoryOverrides[categoryId] = url;
+            
+            // Save to storage
+            await chrome.storage.local.set({ settings: settings });
+            
+            console.log('AdReply: Category affiliate link saved:', categoryId, url);
+            
+        } catch (error) {
+            console.error('AdReply: Failed to save category affiliate link:', error);
+        }
+    }
+    
+    async previewTemplate() {
+        try {
+            const formData = this.uiManager.getTemplateFormData();
+            const previewDiv = document.getElementById('templatePreview');
+            const previewText = document.getElementById('templatePreviewText');
+            
+            if (!formData.content) {
+                this.uiManager.showNotification('Please enter template content first', 'error');
+                return;
+            }
+            
+            // Get settings for rendering
+            const result = await chrome.storage.local.get(['settings', 'defaultPromoUrl']);
+            const settings = result.settings || {};
+            const companyUrl = result.defaultPromoUrl || settings.companyUrl || '';
+            
+            // Get affiliate link (category-specific or default)
+            let affiliateLink = null;
+            if (formData.affiliateLink && formData.affiliateLink.trim().length > 0) {
+                affiliateLink = formData.affiliateLink.trim();
+            } else if (settings.affiliateLinks && settings.affiliateLinks.default) {
+                affiliateLink = settings.affiliateLinks.default;
+            }
+            
+            // Render template
+            let rendered = formData.content;
+            
+            // Replace {{link}} placeholder
+            if (rendered.includes('{{link}}')) {
+                if (affiliateLink) {
+                    rendered = rendered.replace(/\{\{link\}\}/g, affiliateLink);
+                } else {
+                    // Remove lines with {{link}} if no affiliate link
+                    rendered = rendered
+                        .split('\n')
+                        .filter(line => !line.includes('{{link}}'))
+                        .join('\n')
+                        .trim();
+                }
+            }
+            
+            // Append company URL if configured
+            if (companyUrl && companyUrl.trim().length > 0) {
+                rendered = rendered.trim() + '\n\n' + companyUrl.trim();
+            }
+            
+            // Show preview
+            previewText.textContent = rendered;
+            previewDiv.style.display = 'block';
+            
+            // Scroll to preview
+            previewDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            console.error('AdReply: Failed to preview template:', error);
+            this.uiManager.showNotification('Failed to preview template', 'error');
+        }
+    }
 
     async editTemplate(templateId) {
         const template = this.templateManager.getTemplate(templateId);
         if (!template) return;
+        
+        // Load category-specific affiliate link if exists
+        try {
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+            const affiliateLinks = settings.affiliateLinks || { default: '', categoryOverrides: {} };
+            
+            // Add affiliate link to template object for form population
+            if (affiliateLinks.categoryOverrides && affiliateLinks.categoryOverrides[template.category]) {
+                template.affiliateLink = affiliateLinks.categoryOverrides[template.category];
+            }
+        } catch (error) {
+            console.error('AdReply: Failed to load category affiliate link:', error);
+        }
         
         this.templateManager.setEditingTemplate(templateId);
         this.uiManager.populateTemplateForm(template);
@@ -452,6 +682,36 @@ class AdReplySidePanel {
         chrome.tabs.create({ url: 'https://teamhandso.me/extensions/adreply' });
     }
 
+    openAIWizard() {
+        // Open the AI Setup Wizard in a new window
+        chrome.windows.create({
+            url: chrome.runtime.getURL('ui/onboarding.html'),
+            type: 'popup',
+            width: 700,
+            height: 800
+        });
+    }
+
+    openKeywordPerformance() {
+        // Open the Keyword Performance Dashboard in a new window
+        chrome.windows.create({
+            url: chrome.runtime.getURL('ui/keyword-performance.html'),
+            type: 'popup',
+            width: 1000,
+            height: 700
+        });
+    }
+
+    openMarketplace() {
+        // Open the Template Marketplace in a new window
+        chrome.windows.create({
+            url: chrome.runtime.getURL('ui/marketplace.html'),
+            type: 'popup',
+            width: 1200,
+            height: 800
+        });
+    }
+
     // Post Analysis Methods
     async analyzeCurrentPost() {
         const analyzeBtn = document.getElementById('analyzePostBtn');
@@ -484,7 +744,12 @@ class AdReplySidePanel {
                     // Generate suggestions
                     const isProLicense = this.settingsManager.getProLicenseStatus();
                     const suggestions = await this.postAnalyzer.generateSuggestions(result.content, isProLicense);
-                    this.uiManager.displaySuggestions(suggestions);
+                    this.uiManager.displaySuggestions(suggestions, this.postPublisherUI);
+                    
+                    // Start ignore timers for keyword learning
+                    if (this.keywordLearningEngine) {
+                        this.startIgnoreTimersForSuggestions(suggestions);
+                    }
                 }
             }
         } catch (error) {
@@ -572,6 +837,122 @@ class AdReplySidePanel {
             }
         } catch (error) {
             console.error('Failed to load default URL:', error);
+        }
+    }
+
+    // Affiliate Link Management
+    async saveAffiliateLink() {
+        const urlInput = document.getElementById('defaultAffiliateLink');
+        const validationDiv = document.getElementById('affiliateLinkValidation');
+        const url = urlInput.value.trim();
+        
+        if (!url) {
+            this.uiManager.showNotification('Please enter an affiliate link URL', 'error');
+            return;
+        }
+        
+        // Validate URL
+        if (!url.match(/^https?:\/\//i)) {
+            validationDiv.textContent = '❌ URL must start with http:// or https://';
+            validationDiv.style.color = '#dc3545';
+            validationDiv.style.display = 'block';
+            return;
+        }
+        
+        try {
+            new URL(url);
+        } catch (error) {
+            validationDiv.textContent = '❌ Invalid URL format';
+            validationDiv.style.color = '#dc3545';
+            validationDiv.style.display = 'block';
+            return;
+        }
+        
+        try {
+            // Get current settings
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+            
+            // Initialize affiliateLinks if not exists
+            if (!settings.affiliateLinks) {
+                settings.affiliateLinks = {
+                    default: '',
+                    categoryOverrides: {}
+                };
+            }
+            
+            // Update default link
+            settings.affiliateLinks.default = url;
+            
+            // Save to storage
+            await chrome.storage.local.set({ settings: settings });
+            
+            // Show success
+            validationDiv.textContent = '✅ Affiliate link saved successfully';
+            validationDiv.style.color = '#28a745';
+            validationDiv.style.display = 'block';
+            
+            this.uiManager.showNotification('Affiliate link saved successfully!');
+            
+            // Hide validation message after 3 seconds
+            setTimeout(() => {
+                validationDiv.style.display = 'none';
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Failed to save affiliate link:', error);
+            validationDiv.textContent = '❌ Failed to save affiliate link';
+            validationDiv.style.color = '#dc3545';
+            validationDiv.style.display = 'block';
+            this.uiManager.showNotification('Failed to save affiliate link', 'error');
+        }
+    }
+    
+    async clearAffiliateLink() {
+        try {
+            // Get current settings
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+            
+            // Initialize affiliateLinks if not exists
+            if (!settings.affiliateLinks) {
+                settings.affiliateLinks = {
+                    default: '',
+                    categoryOverrides: {}
+                };
+            }
+            
+            // Clear default link
+            settings.affiliateLinks.default = '';
+            
+            // Save to storage
+            await chrome.storage.local.set({ settings: settings });
+            
+            // Clear input field
+            document.getElementById('defaultAffiliateLink').value = '';
+            
+            // Hide validation message
+            const validationDiv = document.getElementById('affiliateLinkValidation');
+            validationDiv.style.display = 'none';
+            
+            this.uiManager.showNotification('Affiliate link cleared successfully!');
+            
+        } catch (error) {
+            console.error('Failed to clear affiliate link:', error);
+            this.uiManager.showNotification('Failed to clear affiliate link', 'error');
+        }
+    }
+    
+    async loadAffiliateLink() {
+        try {
+            const result = await chrome.storage.local.get(['settings']);
+            const settings = result.settings || {};
+            
+            if (settings.affiliateLinks && settings.affiliateLinks.default) {
+                document.getElementById('defaultAffiliateLink').value = settings.affiliateLinks.default;
+            }
+        } catch (error) {
+            console.error('Failed to load affiliate link:', error);
         }
     }
 
@@ -1086,6 +1467,32 @@ class AdReplySidePanel {
 
         reader.readAsText(file);
     }
+
+    /**
+     * Start ignore timers for displayed suggestions
+     * @param {Array} suggestions - Array of suggestion objects
+     */
+    startIgnoreTimersForSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0) {
+            return;
+        }
+
+        // Clear any existing timers first
+        this.postAnalyzer.clearAllIgnoreTimers();
+
+        // Start timer for each valid suggestion
+        for (const suggestion of suggestions) {
+            if (suggestion && typeof suggestion === 'object' && 
+                suggestion.templateId && suggestion.templateId !== 'fallback' &&
+                !suggestion.isLimitMessage) {
+                
+                const template = this.templateManager.getTemplate(suggestion.templateId);
+                if (template) {
+                    this.postAnalyzer.startIgnoreTimer(suggestion.templateId, template);
+                }
+            }
+        }
+    }
 }
 
 // Initialize when DOM is loaded
@@ -1100,14 +1507,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const testContent = "This is a test post about cars and automotive services";
         console.log('AdReply: Testing with content:', testContent);
         const suggestions = await app.postAnalyzer.generateSuggestions(testContent);
-        app.uiManager.displaySuggestions(suggestions);
+        app.uiManager.displaySuggestions(suggestions, app.postPublisherUI);
     };
     window.testEtsySuggestions = async () => {
         console.log('AdReply: Testing Etsy suggestion generation...');
         const testContent = "Beautiful handmade jewelry! Love the craftsmanship.";
         console.log('AdReply: Testing with Etsy content:', testContent);
         const suggestions = await app.postAnalyzer.generateSuggestions(testContent);
-        app.uiManager.displaySuggestions(suggestions);
+        app.uiManager.displaySuggestions(suggestions, app.postPublisherUI);
     };
 
 });

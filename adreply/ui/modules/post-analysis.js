@@ -1,10 +1,13 @@
 // Post analysis and suggestion generation
 class PostAnalyzer {
-    constructor(connectionManager, templateManager, usageTracker) {
+    constructor(connectionManager, templateManager, usageTracker, keywordLearningEngine = null) {
         this.connectionManager = connectionManager;
         this.templateManager = templateManager;
         this.usageTracker = usageTracker;
+        this.keywordLearningEngine = keywordLearningEngine;
         this.currentPost = null;
+        this.currentMatches = []; // Store current matches for learning
+        this.ignoreTimers = new Map(); // Track ignore timers for suggestions
     }
 
     async generateSuggestions(postContent, isProLicense = false) {
@@ -57,6 +60,22 @@ class PostAnalyzer {
         // Match templates based on keywords
         const matchedTemplates = await this.matchTemplatesWithPost(postContent);
         console.log('AdReply: Matched templates:', matchedTemplates.length);
+        
+        // Store matches for learning engine
+        this.currentMatches = matchedTemplates;
+        
+        // Record matches with keyword learning engine
+        if (this.keywordLearningEngine && matchedTemplates.length > 0) {
+            try {
+                // Extract all keywords from matched templates
+                const allKeywords = matchedTemplates.flatMap(match => 
+                    (match.template.keywords || []).filter(k => !k.startsWith('-'))
+                );
+                await this.keywordLearningEngine.recordMatch(postContent, matchedTemplates, allKeywords);
+            } catch (error) {
+                console.error('AdReply: Error recording matches with learning engine:', error);
+            }
+        }
         
         if (matchedTemplates.length > 0) {
             // Use matched templates
@@ -417,6 +436,96 @@ class PostAnalyzer {
 
     getCurrentPost() {
         return this.currentPost;
+    }
+
+    /**
+     * Record template selection for keyword learning
+     * @param {string} templateId - ID of selected template
+     * @param {Object} template - Template object
+     */
+    async recordTemplateSelection(templateId, template) {
+        if (!this.keywordLearningEngine || !template) {
+            return;
+        }
+
+        try {
+            const keywords = template.keywords || [];
+            const categoryId = template.category || 'custom';
+            
+            await this.keywordLearningEngine.recordSelection(templateId, keywords, categoryId);
+            
+            // Clear any pending ignore timer for this template
+            if (this.ignoreTimers.has(templateId)) {
+                clearTimeout(this.ignoreTimers.get(templateId));
+                this.ignoreTimers.delete(templateId);
+            }
+            
+            console.log('AdReply: Recorded template selection for learning');
+        } catch (error) {
+            console.error('AdReply: Error recording template selection:', error);
+        }
+    }
+
+    /**
+     * Start ignore timer for a suggestion (10 seconds)
+     * @param {string} templateId - ID of template being shown
+     * @param {Object} template - Template object
+     */
+    startIgnoreTimer(templateId, template) {
+        if (!this.keywordLearningEngine || !template) {
+            return;
+        }
+
+        // Clear existing timer if any
+        if (this.ignoreTimers.has(templateId)) {
+            clearTimeout(this.ignoreTimers.get(templateId));
+        }
+
+        // Start 10-second timer
+        const timer = setTimeout(async () => {
+            try {
+                const keywords = template.keywords || [];
+                const categoryId = template.category || 'custom';
+                
+                await this.keywordLearningEngine.recordIgnore(templateId, keywords, categoryId);
+                
+                this.ignoreTimers.delete(templateId);
+                console.log('AdReply: Recorded template ignore after 10 seconds');
+            } catch (error) {
+                console.error('AdReply: Error recording template ignore:', error);
+            }
+        }, 10000); // 10 seconds
+
+        this.ignoreTimers.set(templateId, timer);
+    }
+
+    /**
+     * Cancel ignore timer (called when user interacts with suggestion)
+     * @param {string} templateId - ID of template
+     */
+    cancelIgnoreTimer(templateId) {
+        if (this.ignoreTimers.has(templateId)) {
+            clearTimeout(this.ignoreTimers.get(templateId));
+            this.ignoreTimers.delete(templateId);
+        }
+    }
+
+    /**
+     * Clear all ignore timers
+     */
+    clearAllIgnoreTimers() {
+        for (const timer of this.ignoreTimers.values()) {
+            clearTimeout(timer);
+        }
+        this.ignoreTimers.clear();
+    }
+
+    /**
+     * Set keyword learning engine
+     * @param {KeywordLearningEngine} engine - Keyword learning engine instance
+     */
+    setKeywordLearningEngine(engine) {
+        this.keywordLearningEngine = engine;
     }
 }
 

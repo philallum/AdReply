@@ -457,6 +457,46 @@ class FacebookSafeIntegration {
                         });
                         return true; // Keep message channel open for async response
                         break;
+                    
+                    case 'FIND_COMPOSER':
+                        console.log('AdReply: Finding Facebook post composer');
+                        this.findPostComposer(message.selectors).then(result => {
+                            sendResponse(result);
+                        }).catch(error => {
+                            sendResponse({
+                                success: false,
+                                error: 'Failed to find composer: ' + error.message
+                            });
+                        });
+                        return true; // Keep message channel open for async response
+                        break;
+                    
+                    case 'FILL_COMPOSER':
+                        console.log('AdReply: Filling Facebook post composer');
+                        this.fillPostComposer(message.text, message.selectors).then(result => {
+                            sendResponse(result);
+                        }).catch(error => {
+                            sendResponse({
+                                success: false,
+                                error: 'Failed to fill composer: ' + error.message
+                            });
+                        });
+                        return true; // Keep message channel open for async response
+                        break;
+                    
+                    case 'SHOW_TOOLTIP':
+                        console.log('AdReply: Showing tooltip');
+                        this.showComposerTooltip(message.message, message.tooltipType).then(result => {
+                            sendResponse(result);
+                        }).catch(error => {
+                            sendResponse({
+                                success: false,
+                                error: 'Failed to show tooltip: ' + error.message
+                            });
+                        });
+                        return true; // Keep message channel open for async response
+                        break;
+                    
                     default:
                         sendResponse({ success: false, error: 'Unknown message type' });
                 }
@@ -1176,6 +1216,254 @@ class FacebookSafeIntegration {
                 success: false,
                 error: 'Analysis failed: ' + error.message
             };
+        }
+    }
+
+    async findPostComposer(selectors) {
+        try {
+            console.log('AdReply: Searching for post composer with', selectors.length, 'selectors');
+            
+            for (const selector of selectors) {
+                const elements = document.querySelectorAll(selector);
+                
+                for (const element of elements) {
+                    // Check if element is visible and not disabled
+                    const rect = element.getBoundingClientRect();
+                    const isVisible = rect.width > 0 && rect.height > 0 && 
+                                    element.offsetParent !== null && 
+                                    !element.disabled &&
+                                    getComputedStyle(element).visibility !== 'hidden';
+                    
+                    if (isVisible) {
+                        console.log('AdReply: Found visible composer with selector:', selector);
+                        return {
+                            success: true,
+                            found: true,
+                            selector: selector
+                        };
+                    }
+                }
+            }
+            
+            console.log('AdReply: No visible composer found');
+            return {
+                success: true,
+                found: false,
+                error: 'Post composer not found. Please click "Create post" or navigate to your profile/group.'
+            };
+        } catch (error) {
+            console.error('AdReply: Error finding composer:', error);
+            return {
+                success: false,
+                error: 'Error finding composer: ' + error.message
+            };
+        }
+    }
+
+    async fillPostComposer(text, selectors) {
+        try {
+            console.log('AdReply: Attempting to fill composer with text');
+            
+            let composer = null;
+            
+            // Find the composer
+            for (const selector of selectors) {
+                const elements = document.querySelectorAll(selector);
+                
+                for (const element of elements) {
+                    const rect = element.getBoundingClientRect();
+                    const isVisible = rect.width > 0 && rect.height > 0 && 
+                                    element.offsetParent !== null && 
+                                    !element.disabled &&
+                                    getComputedStyle(element).visibility !== 'hidden';
+                    
+                    if (isVisible) {
+                        composer = element;
+                        console.log('AdReply: Found composer to fill');
+                        break;
+                    }
+                }
+                if (composer) break;
+            }
+            
+            if (!composer) {
+                return {
+                    success: false,
+                    error: 'Composer not found'
+                };
+            }
+            
+            // Focus the composer
+            composer.focus();
+            composer.click();
+            
+            // Handle different types of composers
+            if (composer.hasAttribute('data-lexical-editor')) {
+                // Facebook's Lexical editor
+                console.log('AdReply: Using Lexical editor method');
+                
+                const paragraph = composer.querySelector('p');
+                if (paragraph) {
+                    // Clear existing content
+                    paragraph.innerHTML = '';
+                    
+                    // Create text node
+                    const textNode = document.createTextNode(text);
+                    paragraph.appendChild(textNode);
+                    
+                    // Trigger input events
+                    const inputEvent = new InputEvent('input', {
+                        inputType: 'insertText',
+                        data: text,
+                        bubbles: true
+                    });
+                    composer.dispatchEvent(inputEvent);
+                }
+            } else if (composer.tagName.toLowerCase() === 'textarea') {
+                // Textarea element
+                console.log('AdReply: Using textarea method');
+                
+                // Use React-compatible value setter
+                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                    window.HTMLTextAreaElement.prototype,
+                    'value'
+                )?.set;
+                
+                if (nativeInputValueSetter) {
+                    nativeInputValueSetter.call(composer, text);
+                } else {
+                    composer.value = text;
+                }
+                
+                // Dispatch events
+                composer.dispatchEvent(new Event('input', { bubbles: true }));
+                composer.dispatchEvent(new Event('change', { bubbles: true }));
+            } else {
+                // Contenteditable div
+                console.log('AdReply: Using contenteditable method');
+                
+                composer.textContent = text;
+                
+                // Trigger input events
+                composer.dispatchEvent(new Event('input', { bubbles: true }));
+                composer.dispatchEvent(new Event('keyup', { bubbles: true }));
+                composer.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            
+            // Set cursor to end
+            setTimeout(() => {
+                try {
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    
+                    if (composer.hasAttribute('data-lexical-editor')) {
+                        const paragraph = composer.querySelector('p');
+                        if (paragraph && paragraph.firstChild) {
+                            range.setStart(paragraph.firstChild, text.length);
+                            range.setEnd(paragraph.firstChild, text.length);
+                        }
+                    } else {
+                        range.selectNodeContents(composer);
+                        range.collapse(false);
+                    }
+                    
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    composer.focus();
+                } catch (rangeError) {
+                    console.log('AdReply: Could not set cursor position:', rangeError.message);
+                }
+            }, 100);
+            
+            console.log('AdReply: Composer filled successfully');
+            return {
+                success: true,
+                message: 'Composer filled successfully'
+            };
+            
+        } catch (error) {
+            console.error('AdReply: Error filling composer:', error);
+            return {
+                success: false,
+                error: 'Failed to fill composer: ' + error.message
+            };
+        }
+    }
+
+    async showComposerTooltip(message, type = 'info') {
+        try {
+            // Remove any existing tooltip
+            const existingTooltip = document.querySelector('.adreply-composer-tooltip');
+            if (existingTooltip) {
+                existingTooltip.remove();
+            }
+            
+            // Create tooltip element
+            const tooltip = document.createElement('div');
+            tooltip.className = 'adreply-composer-tooltip';
+            tooltip.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 16px;
+                border-radius: 4px;
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+                z-index: 999999;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            // Set background color based on type
+            const colors = {
+                success: '#28a745',
+                error: '#dc3545',
+                info: '#17a2b8',
+                warning: '#ffc107'
+            };
+            tooltip.style.backgroundColor = colors[type] || colors.info;
+            if (type === 'warning') {
+                tooltip.style.color = '#212529';
+            }
+            
+            tooltip.textContent = message;
+            
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(tooltip);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                tooltip.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (tooltip.parentNode) {
+                        tooltip.remove();
+                    }
+                    if (style.parentNode) {
+                        style.remove();
+                    }
+                }, 300);
+            }, 4000);
+            
+            return { success: true };
+            
+        } catch (error) {
+            console.error('AdReply: Error showing tooltip:', error);
+            return { success: false, error: error.message };
         }
     }
 

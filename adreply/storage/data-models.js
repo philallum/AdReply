@@ -560,6 +560,19 @@ class Settings {
       preferredCategory: '',
       ...data.templates
     };
+    
+    // v2.0 fields
+    this.businessDescription = data.businessDescription || '';
+    this.companyUrl = data.companyUrl || '';
+    this.aiProvider = data.aiProvider || 'gemini'; // 'gemini' | 'openai'
+    this.aiKeyEncrypted = data.aiKeyEncrypted || '';
+    this.onboardingCompleted = data.onboardingCompleted !== undefined ? data.onboardingCompleted : false;
+    this.affiliateLinks = {
+      default: '',
+      categoryOverrides: {},
+      ...(data.affiliateLinks || {})
+    };
+    this.adPackMetadata = data.adPackMetadata || [];
   }
 
   /**
@@ -603,6 +616,64 @@ class Settings {
       }
     }
 
+    // v2.0 fields validation
+    if (typeof this.businessDescription !== 'string') {
+      errors.push('Business description must be a string');
+    }
+
+    if (this.businessDescription && (this.businessDescription.length < 50 || this.businessDescription.length > 500)) {
+      errors.push('Business description must be between 50 and 500 characters');
+    }
+
+    if (typeof this.companyUrl !== 'string') {
+      errors.push('Company URL must be a string');
+    }
+
+    if (this.companyUrl && !this.isValidUrl(this.companyUrl)) {
+      errors.push('Company URL must be a valid URL');
+    }
+
+    const validAIProviders = ['gemini', 'openai'];
+    if (!validAIProviders.includes(this.aiProvider)) {
+      errors.push(`AI provider must be one of: ${validAIProviders.join(', ')}`);
+    }
+
+    if (typeof this.aiKeyEncrypted !== 'string') {
+      errors.push('AI key encrypted must be a string');
+    }
+
+    if (typeof this.onboardingCompleted !== 'boolean') {
+      errors.push('Onboarding completed must be a boolean');
+    }
+
+    if (typeof this.affiliateLinks !== 'object' || this.affiliateLinks === null) {
+      errors.push('Affiliate links must be an object');
+    } else {
+      if (typeof this.affiliateLinks.default !== 'string') {
+        errors.push('Affiliate links default must be a string');
+      }
+
+      if (this.affiliateLinks.default && !this.isValidUrl(this.affiliateLinks.default)) {
+        errors.push('Affiliate links default must be a valid URL');
+      }
+
+      if (typeof this.affiliateLinks.categoryOverrides !== 'object' || this.affiliateLinks.categoryOverrides === null) {
+        errors.push('Affiliate links category overrides must be an object');
+      } else {
+        Object.entries(this.affiliateLinks.categoryOverrides).forEach(([categoryId, url]) => {
+          if (typeof url !== 'string') {
+            errors.push(`Affiliate link for category ${categoryId} must be a string`);
+          } else if (url && !this.isValidUrl(url)) {
+            errors.push(`Affiliate link for category ${categoryId} must be a valid URL`);
+          }
+        });
+      }
+    }
+
+    if (!Array.isArray(this.adPackMetadata)) {
+      errors.push('Ad Pack metadata must be an array');
+    }
+
     return {
       isValid: errors.length === 0,
       errors
@@ -616,7 +687,17 @@ class Settings {
   toObject() {
     return {
       ui: { ...this.ui },
-      templates: { ...this.templates }
+      templates: { ...this.templates },
+      businessDescription: this.businessDescription,
+      companyUrl: this.companyUrl,
+      aiProvider: this.aiProvider,
+      aiKeyEncrypted: this.aiKeyEncrypted,
+      onboardingCompleted: this.onboardingCompleted,
+      affiliateLinks: {
+        default: this.affiliateLinks.default,
+        categoryOverrides: { ...this.affiliateLinks.categoryOverrides }
+      },
+      adPackMetadata: this.adPackMetadata || []
     };
   }
 
@@ -627,6 +708,20 @@ class Settings {
    */
   static fromObject(data) {
     return new Settings(data);
+  }
+
+  /**
+   * Validate URL format
+   * @param {string} url - URL to validate
+   * @returns {boolean}
+   */
+  isValidUrl(url) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+    } catch (e) {
+      return false;
+    }
   }
 }
 
@@ -711,12 +806,405 @@ class AISettings {
 }
 
 /**
+ * KeywordStats Model (v2.0)
+ * Tracks keyword performance for learning engine
+ */
+class KeywordStats {
+  constructor(data = {}) {
+    this.keyword = data.keyword || '';
+    this.categoryId = data.categoryId || '';
+    this.matches = data.matches || 0;
+    this.chosen = data.chosen || 0;
+    this.ignored = data.ignored || 0;
+    this.score = data.score || 0.0;
+    this.lastUpdated = data.lastUpdated || new Date().toISOString();
+  }
+
+  /**
+   * Validate keyword stats data
+   * @returns {Object} Validation result with isValid and errors
+   */
+  validate() {
+    const errors = [];
+
+    if (!this.keyword || typeof this.keyword !== 'string' || this.keyword.trim().length === 0) {
+      errors.push('Keyword is required and must be a non-empty string');
+    }
+
+    if (!this.categoryId || typeof this.categoryId !== 'string' || this.categoryId.trim().length === 0) {
+      errors.push('Category ID is required and must be a non-empty string');
+    }
+
+    if (typeof this.matches !== 'number' || this.matches < 0) {
+      errors.push('Matches must be a non-negative number');
+    }
+
+    if (typeof this.chosen !== 'number' || this.chosen < 0) {
+      errors.push('Chosen must be a non-negative number');
+    }
+
+    if (typeof this.ignored !== 'number' || this.ignored < 0) {
+      errors.push('Ignored must be a non-negative number');
+    }
+
+    if (typeof this.score !== 'number' || this.score < 0 || this.score > 1) {
+      errors.push('Score must be a number between 0 and 1');
+    }
+
+    if (this.lastUpdated && !this.isValidISODate(this.lastUpdated)) {
+      errors.push('Last updated must be a valid ISO date string');
+    }
+
+    if (this.chosen > this.matches) {
+      errors.push('Chosen count cannot exceed matches count');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Update score based on matches and chosen
+   */
+  updateScore() {
+    this.score = this.matches > 0 ? this.chosen / this.matches : 0;
+    this.lastUpdated = new Date().toISOString();
+  }
+
+  /**
+   * Check if keyword should be suggested for removal
+   * @param {number} threshold - Score threshold (default 0.1)
+   * @param {number} minMatches - Minimum matches required (default 20)
+   * @returns {boolean}
+   */
+  shouldSuggestRemoval(threshold = 0.1, minMatches = 20) {
+    return this.matches >= minMatches && this.score < threshold;
+  }
+
+  /**
+   * Convert to plain object for storage
+   * @returns {Object}
+   */
+  toObject() {
+    return {
+      keyword: this.keyword,
+      categoryId: this.categoryId,
+      matches: this.matches,
+      chosen: this.chosen,
+      ignored: this.ignored,
+      score: this.score,
+      lastUpdated: this.lastUpdated
+    };
+  }
+
+  /**
+   * Create keyword stats from plain object
+   * @param {Object} data - Plain object data
+   * @returns {KeywordStats}
+   */
+  static fromObject(data) {
+    return new KeywordStats(data);
+  }
+
+  isValidISODate(dateString) {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date) && date.toISOString() === dateString;
+  }
+}
+
+/**
+ * AdPack Model (v2.0)
+ * Represents a portable collection of categories and templates
+ */
+class AdPack {
+  constructor(data = {}) {
+    this.id = data.id || this.generateId();
+    this.name = data.name || '';
+    this.niche = data.niche || '';
+    this.version = data.version || '1.0.0';
+    this.author = data.author || 'anonymous';
+    this.description = data.description || '';
+    this.createdAt = data.createdAt || new Date().toISOString();
+    this.categories = data.categories || [];
+    this.metadata = {
+      totalTemplates: 0,
+      totalCategories: 0,
+      downloadCount: 0,
+      ...(data.metadata || {})
+    };
+  }
+
+  /**
+   * Validate ad pack data
+   * @returns {Object} Validation result with isValid and errors
+   */
+  validate() {
+    const errors = [];
+
+    if (!this.id || typeof this.id !== 'string' || this.id.trim().length === 0) {
+      errors.push('Ad Pack ID is required and must be a non-empty string');
+    }
+
+    if (!this.name || typeof this.name !== 'string' || this.name.trim().length === 0) {
+      errors.push('Ad Pack name is required and must be a non-empty string');
+    }
+
+    if (!this.niche || typeof this.niche !== 'string' || this.niche.trim().length === 0) {
+      errors.push('Ad Pack niche is required and must be a non-empty string');
+    }
+
+    if (!this.version || typeof this.version !== 'string' || !this.isValidVersion(this.version)) {
+      errors.push('Ad Pack version must be a valid semantic version (e.g., 1.0.0)');
+    }
+
+    if (typeof this.author !== 'string') {
+      errors.push('Ad Pack author must be a string');
+    }
+
+    if (typeof this.description !== 'string') {
+      errors.push('Ad Pack description must be a string');
+    }
+
+    if (this.createdAt && !this.isValidISODate(this.createdAt)) {
+      errors.push('Created date must be a valid ISO date string');
+    }
+
+    if (!Array.isArray(this.categories)) {
+      errors.push('Categories must be an array');
+    } else if (this.categories.length === 0) {
+      errors.push('Ad Pack must contain at least one category');
+    }
+
+    if (typeof this.metadata !== 'object' || this.metadata === null) {
+      errors.push('Metadata must be an object');
+    } else {
+      if (typeof this.metadata.totalTemplates !== 'number' || this.metadata.totalTemplates < 0) {
+        errors.push('Metadata total templates must be a non-negative number');
+      }
+
+      if (typeof this.metadata.totalCategories !== 'number' || this.metadata.totalCategories < 0) {
+        errors.push('Metadata total categories must be a non-negative number');
+      }
+
+      if (typeof this.metadata.downloadCount !== 'number' || this.metadata.downloadCount < 0) {
+        errors.push('Metadata download count must be a non-negative number');
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Update metadata based on categories
+   */
+  updateMetadata() {
+    this.metadata.totalCategories = this.categories.length;
+    this.metadata.totalTemplates = this.categories.reduce((sum, cat) => {
+      return sum + (cat.templates ? cat.templates.length : 0);
+    }, 0);
+  }
+
+  /**
+   * Convert to plain object for storage
+   * @returns {Object}
+   */
+  toObject() {
+    return {
+      id: this.id,
+      name: this.name,
+      niche: this.niche,
+      version: this.version,
+      author: this.author,
+      description: this.description,
+      createdAt: this.createdAt,
+      categories: this.categories,
+      metadata: { ...this.metadata }
+    };
+  }
+
+  /**
+   * Create ad pack from plain object
+   * @param {Object} data - Plain object data
+   * @returns {AdPack}
+   */
+  static fromObject(data) {
+    return new AdPack(data);
+  }
+
+  generateId() {
+    return `pack_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  isValidVersion(version) {
+    return /^\d+\.\d+\.\d+$/.test(version);
+  }
+
+  isValidISODate(dateString) {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date) && date.toISOString() === dateString;
+  }
+}
+
+/**
+ * BackupDataV2 Model (v2.0)
+ * Extended backup format including v2.0 features
+ */
+class BackupDataV2 {
+  constructor(data = {}) {
+    this.version = 2;
+    this.createdAt = data.createdAt || new Date().toISOString();
+    this.data = {
+      // v1 data
+      templates: data.data?.templates || [],
+      groups: data.data?.groups || [],
+      settings: data.data?.settings || {},
+      aiSettings: data.data?.aiSettings || {},
+      license: data.data?.license || null,
+      
+      // v2 data
+      keywordStats: data.data?.keywordStats || {},
+      affiliateLinks: data.data?.affiliateLinks || { default: '', categoryOverrides: {} },
+      adPackMetadata: data.data?.adPackMetadata || [],
+      onboardingData: {
+        businessDescription: '',
+        aiProvider: '',
+        completedAt: '',
+        ...(data.data?.onboardingData || {})
+      }
+    };
+  }
+
+  /**
+   * Validate backup data
+   * @returns {Object} Validation result with isValid and errors
+   */
+  validate() {
+    const errors = [];
+
+    if (this.version !== 2) {
+      errors.push('Backup version must be 2');
+    }
+
+    if (!this.createdAt || !this.isValidISODate(this.createdAt)) {
+      errors.push('Created date must be a valid ISO date string');
+    }
+
+    if (typeof this.data !== 'object' || this.data === null) {
+      errors.push('Backup data must be an object');
+    } else {
+      // Validate v1 data structures
+      if (!Array.isArray(this.data.templates)) {
+        errors.push('Templates must be an array');
+      }
+
+      if (!Array.isArray(this.data.groups)) {
+        errors.push('Groups must be an array');
+      }
+
+      if (typeof this.data.settings !== 'object' || this.data.settings === null) {
+        errors.push('Settings must be an object');
+      }
+
+      if (typeof this.data.aiSettings !== 'object' || this.data.aiSettings === null) {
+        errors.push('AI Settings must be an object');
+      }
+
+      // Validate v2 data structures
+      if (typeof this.data.keywordStats !== 'object' || this.data.keywordStats === null) {
+        errors.push('Keyword stats must be an object');
+      }
+
+      if (typeof this.data.affiliateLinks !== 'object' || this.data.affiliateLinks === null) {
+        errors.push('Affiliate links must be an object');
+      } else {
+        if (typeof this.data.affiliateLinks.default !== 'string') {
+          errors.push('Affiliate links default must be a string');
+        }
+
+        if (typeof this.data.affiliateLinks.categoryOverrides !== 'object') {
+          errors.push('Affiliate links category overrides must be an object');
+        }
+      }
+
+      if (!Array.isArray(this.data.adPackMetadata)) {
+        errors.push('Ad Pack metadata must be an array');
+      }
+
+      if (typeof this.data.onboardingData !== 'object' || this.data.onboardingData === null) {
+        errors.push('Onboarding data must be an object');
+      } else {
+        if (typeof this.data.onboardingData.businessDescription !== 'string') {
+          errors.push('Onboarding business description must be a string');
+        }
+
+        if (typeof this.data.onboardingData.aiProvider !== 'string') {
+          errors.push('Onboarding AI provider must be a string');
+        }
+
+        if (typeof this.data.onboardingData.completedAt !== 'string') {
+          errors.push('Onboarding completed at must be a string');
+        }
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Convert to plain object for storage
+   * @returns {Object}
+   */
+  toObject() {
+    return {
+      version: this.version,
+      createdAt: this.createdAt,
+      data: {
+        templates: this.data.templates,
+        groups: this.data.groups,
+        settings: this.data.settings,
+        aiSettings: this.data.aiSettings,
+        license: this.data.license,
+        keywordStats: this.data.keywordStats,
+        affiliateLinks: {
+          default: this.data.affiliateLinks.default,
+          categoryOverrides: { ...this.data.affiliateLinks.categoryOverrides }
+        },
+        adPackMetadata: this.data.adPackMetadata,
+        onboardingData: { ...this.data.onboardingData }
+      }
+    };
+  }
+
+  /**
+   * Create backup data from plain object
+   * @param {Object} data - Plain object data
+   * @returns {BackupDataV2}
+   */
+  static fromObject(data) {
+    return new BackupDataV2(data);
+  }
+
+  isValidISODate(dateString) {
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date) && date.toISOString() === dateString;
+  }
+}
+
+/**
  * Data Migration Utilities
  * Handles schema changes and data migrations
  */
 class DataMigration {
   constructor() {
-    this.currentVersion = 1;
+    this.currentVersion = 2;
   }
 
   /**
@@ -732,9 +1220,14 @@ class DataMigration {
 
     let migratedData = { ...data };
 
-    // Migration from version 0 to 1 (example)
+    // Migration from version 0 to 1
     if (fromVersion < 1) {
       migratedData = this.migrateToV1(migratedData);
+    }
+
+    // Migration from version 1 to 2
+    if (fromVersion < 2) {
+      migratedData = this.migrateToV2(migratedData);
     }
 
     return migratedData;
@@ -787,6 +1280,48 @@ class DataMigration {
       });
       
       data.templates = migratedTemplates;
+    }
+
+    return data;
+  }
+
+  /**
+   * Migrate to version 2
+   * @param {Object} data - Data to migrate
+   * @returns {Object} Migrated data
+   */
+  migrateToV2(data) {
+    // Add v2.0 fields to settings
+    if (data.settings) {
+      data.settings = {
+        ...data.settings,
+        businessDescription: data.settings.businessDescription || '',
+        companyUrl: data.settings.companyUrl || '',
+        aiProvider: data.settings.aiProvider || 'gemini',
+        aiKeyEncrypted: data.settings.aiKeyEncrypted || '',
+        onboardingCompleted: data.settings.onboardingCompleted !== undefined ? data.settings.onboardingCompleted : true, // true for existing users
+        affiliateLinks: data.settings.affiliateLinks || {
+          default: '',
+          categoryOverrides: {}
+        }
+      };
+    }
+
+    // Add v2.0 data structures if not present
+    if (!data.keywordStats) {
+      data.keywordStats = {};
+    }
+
+    if (!data.adPackMetadata) {
+      data.adPackMetadata = [];
+    }
+
+    if (!data.onboardingData) {
+      data.onboardingData = {
+        businessDescription: '',
+        aiProvider: '',
+        completedAt: ''
+      };
     }
 
     return data;
@@ -883,6 +1418,9 @@ if (typeof module !== 'undefined' && module.exports) {
     License,
     Settings,
     AISettings,
+    KeywordStats,
+    AdPack,
+    BackupDataV2,
     DataMigration
   };
 } else {
@@ -893,6 +1431,9 @@ if (typeof module !== 'undefined' && module.exports) {
     License,
     Settings,
     AISettings,
+    KeywordStats,
+    AdPack,
+    BackupDataV2,
     DataMigration
   };
 }

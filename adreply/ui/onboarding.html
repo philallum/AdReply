@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdReply Setup Wizard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .wizard-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .wizard-header {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            color: white;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .wizard-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .wizard-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .step-indicators {
+            display: flex;
+            justify-content: center;
+            padding: 24px 32px;
+            gap: 12px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e4e6ea;
+        }
+
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e4e6ea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            background: #1877f2;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-indicator.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .wizard-content {
+            padding: 32px;
+            min-height: 400px;
+        }
+
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1c1e21;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1c1e21;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e4e6ea;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        .char-counter.warning {
+            color: #ffc107;
+        }
+
+        .char-counter.error {
+            color: #dc3545;
+        }
+
+        .provider-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .provider-option {
+            border: 2px solid #e4e6ea;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .provider-option:hover {
+            border-color: #1877f2;
+            background: #f8f9fa;
+        }
+
+        .provider-option.selected {
+            border-color: #1877f2;
+            background: #e7f3ff;
+        }
+
+        .provider-option input[type="radio"] {
+            display: none;
+        }
+
+        .provider-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .provider-name {
+            font-weight: 600;
+            color: #1c1e21;
+            margin-bottom: 4px;
+        }
+
+        .provider-description {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .wizard-actions {
+            display: flex;
+            gap: 12px;
+            padding: 24px 32px;
+            background: #f8f9fa;
+            border-top: 1px solid #e4e6ea;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #1877f2;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #166fe5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+            border: 2px solid #e4e6ea;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f8f9fa;
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-skip {
+            background: transparent;
+            color: #6c757d;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .btn-skip:hover {
+            color: #1877f2;
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e4e6ea;
+            border-top: 4px solid #1877f2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            color: #1c1e21;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .review-section {
+            margin-bottom: 24px;
+        }
+
+        .review-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1e21;
+            margin-bottom: 12px;
+        }
+
+        .review-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .review-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .review-item-title {
+            font-weight: 600;
+            color: #1c1e21;
+            font-size: 14px;
+        }
+
+        .review-item-count {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .review-item-content {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.4;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .merge-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .merge-option {
+            border: 2px solid #e4e6ea;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .merge-option:hover {
+            border-color: #1877f2;
+            background: #f8f9fa;
+        }
+
+        .merge-option.selected {
+            border-color: #1877f2;
+            background: #e7f3ff;
+        }
+
+        .merge-option input[type="radio"] {
+            display: none;
+        }
+
+        .merge-option-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .merge-option-title {
+            font-weight: 600;
+            color: #1c1e21;
+            margin-bottom: 4px;
+        }
+
+        .merge-option-description {
+            font-size: 12px;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            color: #c00;
+            font-size: 13px;
+        }
+
+        .success-message {
+            background: #efe;
+            border: 1px solid #cfc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            color: #060;
+            font-size: 13px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #1877f2;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #1c1e21;
+        }
+
+        .completion-icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .provider-options,
+            .merge-options {
+                grid-template-columns: 1fr;
+            }
+
+            .wizard-header {
+                padding: 24px;
+            }
+
+            .wizard-header h1 {
+                font-size: 24px;
+            }
+
+            .wizard-content {
+                padding: 24px;
+            }
+
+            .step-indicators {
+                padding: 16px 24px;
+            }
+
+            .step-indicator {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <h1>🚀 Welcome to AdReply</h1>
+            <p>Let's set up your AI-powered advertising assistant</p>
+        </div>
+
+        <div class="step-indicators">
+            <div class="step-indicator active" data-step="1">1</div>
+            <div class="step-indicator" data-step="2">2</div>
+            <div class="step-indicator" data-step="3">3</div>
+            <div class="step-indicator" data-step="4">4</div>
+            <div class="step-indicator" data-step="5">5</div>
+        </div>
+
+        <div class="wizard-content">
+            <!-- Step 1: Business Description -->
+            <div class="wizard-step active" data-step="1">
+                <h2 class="step-title">Tell us about your business</h2>
+                <p class="step-description">
+                    Describe your business or niche in a few sentences. This helps us generate relevant templates for you.
+                </p>
+
+                <div class="form-group">
+                    <label for="businessDescription">Business Description</label>
+                    <textarea 
+                        id="businessDescription" 
+                        placeholder="e.g., I run a local auto repair shop specializing in exhaust systems and performance upgrades. We serve car enthusiasts and everyday drivers looking for quality work at fair prices."
+                        maxlength="500"
+                    ></textarea>
+                    <div class="char-counter">
+                        <span id="charCount">0</span> / 500 characters (minimum 50)
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>Tip:</strong> Be specific about your services, target audience, and what makes your business unique. This helps generate better templates.
+                </div>
+            </div>
+
+            <!-- Step 2: Company URL -->
+            <div class="wizard-step" data-step="2">
+                <h2 class="step-title">Your promotion URL</h2>
+                <p class="step-description">
+                    Add your website or business URL. This will be automatically included in your templates.
+                </p>
+
+                <div class="form-group">
+                    <label for="companyUrl">Website or Business URL</label>
+                    <input 
+                        type="url" 
+                        id="companyUrl" 
+                        placeholder="https://yourwebsite.com"
+                    />
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>Optional but recommended:</strong> Adding your URL makes it easy for potential customers to find you.
+                </div>
+            </div>
+
+            <!-- Step 3: AI Provider Selection -->
+            <div class="wizard-step" data-step="3">
+                <h2 class="step-title">Choose your AI provider</h2>
+                <p class="step-description">
+                    Select which AI service you'd like to use for generating templates.
+                </p>
+
+                <div class="provider-options">
+                    <label class="provider-option" for="providerGemini">
+                        <input type="radio" name="aiProvider" id="providerGemini" value="gemini" checked>
+                        <div class="provider-icon">🔷</div>
+                        <div class="provider-name">Google Gemini</div>
+                        <div class="provider-description">Free tier available, fast responses</div>
+                    </label>
+
+                    <label class="provider-option" for="providerOpenAI">
+                        <input type="radio" name="aiProvider" id="providerOpenAI" value="openai">
+                        <div class="provider-icon">🤖</div>
+                        <div class="provider-name">OpenAI</div>
+                        <div class="provider-description">GPT-4 powered, high quality</div>
+                    </label>
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>Note:</strong> You'll need an API key from your chosen provider. Both offer free tiers to get started.
+                </div>
+            </div>
+
+            <!-- Step 4: API Key -->
+            <div class="wizard-step" data-step="4">
+                <h2 class="step-title">Enter your API key</h2>
+                <p class="step-description">
+                    Your API key is stored securely and only used to generate templates.
+                </p>
+
+                <div class="form-group">
+                    <label for="apiKey">API Key</label>
+                    <input 
+                        type="password" 
+                        id="apiKey" 
+                        placeholder="Enter your API key"
+                    />
+                </div>
+
+                <div id="apiKeyHelp" class="info-box">
+                    <!-- Dynamic content based on selected provider -->
+                </div>
+
+                <div id="errorContainer"></div>
+            </div>
+
+            <!-- Step 5: Generation Progress -->
+            <div class="wizard-step" data-step="5">
+                <div id="generationContent">
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Generating your templates...</div>
+                        <div class="loading-subtext">This may take 10-30 seconds</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6: Review (dynamically shown) -->
+            <div class="wizard-step" data-step="6">
+                <h2 class="step-title">Review your setup</h2>
+                <p class="step-description">
+                    Here's what we generated for you. You can edit these later in the app.
+                </p>
+
+                <div id="reviewContent">
+                    <!-- Dynamic review content -->
+                </div>
+            </div>
+
+            <!-- Step 7: Merge/Replace (for existing users) -->
+            <div class="wizard-step" data-step="7">
+                <h2 class="step-title">How should we handle existing data?</h2>
+                <p class="step-description">
+                    You have existing templates. Choose how to proceed.
+                </p>
+
+                <div class="merge-options">
+                    <label class="merge-option selected" for="optionMerge">
+                        <input type="radio" name="mergeStrategy" id="optionMerge" value="merge" checked>
+                        <div class="merge-option-icon">➕</div>
+                        <div class="merge-option-title">Merge</div>
+                        <div class="merge-option-description">
+                            Add new templates alongside your existing ones
+                        </div>
+                    </label>
+
+                    <label class="merge-option" for="optionReplace">
+                        <input type="radio" name="mergeStrategy" id="optionReplace" value="replace">
+                        <div class="merge-option-icon">🔄</div>
+                        <div class="merge-option-title">Replace</div>
+                        <div class="merge-option-description">
+                            Remove existing templates and use only new ones
+                        </div>
+                    </label>
+                </div>
+
+                <div class="info-box">
+                    ⚠️ <strong>Warning:</strong> Replacing will permanently delete your existing templates. This cannot be undone.
+                </div>
+            </div>
+
+            <!-- Step 8: Completion -->
+            <div class="wizard-step" data-step="8">
+                <div class="completion-icon">✅</div>
+                <h2 class="step-title" style="text-align: center;">All set!</h2>
+                <p class="step-description" style="text-align: center;">
+                    Your AI-powered advertising assistant is ready to use.
+                </p>
+
+                <div id="completionSummary" class="review-section">
+                    <!-- Dynamic completion summary -->
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-actions">
+            <button class="btn btn-secondary" id="btnBack" style="display: none;">Back</button>
+            <button class="btn btn-primary" id="btnNext">Next</button>
+            <button class="btn-skip" id="btnSkip">Skip setup</button>
+        </div>
+    </div>
+
+    <!-- Load dependencies -->
+    <script src="../storage/data-models.js"></script>
+    <script src="../storage/indexeddb-manager.js"></script>
+    <script src="../storage/chrome-storage-manager.js"></script>
+    <script src="../storage/storage-manager.js"></script>
+    
+    <!-- Load onboarding wizard -->
+    <script type="module" src="modules/onboarding-wizard.js"></script>
+</body>
+</html>

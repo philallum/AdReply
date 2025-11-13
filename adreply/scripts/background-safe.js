@@ -7,6 +7,7 @@ importScripts(
   '../storage/chrome-storage-manager.js',
   '../storage/data-models.js',
   '../storage/storage-manager.js',
+  '../storage/storage-migration-v2.js',
   'license-manager.js'
 );
 
@@ -17,13 +18,26 @@ let currentGroupInfo = null;
 // Initialize managers
 let storageManager = null;
 let licenseManager = null;
+let storageMigration = null;
 
 // Initialize on startup
 (async function initializeManagers() {
   try {
+    // Step 1: Perform storage migration if needed
+    storageMigration = new StorageMigrationV2();
+    const migrationResult = await storageMigration.performCompleteMigration();
+    
+    if (migrationResult.success) {
+      console.log('AdReply: Storage migration completed', migrationResult);
+    } else {
+      console.error('AdReply: Storage migration failed', migrationResult);
+    }
+    
+    // Step 2: Initialize storage manager
     storageManager = new StorageManager();
     await storageManager.initialize();
     
+    // Step 3: Initialize license manager
     licenseManager = new LicenseManager(storageManager);
     await licenseManager.initialize();
     
@@ -235,6 +249,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ success: true, post: latestPost });
         break;
 
+      case 'GET_MIGRATION_STATUS':
+        // Get storage migration status
+        (async () => {
+          try {
+            if (storageMigration) {
+              const status = await storageMigration.getMigrationStatus();
+              sendResponse({ success: true, status });
+            } else {
+              sendResponse({ success: false, error: 'Migration manager not initialized' });
+            }
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
+      case 'TRIGGER_MIGRATION':
+        // Manually trigger migration (for testing/debugging)
+        (async () => {
+          try {
+            if (storageMigration) {
+              const result = await storageMigration.performCompleteMigration();
+              sendResponse({ success: true, result });
+            } else {
+              sendResponse({ success: false, error: 'Migration manager not initialized' });
+            }
+          } catch (error) {
+            sendResponse({ success: false, error: error.message });
+          }
+        })();
+        return true; // Async response
+
       default:
         console.warn('AdReply: Unknown message type:', message.type);
         sendResponse({ success: false, error: 'Unknown message type' });
@@ -277,8 +323,27 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
   if (details.reason === 'install') {
     console.log('AdReply: First time installation');
+    
+    // Trigger migration for fresh install
+    if (storageMigration) {
+      const migrationResult = await storageMigration.performCompleteMigration();
+      console.log('AdReply: Fresh install migration result:', migrationResult);
+      
+      // Check if onboarding is needed
+      const status = await storageMigration.getMigrationStatus();
+      if (!status.onboardingCompleted) {
+        console.log('AdReply: Onboarding wizard should be triggered');
+        // The onboarding wizard will be opened when user clicks extension icon
+      }
+    }
   } else if (details.reason === 'update') {
     console.log('AdReply: Extension updated');
+    
+    // Trigger migration for update
+    if (storageMigration) {
+      const migrationResult = await storageMigration.performCompleteMigration();
+      console.log('AdReply: Update migration result:', migrationResult);
+    }
   }
 
   // Enable left-click to open side panel

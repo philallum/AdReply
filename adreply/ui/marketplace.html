@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Marketplace - AdReply</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+
+    .marketplace-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .marketplace-header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .marketplace-header h1 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    .marketplace-header p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .marketplace-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .filter-box select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-primary, .btn-secondary {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+
+    .btn-primary:disabled, .btn-secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #packs-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .pack-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pack-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .pack-header {
+      margin-bottom: 10px;
+    }
+
+    .pack-name {
+      margin: 0 0 5px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .pack-niche {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #495057;
+      text-transform: capitalize;
+    }
+
+    .pack-description {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 10px 0;
+      min-height: 60px;
+    }
+
+    .pack-stats {
+      display: flex;
+      gap: 15px;
+      margin: 15px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-icon {
+      font-size: 16px;
+    }
+
+    .pack-meta {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .pack-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .pack-actions button {
+      flex: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .preview-content, .import-content, .export-content {
+      padding: 0;
+    }
+
+    .preview-header, .import-header, .export-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-header h2, .import-header h2, .export-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .preview-body, .import-body, .export-body {
+      padding: 20px;
+    }
+
+    .preview-info {
+      margin-bottom: 20px;
+    }
+
+    .preview-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .preview-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .preview-stats span {
+      color: #666;
+    }
+
+    .preview-categories h3 {
+      margin: 20px 0 10px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .category-preview {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .category-preview h4 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .category-description {
+      color: #666;
+      font-size: 13px;
+      margin: 5px 0;
+    }
+
+    .template-count {
+      color: #999;
+      font-size: 12px;
+      margin: 5px 0;
+    }
+
+    .template-samples {
+      margin-top: 10px;
+    }
+
+    .template-sample {
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .template-sample strong {
+      display: block;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .template-sample p {
+      margin: 0;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .more-categories {
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .preview-footer, .import-footer, .export-footer {
+      padding: 20px;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .import-options {
+      margin: 20px 0;
+    }
+
+    .import-option {
+      display: flex;
+      align-items: flex-start;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .import-option:hover {
+      border-color: #007bff;
+      background: #f8f9fa;
+    }
+
+    .import-option input[type="radio"] {
+      margin-right: 10px;
+      margin-top: 2px;
+    }
+
+    .option-details strong {
+      display: block;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .option-details p {
+      margin: 0;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .category-checkboxes {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .checkbox-label {
+      display: block;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-label:hover {
+      background: #f8f9fa;
+    }
+
+    .checkbox-label input {
+      margin-right: 8px;
+    }
+
+    .loading-state, .progress-content {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #007bff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #import-progress {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #import-progress.active {
+      display: flex;
+    }
+
+    .progress-content {
+      background: white;
+      border-radius: 8px;
+      padding: 40px;
+    }
+
+    .progress-content p {
+      margin: 0;
+      color: #333;
+      font-size: 16px;
+    }
+
+    #pack-file-input {
+      display: none;
+    }
+
+    .pack-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .pack-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="marketplace-container">
+    <div class="marketplace-header">
+      <h1>Template Marketplace</h1>
+      <p>Browse and import pre-built Ad Packs from the community</p>
+    </div>
+
+    <div class="marketplace-controls">
+      <div class="search-box">
+        <input type="text" id="pack-search" placeholder="Search packs...">
+      </div>
+      <div class="filter-box">
+        <select id="niche-filter">
+          <option value="all">All Niches</option>
+          <option value="real-estate">Real Estate</option>
+          <option value="fitness">Fitness</option>
+          <option value="food">Food & Beverage</option>
+          <option value="retail">Retail</option>
+          <option value="professional">Professional Services</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="education">Education</option>
+          <option value="technology">Technology</option>
+          <option value="automotive">Automotive</option>
+          <option value="general">General</option>
+        </select>
+      </div>
+      <div class="action-buttons">
+        <button class="btn-secondary" id="refresh-marketplace">Refresh</button>
+        <button class="btn-secondary" id="upload-pack">Upload Pack</button>
+        <button class="btn-primary" id="export-setup">Export My Setup</button>
+      </div>
+    </div>
+
+    <div id="packs-container">
+      <!-- Pack cards will be inserted here -->
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="preview-modal" class="modal">
+    <div class="modal-content">
+      <div class="preview-content">
+        <!-- Preview content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="import-modal" class="modal">
+    <div class="modal-content">
+      <div class="import-content">
+        <!-- Import content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div id="export-modal" class="modal">
+    <div class="modal-content">
+      <div class="export-content">
+        <!-- Export content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Progress Overlay -->
+  <div id="import-progress">
+    <!-- Progress content will be inserted here -->
+  </div>
+
+  <!-- Hidden file input for pack upload -->
+  <input type="file" id="pack-file-input" accept=".json">
+
+  <!-- Scripts -->
+  <script src="../storage/data-models.js"></script>
+  <script src="../storage/indexeddb-manager.js"></script>
+  <script src="../storage/chrome-storage-manager.js"></script>
+  <script src="../storage/storage-manager.js"></script>
+  <script src="../scripts/pack-manager.js"></script>
+  <script src="modules/marketplace.js"></script>
+  <script>
+    // Initialize marketplace
+    let marketplace;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize storage manager
+        const storageManager = new StorageManager();
+        await storageManager.initialize();
+
+        // Initialize pack manager
+        const packManager = new AdPackManager(storageManager);
+
+        // Initialize marketplace
+        marketplace = new TemplateMarketplace(storageManager, packManager);
+        await marketplace.initialize();
+
+      } catch (error) {
+        console.error('Failed to initialize marketplace:', error);
+        document.getElementById('packs-container').innerHTML = `
+          <div class="empty-state">
+            <p>Failed to load marketplace. Please try again later.</p>
+            <p style="color: #999; font-size: 14px;">${error.message}</p>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

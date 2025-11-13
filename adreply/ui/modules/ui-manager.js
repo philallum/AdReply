@@ -97,7 +97,7 @@ class UIManager {
         listEl.innerHTML = skipMessage;
     }
 
-    displaySuggestions(suggestions) {
+    displaySuggestions(suggestions, postPublisherUI = null) {
         console.log('AdReply: Displaying suggestions:', suggestions.length, suggestions);
         
         const suggestionsEl = document.getElementById('suggestions');
@@ -146,13 +146,18 @@ class UIManager {
             const textDiv = document.createElement('div');
             textDiv.textContent = suggestionText;
             
-            // Don't add copy button for limit messages
+            // Don't add buttons for limit messages
             if (!isLimitMessage) {
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'copy-btn';
                 copyBtn.textContent = 'Copy to Clipboard';
                 copyBtn.addEventListener('click', () => this.onCopyClick(suggestionText, copyBtn, suggestion));
                 suggestionEl.appendChild(copyBtn);
+                
+                // Add Post as Content button if postPublisherUI is available
+                if (postPublisherUI) {
+                    postPublisherUI.addButtonToCard(suggestionEl, suggestionText, templateLabel);
+                }
             } else {
                 // Add upgrade button for limit messages
                 const upgradeBtn = document.createElement('button');
@@ -425,6 +430,7 @@ class UIManager {
         document.getElementById('templateKeywords').value = template.keywords.join(', ');
         document.getElementById('templateContent').value = template.template;
         document.getElementById('templateUrl').value = template.url || '';
+        document.getElementById('templateAffiliateLink').value = template.affiliateLink || '';
         
         // Show category indicator
         const categoryDisplayName = this.getCategoryDisplayName(template.category || 'custom');
@@ -447,7 +453,8 @@ class UIManager {
             category: document.getElementById('templateCategory').value,
             keywords: document.getElementById('templateKeywords').value,
             content: document.getElementById('templateContent').value,
-            url: document.getElementById('templateUrl').value
+            url: document.getElementById('templateUrl').value,
+            affiliateLink: document.getElementById('templateAffiliateLink').value
         };
     }
 

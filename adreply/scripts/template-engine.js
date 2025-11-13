@@ -590,7 +590,11 @@ class TemplateEngine {
       // Generate suggestion objects with individual templates (no variants)
       const suggestions = await Promise.all(
         topTemplates.map(async (item, index) => {
-          const processedText = await this.replacePlaceholders(item.template.template, groupId);
+          const processedText = await this.replacePlaceholders(
+            item.template.template, 
+            groupId, 
+            item.template.category
+          );
           
           return {
             id: `suggestion_${item.template.id}_${Date.now()}_${index}`,
@@ -877,9 +881,10 @@ class TemplateEngine {
    * Replace placeholders in template text with dynamic content
    * @param {string} templateText - Template text with placeholders
    * @param {string} groupId - Facebook group ID
+   * @param {string} categoryId - Category ID for affiliate link lookup
    * @returns {Promise<string>} Text with placeholders replaced
    */
-  async replacePlaceholders(templateText, groupId) {
+  async replacePlaceholders(templateText, groupId, categoryId = null) {
     if (!templateText) return '';
     
     let processedText = templateText;
@@ -911,6 +916,53 @@ class TemplateEngine {
         const regex = new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g');
         processedText = processedText.replace(regex, replacement);
       }
+    }
+    
+    // Handle {{link}} placeholder with affiliate link manager
+    if (processedText.includes('{{link}}')) {
+      try {
+        // Get settings to check for affiliate links
+        const settings = await this.storageManager.getSettings();
+        const affiliateLinks = settings.affiliateLinks || { default: '', categoryOverrides: {} };
+        
+        // Get appropriate link (category-specific or default)
+        let affiliateLink = null;
+        if (categoryId && affiliateLinks.categoryOverrides && affiliateLinks.categoryOverrides[categoryId]) {
+          affiliateLink = affiliateLinks.categoryOverrides[categoryId];
+        } else if (affiliateLinks.default) {
+          affiliateLink = affiliateLinks.default;
+        }
+        
+        if (affiliateLink) {
+          // Replace {{link}} with actual affiliate link
+          processedText = processedText.replace(/\{\{link\}\}/g, affiliateLink);
+        } else {
+          // Remove lines containing {{link}} placeholder if no link configured
+          processedText = processedText
+            .split('\n')
+            .filter(line => !line.includes('{{link}}'))
+            .join('\n')
+            .trim();
+        }
+      } catch (error) {
+        console.error('TemplateEngine: Error processing {{link}} placeholder:', error);
+        // Remove {{link}} on error
+        processedText = processedText
+          .split('\n')
+          .filter(line => !line.includes('{{link}}'))
+          .join('\n')
+          .trim();
+      }
+    }
+    
+    // Append company URL if configured (existing feature)
+    try {
+      const settings = await this.storageManager.getSettings();
+      if (settings.companyUrl && settings.companyUrl.trim().length > 0) {
+        processedText = processedText.trim() + '\n\n' + settings.companyUrl.trim();
+      }
+    } catch (error) {
+      console.error('TemplateEngine: Error appending company URL:', error);
     }
     
     return processedText;

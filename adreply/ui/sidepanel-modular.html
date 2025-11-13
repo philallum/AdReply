@@ -835,6 +835,24 @@
                 <input type="url" id="templateUrl" placeholder="https://yourwebsite.com">
             </div>
 
+            <div class="form-group">
+                <label for="templateAffiliateLink">Category Affiliate Link (optional override)</label>
+                <input type="url" id="templateAffiliateLink" placeholder="https://example.com/ref/category-specific">
+                <div style="color: #6c757d; font-size: 11px; margin-top: 4px;">
+                    Override the default affiliate link for this category. Use {{link}} in your template content to insert it.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="button" class="btn btn-small secondary" id="previewTemplateBtn" style="width: 100%;">
+                    👁️ Preview Rendered Template
+                </button>
+                <div id="templatePreview" style="display: none; margin-top: 12px; padding: 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #0866FF;">
+                    <strong style="font-size: 12px; color: #495057; display: block; margin-bottom: 8px;">Preview:</strong>
+                    <div id="templatePreviewText" style="font-size: 12px; color: #6c757d; white-space: pre-wrap;"></div>
+                </div>
+            </div>
+
             <div class="form-actions">
                 <button class="btn" id="saveTemplateBtn">Save Template</button>
                 <button class="btn secondary" id="cancelTemplateBtn">Cancel</button>
@@ -863,6 +881,7 @@
         <div class="template-stats">
             <div id="templateCount">0 templates</div>
             <div class="template-stats-buttons">
+                <button class="btn secondary btn-small" id="marketplaceBtn">🛒 Marketplace</button>
                 <button class="btn secondary btn-small" id="importAdPackBtn">Import Templates</button>
                 <button class="btn secondary btn-small" id="backupRestoreBtn">💾 Backup & Restore</button>
             </div>
@@ -905,6 +924,65 @@
 
     <!-- License Tab -->
     <div id="license" class="tab-content">
+        <!-- AI Setup Section -->
+        <div class="license-info" style="margin-bottom: 16px;">
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: #495057;">AI Setup Wizard</h4>
+            <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px;">
+                Generate templates automatically using AI based on your business description.
+            </p>
+            <button class="btn btn-small" id="runAIWizardBtn" style="width: 100%;">
+                🚀 Run AI Setup Wizard
+            </button>
+        </div>
+
+        <!-- Keyword Performance Section -->
+        <div class="license-info" style="margin-bottom: 16px;">
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: #495057;">Keyword Performance</h4>
+            <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px;">
+                View how your keywords are performing and optimize your template matching.
+            </p>
+            <button class="btn btn-small secondary" id="viewKeywordPerformanceBtn" style="width: 100%;">
+                📊 View Keyword Dashboard
+            </button>
+        </div>
+
+        <!-- Template Marketplace Section -->
+        <div class="license-info" style="margin-bottom: 16px;">
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: #495057;">Template Marketplace</h4>
+            <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px;">
+                Browse and import pre-built Ad Packs from the community, or export your own setup.
+            </p>
+            <button class="btn btn-small secondary" id="marketplaceLinkBtn" style="width: 100%;">
+                🛒 Open Marketplace
+            </button>
+        </div>
+
+        <!-- Affiliate Links Section -->
+        <div class="license-info" style="margin-bottom: 16px;">
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: #495057;">Affiliate Links</h4>
+            <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px;">
+                Add affiliate links to your templates using the {{link}} placeholder. Set a default link or override per category.
+            </p>
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label for="defaultAffiliateLink" style="font-size: 12px; font-weight: 500; color: #495057;">Default Affiliate Link:</label>
+                <input type="url" id="defaultAffiliateLink" placeholder="https://example.com/ref/12345" style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 12px;">
+                <div id="affiliateLinkValidation" style="font-size: 11px; margin-top: 4px; display: none;"></div>
+            </div>
+            
+            <button class="btn btn-small" id="saveAffiliateLinkBtn" style="width: 100%; margin-bottom: 8px;">
+                Save Default Link
+            </button>
+            
+            <button class="btn btn-small secondary" id="clearAffiliateLinkBtn" style="width: 100%;">
+                Clear Default Link
+            </button>
+            
+            <div style="margin-top: 12px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 11px; color: #6c757d;">
+                <strong>💡 Tip:</strong> Use {{link}} in your templates to insert affiliate links. Category-specific overrides can be set in the template editor.
+            </div>
+        </div>
+
         <div class="license-info">
             <div id="licenseStatus" class="license-status invalid">
                 License Status: Free
@@ -948,6 +1026,9 @@
     </div>
 
     <script src="../scripts/usage-tracker.js"></script>
+    <script src="../scripts/keyword-learning.js"></script>
+    <script src="../scripts/post-publisher.js"></script>
+    <script src="../scripts/affiliate-link-manager.js"></script>
     <script src="../storage/template-loader.js"></script>
     <script type="module" src="sidepanel-modular.js"></script>
 </body>

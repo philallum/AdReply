@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Learning Engine Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            border-left-color: #28a745;
+        }
+        .error {
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <h1>Keyword Learning Engine Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>1. Basic Functionality Tests</h2>
+        <button onclick="testRecordMatch()">Test Record Match</button>
+        <button onclick="testRecordSelection()">Test Record Selection</button>
+        <button onclick="testRecordIgnore()">Test Record Ignore</button>
+        <button onclick="testCalculateScores()">Test Calculate Scores</button>
+        <div id="basic-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Performance Report Tests</h2>
+        <button onclick="testPerformanceReport()">Generate Performance Report</button>
+        <button onclick="testSuggestedRemovals()">Get Suggested Removals</button>
+        <div id="report-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Data Management Tests</h2>
+        <button onclick="testCleanupOrphaned()">Test Cleanup Orphaned Stats</button>
+        <button onclick="testResetKeyword()">Test Reset Keyword</button>
+        <button onclick="testRemoveKeyword()">Test Remove Keyword</button>
+        <button onclick="testExportImport()">Test Export/Import</button>
+        <div id="data-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Integration Simulation</h2>
+        <button onclick="simulateUserFlow()">Simulate Complete User Flow</button>
+        <button onclick="clearAllData()">Clear All Test Data</button>
+        <div id="integration-results"></div>
+    </div>
+
+    <script src="scripts/keyword-learning.js"></script>
+    <script>
+        let engine = null;
+
+        // Initialize engine
+        function initEngine() {
+            if (!engine) {
+                engine = new KeywordLearningEngine();
+                console.log('Keyword Learning Engine initialized');
+            }
+            return engine;
+        }
+
+        function displayResult(containerId, message, isSuccess = true) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${isSuccess ? 'success' : 'error'}`;
+            resultDiv.textContent = message;
+            container.appendChild(resultDiv);
+        }
+
+        async function testRecordMatch() {
+            const container = document.getElementById('basic-results');
+            container.innerHTML = '';
+            
+            try {
+                const engine = initEngine();
+                
+                const matchedTemplates = [
+                    {
+                        template: {
+                            id: 'test-1',
+                            category: 'automotive',
+                            keywords: ['car', 'auto', 'repair']
+                        }
+                    },
+                    {
+                        template: {
+                            id: 'test-2',
+                            category: 'automotive',
+                            keywords: ['vehicle', 'service', 'maintenance']
+                        }
+                    }
+                ];
+                
+                await engine.recordMatch('Looking for car repair services', matchedTemplates, ['car', 'repair']);
+                
+                const stats = await engine.getKeywordStats();
+                displayResult('basic-results', 
+                    `✓ Record Match Test Passed\n` +
+                    `Stats: ${JSON.stringify(stats, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('basic-results', `✗ Record Match Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testRecordSelection() {
+            const container = document.getElementById('basic-results');
+            
+            try {
+                const engine = initEngine();
+                
+                await engine.recordSelection('test-1', ['car', 'auto', 'repair'], 'automotive');
+                
+                const stats = await engine.getKeywordStats();
+                displayResult('basic-results', 
+                    `✓ Record Selection Test Passed\n` +
+                    `Stats: ${JSON.stringify(stats, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('basic-results', `✗ Record Selection Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testRecordIgnore() {
+            const container = document.getElementById('basic-results');
+            
+            try {
+                const engine = initEngine();
+                
+                await engine.recordIgnore('test-2', ['vehicle', 'service'], 'automotive');
+                
+                const stats = await engine.getKeywordStats();
+                displayResult('basic-results', 
+                    `✓ Record Ignore Test Passed\n` +
+                    `Stats: ${JSON.stringify(stats, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('basic-results', `✗ Record Ignore Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testCalculateScores() {
+            const container = document.getElementById('basic-results');
+            
+            try {
+                const engine = initEngine();
+                
+                const stats = await engine.calculateScores();
+                displayResult('basic-results', 
+                    `✓ Calculate Scores Test Passed\n` +
+                    `Updated Stats: ${JSON.stringify(stats, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('basic-results', `✗ Calculate Scores Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testPerformanceReport() {
+            const container = document.getElementById('report-results');
+            container.innerHTML = '';
+            
+            try {
+                const engine = initEngine();
+                
+                const report = await engine.getPerformanceReport();
+                displayResult('report-results', 
+                    `✓ Performance Report Test Passed\n` +
+                    `Report: ${JSON.stringify(report, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('report-results', `✗ Performance Report Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testSuggestedRemovals() {
+            const container = document.getElementById('report-results');
+            
+            try {
+                const engine = initEngine();
+                
+                // Create some low-performing keywords
+                for (let i = 0; i < 25; i++) {
+                    await engine.recordMatch('test post', [{
+                        template: {
+                            id: 'low-perf',
+                            category: 'test',
+                            keywords: ['lowperf']
+                        }
+                    }], ['lowperf']);
+                }
+                
+                const removals = await engine.getSuggestedRemovals(0.1, 20);
+                displayResult('report-results', 
+                    `✓ Suggested Removals Test Passed\n` +
+                    `Removals: ${JSON.stringify(removals, null, 2)}`
+                );
+            } catch (error) {
+                displayResult('report-results', `✗ Suggested Removals Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testCleanupOrphaned() {
+            const container = document.getElementById('data-results');
+            container.innerHTML = '';
+            
+            try {
+                const engine = initEngine();
+                
+                const removed = await engine.cleanupOrphanedStats(['automotive', 'test']);
+                displayResult('data-results', 
+                    `✓ Cleanup Orphaned Test Passed\n` +
+                    `Removed ${removed} orphaned categories`
+                );
+            } catch (error) {
+                displayResult('data-results', `✗ Cleanup Orphaned Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testResetKeyword() {
+            const container = document.getElementById('data-results');
+            
+            try {
+                const engine = initEngine();
+                
+                const success = await engine.resetKeywordStats('automotive', 'car');
+                displayResult('data-results', 
+                    `✓ Reset Keyword Test ${success ? 'Passed' : 'Failed (keyword not found)'}`
+                );
+            } catch (error) {
+                displayResult('data-results', `✗ Reset Keyword Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testRemoveKeyword() {
+            const container = document.getElementById('data-results');
+            
+            try {
+                const engine = initEngine();
+                
+                const success = await engine.removeKeywordStats('test', 'lowperf');
+                displayResult('data-results', 
+                    `✓ Remove Keyword Test ${success ? 'Passed' : 'Failed (keyword not found)'}`
+                );
+            } catch (error) {
+                displayResult('data-results', `✗ Remove Keyword Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function testExportImport() {
+            const container = document.getElementById('data-results');
+            
+            try {
+                const engine = initEngine();
+                
+                const exported = await engine.exportStats();
+                displayResult('data-results', 
+                    `✓ Export Test Passed\n` +
+                    `Exported: ${JSON.stringify(exported, null, 2)}`
+                );
+                
+                const imported = await engine.importStats(exported, false);
+                displayResult('data-results', 
+                    `✓ Import Test ${imported ? 'Passed' : 'Failed'}`
+                );
+            } catch (error) {
+                displayResult('data-results', `✗ Export/Import Test Failed: ${error.message}`, false);
+            }
+        }
+
+        async function simulateUserFlow() {
+            const container = document.getElementById('integration-results');
+            container.innerHTML = '';
+            
+            try {
+                const engine = initEngine();
+                
+                displayResult('integration-results', '🔄 Starting user flow simulation...');
+                
+                // Step 1: User sees suggestions (match)
+                const templates = [
+                    {
+                        template: {
+                            id: 'flow-1',
+                            category: 'fitness',
+                            keywords: ['gym', 'workout', 'fitness']
+                        }
+                    },
+                    {
+                        template: {
+                            id: 'flow-2',
+                            category: 'fitness',
+                            keywords: ['training', 'exercise', 'health']
+                        }
+                    }
+                ];
+                
+                await engine.recordMatch('Looking for a good gym and workout routine', templates, ['gym', 'workout']);
+                displayResult('integration-results', '✓ Step 1: Recorded match');
+                
+                // Step 2: User selects first template
+                await engine.recordSelection('flow-1', ['gym', 'workout', 'fitness'], 'fitness');
+                displayResult('integration-results', '✓ Step 2: Recorded selection');
+                
+                // Step 3: User ignores second template
+                await engine.recordIgnore('flow-2', ['training', 'exercise', 'health'], 'fitness');
+                displayResult('integration-results', '✓ Step 3: Recorded ignore');
+                
+                // Step 4: Get performance report
+                const report = await engine.getPerformanceReport();
+                displayResult('integration-results', 
+                    `✓ Step 4: Generated performance report\n` +
+                    `Summary: ${JSON.stringify(report.summary, null, 2)}`
+                );
+                
+                displayResult('integration-results', '✅ User flow simulation completed successfully!');
+                
+            } catch (error) {
+                displayResult('integration-results', `✗ User Flow Simulation Failed: ${error.message}`, false);
+            }
+        }
+
+        async function clearAllData() {
+            const container = document.getElementById('integration-results');
+            
+            try {
+                const engine = initEngine();
+                await engine.saveKeywordStats({});
+                displayResult('integration-results', '✓ All test data cleared');
+            } catch (error) {
+                displayResult('integration-results', `✗ Clear Data Failed: ${error.message}`, false);
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            initEngine();
+            console.log('Test page loaded. Keyword Learning Engine ready.');
+        });
+    </script>
+</body>
+</html>
