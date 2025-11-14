@@ -17,13 +17,35 @@ class AIError extends Error {
 
 /**
  * Base class for AI providers
+ * 
+ * SECURITY NOTE: API keys are never logged or sent to non-AI-provider servers.
+ * Keys are stored encrypted and cleared from memory after use.
  */
 class AIProvider {
   constructor(apiKey) {
     if (!apiKey) {
       throw new AIError('API key is required', 'MISSING_API_KEY');
     }
+    // SECURITY: Never log the API key
     this.apiKey = apiKey;
+  }
+
+  /**
+   * Clear API key from memory
+   */
+  clearAPIKey() {
+    if (this.apiKey) {
+      // Overwrite the API key in memory
+      this.apiKey = '\0'.repeat(this.apiKey.length);
+      this.apiKey = null;
+    }
+  }
+
+  /**
+   * Destructor to ensure API key is cleared
+   */
+  destroy() {
+    this.clearAPIKey();
   }
 
   /**

@@ -132,7 +132,7 @@
   - Test backup/restore with v2 data to ensure no data loss
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-- [ ] 11. Integrate onboarding wizard with extension lifecycle
+- [x] 11. Integrate onboarding wizard with extension lifecycle
   - Update extension icon click handler to open onboarding wizard on first install
   - Update extension icon click handler to open side panel for existing users
   - Add onboarding wizard trigger in chrome.runtime.onInstalled listener
@@ -143,7 +143,7 @@
   - _Requirements: 1.1, 6.5, 8.1_
 
 
-- [ ] 12. Implement API key encryption and security
+- [x] 12. Implement API key encryption and security
   - Create encryptAPIKey function using Web Crypto API with AES-GCM
   - Create decryptAPIKey function for secure key retrieval
   - Use extension ID as key derivation material with PBKDF2
@@ -153,7 +153,7 @@
   - Test encryption/decryption round-trip
   - _Requirements: 1.5, 8.5_
 
-- [ ] 13. Add UI polish and user experience improvements
+- [x] 13. Add UI polish and user experience improvements
   - Add tooltips and help text throughout onboarding wizard
   - Add character count indicators in template editor and review screens
   - Add loading states and progress indicators for all async operations
@@ -164,15 +164,15 @@
   - Test UI on different screen sizes and resolutions
   - _Requirements: 1.1, 7.1, 8.1_
 
-- [ ] 14. Create comprehensive test suite
-- [ ] 14.1 Write unit tests for AI Client module
+- [x] 14. Create comprehensive test suite
+- [x] 14.1 Write unit tests for AI Client module
   - Mock API responses for Gemini and OpenAI providers
   - Test prompt generation with various business descriptions
   - Test response parsing and validation
   - Test error handling for network, authentication, rate limiting, and invalid response scenarios
   - _Requirements: 1.2, 1.3, 1.4, 1.5, 1.8_
 
-- [ ] 14.2 Write unit tests for Keyword Learning Engine
+- [x] 14.2 Write unit tests for Keyword Learning Engine
   - Test score calculation with various match/chosen/ignored combinations
   - Test removal suggestions with different thresholds
   - Test data persistence and retrieval
@@ -180,42 +180,42 @@
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
 
-- [ ] 14.3 Write unit tests for Ad Pack Manager
+- [x] 14.3 Write unit tests for Ad Pack Manager
   - Test pack validation with valid and invalid structures
   - Test merge strategies (merge vs replace)
   - Test export functionality
   - Test format migration from older versions
   - _Requirements: 3.4, 3.5_
 
-- [ ] 14.4 Write integration tests for onboarding flow
+- [x] 14.4 Write integration tests for onboarding flow
   - Test complete wizard flow from start to finish
   - Test skip and manual setup option
   - Test merge vs replace with existing data
   - Test error recovery and retry logic
   - _Requirements: 1.1, 1.6, 1.7, 8.2, 8.3, 8.4_
 
-- [ ] 14.5 Write integration tests for keyword learning
+- [x] 14.5 Write integration tests for keyword learning
   - Simulate user interactions (matches, selections, ignores)
   - Verify score updates in real-time
   - Test performance dashboard data accuracy
   - Verify removal suggestions appear correctly
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 14.6 Write integration tests for marketplace
+- [x] 14.6 Write integration tests for marketplace
   - Test pack browsing and filtering
   - Test pack import with merge strategy
   - Test pack export
   - Test local file upload
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 14.7 Write integration tests for post publisher
+- [x] 14.7 Write integration tests for post publisher
   - Test clipboard copy functionality
   - Test composer detection with mocked Facebook DOM
   - Test React input handling
   - Test error messages for various failure scenarios
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 14.8 Write integration tests for affiliate link system
+- [x] 14.8 Write integration tests for affiliate link system
   - Test default link configuration
   - Test category-specific overrides
   - Test {{link}} placeholder replacement
@@ -224,14 +224,14 @@
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
 
-- [ ] 14.9 Write integration tests for backup/restore
+- [x] 14.9 Write integration tests for backup/restore
   - Test backup includes all v2 data structures
   - Test restore preserves all v2 data
   - Test migration from v1 backup format
   - Test validation catches corrupted files
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-- [ ] 15. Perform end-to-end manual testing
+- [x] 15. Perform end-to-end manual testing
   - Test first-time installation and onboarding wizard with Gemini API
   - Test first-time installation and onboarding wizard with OpenAI API
   - Test upgrade from v1 with existing data preservation
@@ -244,7 +244,7 @@
   - Test on different browsers (Chrome, Edge, Brave)
   - _Requirements: All requirements_
 
-- [ ] 16. Create documentation and user guides
+- [x] 16. Create documentation and user guides
   - Update README.md with v2.0 features overview
   - Create onboarding wizard user guide
   - Create keyword learning explanation document

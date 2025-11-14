@@ -140,6 +140,7 @@ class AdReplySidePanel {
         
         // AI Setup Wizard
         document.getElementById('runAIWizardBtn').addEventListener('click', () => this.openAIWizard());
+        document.getElementById('clearAPIKeyBtn').addEventListener('click', () => this.clearAPIKey());
         
         // Keyword Performance Dashboard
         document.getElementById('viewKeywordPerformanceBtn').addEventListener('click', () => this.openKeywordPerformance());
@@ -229,6 +230,9 @@ class AdReplySidePanel {
         
         // Load affiliate link
         await this.loadAffiliateLink();
+        
+        // Update API key status
+        await this.updateAPIKeyStatus();
     }
 
     async refreshData() {
@@ -683,13 +687,62 @@ class AdReplySidePanel {
     }
 
     openAIWizard() {
-        // Open the AI Setup Wizard in a new window
-        chrome.windows.create({
-            url: chrome.runtime.getURL('ui/onboarding.html'),
-            type: 'popup',
-            width: 700,
-            height: 800
+        // Open the AI Setup Wizard in a new tab
+        chrome.tabs.create({
+            url: chrome.runtime.getURL('ui/onboarding.html')
         });
+    }
+
+    async clearAPIKey() {
+        if (!confirm('Are you sure you want to clear your stored API key? You will need to re-enter it to use AI features.')) {
+            return;
+        }
+
+        try {
+            // Get current settings
+            const settings = await chrome.storage.local.get('settings');
+            
+            if (settings.settings) {
+                // Clear the encrypted API key
+                delete settings.settings.aiKeyEncrypted;
+                delete settings.settings.aiProvider;
+                
+                // Save updated settings
+                await chrome.storage.local.set({ settings: settings.settings });
+                
+                // Update UI
+                this.updateAPIKeyStatus();
+                
+                this.uiManager.showNotification('✅ API key cleared successfully', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to clear API key:', error);
+            this.uiManager.showNotification('❌ Failed to clear API key: ' + error.message, 'error');
+        }
+    }
+
+    async updateAPIKeyStatus() {
+        try {
+            const settings = await chrome.storage.local.get('settings');
+            const aiKeyStatus = document.getElementById('aiKeyStatus');
+            const aiKeyStatusText = document.getElementById('aiKeyStatusText');
+            const clearAPIKeyBtn = document.getElementById('clearAPIKeyBtn');
+            
+            if (settings.settings && settings.settings.aiKeyEncrypted) {
+                const provider = settings.settings.aiProvider || 'unknown';
+                aiKeyStatus.style.display = 'block';
+                aiKeyStatusText.textContent = `✅ API key configured (${provider})`;
+                aiKeyStatusText.style.color = '#28a745';
+                clearAPIKeyBtn.style.display = 'block';
+            } else {
+                aiKeyStatus.style.display = 'block';
+                aiKeyStatusText.textContent = '⚠️ No API key configured';
+                aiKeyStatusText.style.color = '#6c757d';
+                clearAPIKeyBtn.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Failed to check API key status:', error);
+        }
     }
 
     openKeywordPerformance() {

@@ -301,7 +301,8 @@ class OnboardingWizard {
             const AIClientModule = await import('../../scripts/ai-client.js');
             const AIClient = AIClientModule.default || AIClientModule.AIClient;
             
-            this.aiClient = new AIClient(this.data.aiProvider, this.data.apiKey);
+            // Create AI client with API key
+            this.aiClient = AIClient.create(this.data.aiProvider, this.data.apiKey);
         } catch (error) {
             console.error('Failed to initialize AI client:', error);
             throw new Error('Failed to initialize AI service. Please check your API key.');
@@ -315,9 +316,21 @@ class OnboardingWizard {
 
         try {
             const result = await this.aiClient.generateSetup(this.data.businessDescription);
+            
+            // Clear API key from AI client after use
+            if (this.aiClient.clearAPIKey) {
+                this.aiClient.clearAPIKey();
+            }
+            
             return result;
         } catch (error) {
             console.error('AI generation error:', error);
+            
+            // Clear API key even on error
+            if (this.aiClient && this.aiClient.clearAPIKey) {
+                this.aiClient.clearAPIKey();
+            }
+            
             throw error;
         }
     }
@@ -496,59 +509,22 @@ class OnboardingWizard {
             settings.aiProvider = this.data.aiProvider;
             settings.onboardingCompleted = true;
 
-            // Encrypt and save API key
+            // Encrypt and save API key using encryption utilities
             if (this.data.apiKey) {
-                settings.aiKeyEncrypted = await this.encryptAPIKey(this.data.apiKey);
+                // Import encryption utilities
+                const encryptionModule = await import('../../scripts/encryption-utils.js');
+                const { encryptAPIKey, clearAPIKeyFromMemory } = encryptionModule;
+                
+                settings.aiKeyEncrypted = await encryptAPIKey(this.data.apiKey);
+                
+                // Clear API key from memory after encryption
+                clearAPIKeyFromMemory(this.data.apiKey);
+                this.data.apiKey = null;
             }
 
             await this.storageManager.saveSettings(settings);
         } catch (error) {
             console.error('Failed to save settings:', error);
-        }
-    }
-
-    async encryptAPIKey(apiKey) {
-        // Simple encryption using Web Crypto API
-        try {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(apiKey);
-            
-            // Use extension ID as key material
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(chrome.runtime.id),
-                'PBKDF2',
-                false,
-                ['deriveBits', 'deriveKey']
-            );
-            
-            const key = await crypto.subtle.deriveKey(
-                {
-                    name: 'PBKDF2',
-                    salt: encoder.encode('adreply-v2'),
-                    iterations: 100000,
-                    hash: 'SHA-256'
-                },
-                keyMaterial,
-                { name: 'AES-GCM', length: 256 },
-                false,
-                ['encrypt']
-            );
-            
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv },
-                key,
-                data
-            );
-            
-            return {
-                encrypted: Array.from(new Uint8Array(encrypted)),
-                iv: Array.from(iv)
-            };
-        } catch (error) {
-            console.error('Encryption failed:', error);
-            return null;
         }
     }
 
@@ -606,14 +582,17 @@ class OnboardingWizard {
         document.getElementById('btnSkip').style.display = 'none';
     }
 
-    finishWizard() {
-        // Close wizard and open side panel
-        window.close();
+    async finishWizard() {
+        // Get current tab to close it
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+        const currentTab = tabs[0];
         
-        // Try to open side panel
-        if (chrome.sidePanel) {
-            chrome.sidePanel.open();
+        // Close the onboarding tab
+        if (currentTab) {
+            await chrome.tabs.remove(currentTab.id);
         }
+        
+        // Note: Side panel will be opened when user clicks the extension icon again
     }
 
     showStep(step) {

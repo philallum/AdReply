@@ -1,93 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keyword Performance Dashboard - AdReply</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-
-        .page-header {
-            background: white;
-            border-bottom: 1px solid #e4e6ea;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .back-button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 4px 8px;
-            color: #65676b;
-            transition: color 0.2s ease;
-        }
-
-        .back-button:hover {
-            color: #1877f2;
-        }
-
-        .page-title {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: #1c1e21;
-        }
-
-        #dashboardContainer {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Performance - AdReply</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="ui-polish-enhancements.css">
 </head>
 <body>
-    <div class="page-header">
-        <button class="back-button" id="backButton" title="Back to Settings">←</button>
-        <h1 class="page-title">Keyword Performance Dashboard</h1>
-    </div>
+  <div id="keyword-dashboard-container">
+    <!-- Dashboard will be rendered here -->
+  </div>
 
-    <div id="dashboardContainer"></div>
+  <!-- Scripts -->
+  <script src="../storage/data-models.js"></script>
+  <script src="../storage/indexeddb-manager.js"></script>
+  <script src="../storage/chrome-storage-manager.js"></script>
+  <script src="../storage/storage-manager.js"></script>
+  <script src="../scripts/keyword-learning.js"></script>
+  <script src="modules/ui-polish.js"></script>
+  <script src="modules/keyword-performance.js"></script>
+  
+  <script>
+    // Initialize keyword performance dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize storage manager
+        const storageManager = new StorageManager();
+        await storageManager.initialize();
 
-    <script src="../scripts/keyword-learning.js"></script>
-    <script src="../storage/storage-manager.js"></script>
-    <script src="modules/keyword-performance.js"></script>
-    <script>
+        // Initialize learning engine
+        const learningEngine = new KeywordLearningEngine(storageManager);
+
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Initialize storage manager and learning engine
-                const storageManager = new StorageManager();
-                const learningEngine = new KeywordLearningEngine(storageManager);
+        const dashboard = new KeywordPerformanceDashboard(learningEngine, storageManager);
+        const container = document.getElementById('keyword-dashboard-container');
+        await dashboard.render(container);
 
-                // Create and render dashboard
-                const dashboard = new KeywordPerformanceDashboard(learningEngine, storageManager);
-                const container = document.getElementById('dashboardContainer');
-                await dashboard.render(container);
-
-                // Back button handler
-                document.getElementById('backButton').addEventListener('click', () => {
-                    window.close();
-                });
-            } catch (error) {
-                console.error('Error initializing dashboard:', error);
-                document.getElementById('dashboardContainer').innerHTML = `
-                    <div style="padding: 40px; text-align: center; color: #721c24;">
-                        <h2>Error Loading Dashboard</h2>
-                        <p>Failed to load keyword performance data. Please try again.</p>
-                        <button class="btn" onclick="location.reload()">Retry</button>
-                    </div>
-                `;
-            }
-        });
-    </script>
+      } catch (error) {
+        console.error('Failed to initialize keyword performance dashboard:', error);
+        document.getElementById('keyword-dashboard-container').innerHTML = `
+          <div class="error-state" role="alert">
+            <p>Failed to load keyword performance dashboard. Please try again later.</p>
+            <p style="color: #999; font-size: 14px;">${error.message}</p>
+          </div>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>

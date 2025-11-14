@@ -1,8 +1,39 @@
-# AdReply - Facebook Group Advertising Assistant
+# AdReply - Intelligent Facebook Advertising Assistant
 
-AdReply is a Chrome extension that helps small business owners, creators, and marketers advertise effectively within Facebook Groups. The extension analyzes Facebook posts and suggests contextually relevant advertisement templates based on keyword matching, with intelligent rotation to prevent spam.
+AdReply is a Chrome extension that helps small business owners, creators, and marketers advertise effectively within Facebook Groups and Pages. The extension uses AI-powered onboarding, intelligent keyword learning, and community-driven template sharing to make advertising effortless and effective.
 
 ## 🎯 Key Features
+
+### 🤖 AI-Powered Onboarding (NEW in v2.0)
+- **Zero-Configuration Setup**: Describe your business once and let AI generate your entire advertising system
+- **Multi-Provider Support**: Choose between Google Gemini or OpenAI for content generation
+- **Instant Template Creation**: Get 3-5 categories with 50+ professionally crafted templates in minutes
+- **Smart Keyword Generation**: AI automatically identifies relevant keywords for your niche
+- **Re-run Anytime**: Regenerate your setup with a new business description whenever you pivot
+
+### 🧠 Intelligent Keyword Learning (NEW in v2.0)
+- **Behavioral Tracking**: System learns which keywords lead to successful template selections
+- **Automatic Optimization**: Keywords that don't perform are automatically flagged for removal
+- **Performance Dashboard**: Visual insights into keyword effectiveness with scores and statistics
+- **Continuous Improvement**: Your advertising gets smarter with every interaction
+
+### 🌐 Template Marketplace (NEW in v2.0)
+- **Community-Driven Packs**: Browse and import pre-built template collections from other users
+- **Niche-Specific Content**: Find templates tailored to your industry (real estate, fitness, retail, etc.)
+- **One-Click Import**: Merge new templates with your existing setup seamlessly
+- **Share Your Success**: Export your best-performing templates as Ad Packs for others
+
+### 📢 Post Publisher (NEW in v2.0)
+- **Beyond Comments**: Convert templates into full Facebook posts for greater visibility
+- **One-Click Publishing**: Copy to clipboard and auto-fill Facebook composer
+- **React-Compatible**: Works seamlessly with Facebook's modern UI
+- **Smart Detection**: Automatically locates and fills the post composer
+
+### 💰 Affiliate Link System (NEW in v2.0)
+- **Automated Monetization**: Inject affiliate links into templates automatically
+- **Category-Specific Links**: Override default links for specific categories
+- **Template Placeholders**: Use {{link}} in templates for dynamic link insertion
+- **Graceful Fallback**: Missing links are handled elegantly without breaking templates
 
 ### Core Functionality
 - **Smart Post Analysis**: Automatically analyzes Facebook posts and matches them with relevant ad templates
@@ -12,15 +43,16 @@ AdReply is a Chrome extension that helps small business owners, creators, and ma
 - **URL Integration**: Each template can include a promotional URL that's automatically inserted
 
 ### Template Management
+- **AI-Generated Templates**: Get professionally crafted templates from AI (400-600 characters each)
 - **400+ Prebuilt Templates**: Organized across 20 industry categories
 - **Custom Templates**: Create unlimited custom templates (Pro) or up to 10 (Free)
 - **Category Organization**: Organize templates into custom categories
 - **Template Editor**: Full CRUD operations with keyword and URL management
-- **Import/Export**: Backup and restore your custom templates
+- **Import/Export**: Backup and restore your custom templates with full v2.0 data
 
 ### License Tiers
-- **Free Tier**: 10 custom templates, 1 custom category, access to all prebuilt templates
-- **Pro Tier**: Unlimited templates, unlimited categories, all premium features
+- **Free Tier**: 10 custom templates, 1 custom category, access to all prebuilt templates, AI onboarding
+- **Pro Tier**: Unlimited templates, unlimited categories, all premium features, advanced analytics
 
 ## 📁 Project Structure
 
@@ -28,6 +60,11 @@ AdReply is a Chrome extension that helps small business owners, creators, and ma
 adreply/
 ├── manifest.json                    # Chrome Extension Manifest V3
 ├── scripts/
+│   ├── ai-client.js                # NEW: Multi-provider AI integration (Gemini/OpenAI)
+│   ├── keyword-learning.js         # NEW: Behavioral keyword optimization
+│   ├── pack-manager.js             # NEW: Ad Pack import/export
+│   ├── post-publisher.js           # NEW: Facebook post publishing
+│   ├── affiliate-link-manager.js   # NEW: Affiliate link injection
 │   ├── background-safe.js          # Service worker (license, storage management)
 │   ├── content-minimal.js          # Facebook page integration
 │   ├── license-manager.js          # JWT-based license verification
@@ -35,16 +72,25 @@ adreply/
 │   └── template-engine.js          # Template processing and variable replacement
 ├── storage/
 │   ├── storage-manager.js          # Unified storage interface
+│   ├── storage-migration-v2.js     # NEW: v1 to v2 migration
 │   ├── indexeddb-manager.js        # IndexedDB operations
 │   ├── chrome-storage-manager.js   # Chrome storage operations
 │   ├── data-models.js              # Data validation models
 │   ├── template-loader.js          # Prebuilt template loading
 │   └── category-manager.js         # Category management
 ├── ui/
+│   ├── onboarding.html             # NEW: AI Setup Wizard
+│   ├── marketplace.html            # NEW: Template Marketplace
+│   ├── keyword-performance.html    # NEW: Keyword Analytics Dashboard
 │   ├── sidepanel-modular.html      # Main UI
 │   ├── sidepanel-modular.js        # UI controller
+│   ├── backup.html                 # Backup/Restore UI
 │   ├── styles.css                  # Styling
 │   └── modules/
+│       ├── onboarding-wizard.js    # NEW: AI onboarding flow
+│       ├── marketplace.js          # NEW: Template marketplace UI
+│       ├── keyword-performance.js  # NEW: Keyword analytics UI
+│       ├── post-publisher-ui.js    # NEW: Post publishing UI integration
 │       ├── template-manager.js     # Template CRUD operations
 │       ├── post-analysis.js        # Post analysis and matching
 │       ├── settings-manager.js     # License and settings
@@ -291,7 +337,25 @@ This software is licensed under a commercial license. See LICENSE file for detai
 
 ## 🔄 Version History
 
-### Current Version: 1.0.0
+### Version 2.0.0 (Current)
+**Major Features:**
+- 🤖 AI-Powered Onboarding with Gemini and OpenAI support
+- 🧠 Intelligent Keyword Learning Engine with behavioral tracking
+- 🌐 Template Marketplace for community-driven content sharing
+- 📢 Post Publisher for converting templates to Facebook posts
+- 💰 Affiliate Link System with category-specific overrides
+- 📦 Enhanced backup/restore with full v2.0 data support
+- 🔐 API key encryption using Web Crypto API
+- 🔄 Seamless migration from v1.x with data preservation
+
+**Technical Improvements:**
+- Extended storage schema for v2.0 features
+- Multi-provider AI client architecture
+- Behavioral analytics and performance tracking
+- Ad Pack format for template sharing
+- React-compatible Facebook UI integration
+
+### Version 1.0.0
 - Modular architecture implementation
 - JWT-based license system
 - 400 prebuilt templates across 20 categories
@@ -305,4 +369,18 @@ This software is licensed under a commercial license. See LICENSE file for detai
 
 ---
 
-**Note**: AI features have been removed from this version. The extension focuses on template-based advertising with smart keyword matching.
+## 📚 Documentation
+
+### User Guides
+- **[Onboarding Wizard Guide](docs/ONBOARDING_WIZARD_GUIDE.md)**: Get started with AI-powered setup
+- **[Keyword Learning Guide](docs/KEYWORD_LEARNING_GUIDE.md)**: Understand how the system learns and optimizes
+- **[Marketplace Guide](docs/MARKETPLACE_GUIDE.md)**: Browse and import template packs
+- **[Post Publisher Guide](docs/POST_PUBLISHER_GUIDE.md)**: Convert templates to Facebook posts
+- **[Affiliate Links Guide](docs/AFFILIATE_LINKS_GUIDE.md)**: Set up monetization links
+- **[Migration Guide](docs/MIGRATION_GUIDE.md)**: Upgrade from v1.x to v2.0
+
+### Technical Documentation
+- **[Developer Guide](docs/developer-guide.md)**: Architecture and development setup
+- **[API Key Security](docs/API_KEY_SECURITY.md)**: Security practices and encryption
+- **[Browser Extension JWT Integration](docs/browser-extension-jwt-integration.md)**: License system specification
+- **[Storage System](STORAGE_SYSTEM.md)**: Data persistence architecture
