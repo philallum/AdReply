@@ -61,7 +61,7 @@ Real estate agent
 ```
 (Keep it focused - 50-200 words is ideal)
 
-**Character Limit**: 50-500 characters
+**Character Limit**: 50-1000 characters
 **Action**: Type your description and click "Next"
 
 

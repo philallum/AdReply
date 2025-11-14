@@ -223,8 +223,8 @@ class OnboardingWizard {
                     this.showError('Please provide at least 50 characters describing your business.');
                     return false;
                 }
-                if (desc.length > 500) {
-                    this.showError('Business description must be 500 characters or less.');
+                if (desc.length > 1000) {
+                    this.showError('Business description must be 1000 characters or less.');
                     return false;
                 }
                 return true;

@@ -349,11 +349,11 @@ class OpenAIProvider extends AIProvider {
     const prompt = this._buildPrompt(businessDescription);
 
     const requestBody = {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo-1106',  // Using newer model that supports JSON mode
       messages: [
         {
           role: 'system',
-          content: 'You are an expert advertising copywriter who creates engaging, conversion-focused templates for Facebook marketing.'
+          content: 'You are an expert advertising copywriter who creates engaging, conversion-focused templates for Facebook marketing. You must respond with valid JSON only.'
         },
         {
           role: 'user',
@@ -361,7 +361,8 @@ class OpenAIProvider extends AIProvider {
         }
       ],
       temperature: 0.7,
-      max_tokens: 8000
+      max_tokens: 3000,  // Reduced from 8000 to fit within model limits
+      response_format: { type: "json_object" }  // Request JSON response format
     };
 
     try {
@@ -376,18 +377,20 @@ class OpenAIProvider extends AIProvider {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error?.message || response.statusText;
         
         if (response.status === 401) {
           throw new AIError('Invalid API key. Please check your OpenAI API credentials.', 'AUTH_FAILED');
         } else if (response.status === 429) {
           throw new AIError('Rate limit reached. Please wait and try again.', 'RATE_LIMIT');
         } else if (response.status === 400) {
-          throw new AIError('Invalid request. Please try again.', 'INVALID_REQUEST');
+          // Show the actual error message from OpenAI for 400 errors
+          throw new AIError(`Invalid request: ${errorMessage}`, 'INVALID_REQUEST');
         } else if (response.status === 402) {
           throw new AIError('Quota exceeded. Please check your OpenAI billing.', 'QUOTA_EXCEEDED');
         } else {
           throw new AIError(
-            `API request failed: ${errorData.error?.message || response.statusText}`,
+            `API request failed: ${errorMessage}`,
             'API_ERROR'
           );
         }
@@ -502,7 +505,6 @@ class AIClient {
   }
 }
 
-// Export for use in extension
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { AIClient, AIError, GeminiProvider, OpenAIProvider };
-}
+// Export for use in extension (ES6 module syntax)
+export { AIClient, AIError, GeminiProvider, OpenAIProvider };
+export default AIClient;
