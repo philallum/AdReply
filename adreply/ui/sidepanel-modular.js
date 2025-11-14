@@ -40,6 +40,70 @@ class AdReplySidePanel {
     }
 
     /**
+     * Initialize the application
+     */
+    async initialize() {
+        // Set up v2.0 feature event listeners
+        this.setupV2FeatureListeners();
+        
+        // Load initial data
+        await this.loadInitialData();
+        
+        // Set up UI interactions
+        this.uiManager.setupTabNavigation(this.onTabChange);
+        this.uiManager.setupCopyButtons(this.handleCopyClick);
+        this.uiManager.setupRefreshButton(this.refreshData);
+        
+        // Initialize post publisher editor button
+        this.initializePostPublisherEditor();
+        
+        // Initial refresh
+        await this.refreshData();
+    }
+
+    /**
+     * Set up event listeners for v2.0 features
+     */
+    setupV2FeatureListeners() {
+        // AI Setup Wizard
+        const runAIWizardBtn = document.getElementById('runAIWizardBtn');
+        if (runAIWizardBtn) {
+            runAIWizardBtn.addEventListener('click', () => this.openAIWizard());
+        }
+
+        // Clear API Key
+        const clearAPIKeyBtn = document.getElementById('clearAPIKeyBtn');
+        if (clearAPIKeyBtn) {
+            clearAPIKeyBtn.addEventListener('click', () => this.clearAPIKey());
+        }
+
+        // Keyword Performance Dashboard
+        const viewKeywordPerformanceBtn = document.getElementById('viewKeywordPerformanceBtn');
+        if (viewKeywordPerformanceBtn) {
+            viewKeywordPerformanceBtn.addEventListener('click', () => this.openKeywordPerformance());
+        }
+
+        // Template Marketplace
+        const marketplaceLinkBtn = document.getElementById('marketplaceLinkBtn');
+        if (marketplaceLinkBtn) {
+            marketplaceLinkBtn.addEventListener('click', () => this.openMarketplace());
+        }
+
+        // Affiliate Links
+        const saveAffiliateLinkBtn = document.getElementById('saveAffiliateLinkBtn');
+        if (saveAffiliateLinkBtn) {
+            saveAffiliateLinkBtn.addEventListener('click', () => this.saveAffiliateLink());
+        }
+
+        const clearAffiliateLinkBtn = document.getElementById('clearAffiliateLinkBtn');
+        if (clearAffiliateLinkBtn) {
+            clearAffiliateLinkBtn.addEventListener('click', () => this.clearAffiliateLink());
+        }
+
+        console.log('AdReply: v2.0 feature listeners set up');
+    }
+
+    /**
      * Initialize keyword learning engine
      */
     initializeKeywordLearning() {
