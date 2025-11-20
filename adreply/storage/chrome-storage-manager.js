@@ -507,6 +507,7 @@ class ChromeStorageManager {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ChromeStorageManager;
-} else {
+} else if (typeof window !== 'undefined') {
   window.ChromeStorageManager = ChromeStorageManager;
 }
+// In service workers, the class is available globally without window

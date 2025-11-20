@@ -591,6 +591,7 @@ class LicenseManager {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = LicenseManager;
-} else {
+} else if (typeof window !== 'undefined') {
   window.LicenseManager = LicenseManager;
 }
+// In service workers, the class is available globally without window

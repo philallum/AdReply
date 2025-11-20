@@ -43,10 +43,20 @@ class AdReplySidePanel {
      * Initialize the application
      */
     async initialize() {
-        // Set up v2.0 feature event listeners
+        // Set up v2.0 feature event listeners first
         this.setupV2FeatureListeners();
         
-        // Load initial data
+        // Check if this is first-time use (no templates exist)
+        const shouldShowOnboarding = await this.checkIfFirstTimeUser();
+        
+        if (shouldShowOnboarding) {
+            // First-time user - show welcome message and open wizard
+            this.showWelcomeScreen();
+            this.openAIWizard();
+            return; // Don't load data until they complete onboarding
+        }
+        
+        // Load initial data for returning users
         await this.loadInitialData();
         
         // Set up UI interactions
@@ -59,6 +69,71 @@ class AdReplySidePanel {
         
         // Initial refresh
         await this.refreshData();
+    }
+
+    /**
+     * Show welcome screen for first-time users
+     */
+    showWelcomeScreen() {
+        // Hide all tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        
+        // Show welcome message in the main area
+        const advertsTab = document.getElementById('adverts');
+        if (advertsTab) {
+            advertsTab.style.display = 'block';
+            advertsTab.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <h2 style="color: #1877f2; margin-bottom: 16px;">Welcome to AdReply! 🎉</h2>
+                    <p style="font-size: 16px; color: #495057; margin-bottom: 24px;">
+                        We're opening the setup wizard in a new tab to help you get started.
+                    </p>
+                    <p style="font-size: 14px; color: #6c757d; margin-bottom: 16px;">
+                        The wizard will guide you through:
+                    </p>
+                    <ul style="text-align: left; max-width: 400px; margin: 0 auto 24px; color: #495057;">
+                        <li style="margin-bottom: 8px;">✨ Describing your business</li>
+                        <li style="margin-bottom: 8px;">🤖 Choosing an AI provider</li>
+                        <li style="margin-bottom: 8px;">📝 Generating 50+ custom templates</li>
+                        <li style="margin-bottom: 8px;">🚀 Getting ready to advertise</li>
+                    </ul>
+                    <p style="font-size: 12px; color: #6c757d;">
+                        Once you complete the wizard, come back here to start using AdReply!
+                    </p>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Check if this is a first-time user (no templates exist)
+     */
+    async checkIfFirstTimeUser() {
+        try {
+            // Check if onboarding has been completed
+            const settings = await chrome.storage.local.get('settings');
+            if (settings.settings && settings.settings.onboardingCompleted) {
+                return false; // Onboarding already completed
+            }
+            
+            // Check if user has any templates
+            const templates = await this.templateManager.getAllTemplates();
+            if (templates && templates.length > 0) {
+                // Has templates but onboarding flag not set - mark as completed
+                if (!settings.settings) settings.settings = {};
+                settings.settings.onboardingCompleted = true;
+                await chrome.storage.local.set({ settings: settings.settings });
+                return false;
+            }
+            
+            // No templates and no onboarding flag - first-time user
+            return true;
+        } catch (error) {
+            console.error('Error checking first-time user status:', error);
+            return false; // On error, don't force onboarding
+        }
     }
 
     /**

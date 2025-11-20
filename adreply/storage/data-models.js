@@ -1423,7 +1423,7 @@ if (typeof module !== 'undefined' && module.exports) {
     BackupDataV2,
     DataMigration
   };
-} else {
+} else if (typeof window !== 'undefined') {
   window.AdReplyModels = {
     Template,
     Category,
@@ -1437,3 +1437,4 @@ if (typeof module !== 'undefined' && module.exports) {
     DataMigration
   };
 }
+// In service workers, classes are available globally without window

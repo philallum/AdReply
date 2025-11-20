@@ -20,6 +20,15 @@ let storageManager = null;
 let licenseManager = null;
 let storageMigration = null;
 
+// Set side panel to open on left-click (runs immediately)
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+  .then(() => {
+    console.log('AdReply: ✅ Side panel will open on left-click');
+  })
+  .catch((error) => {
+    console.error('AdReply: Failed to set side panel behavior:', error);
+  });
+
 // Initialize on startup
 (async function initializeManagers() {
   try {
@@ -384,13 +393,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     }
   }
 
-  // Disable automatic side panel opening - we'll handle it manually
-  try {
-    await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
-    console.log('AdReply: Side panel behavior set - manual control enabled');
-  } catch (error) {
-    console.warn('AdReply: setPanelBehavior failed:', error);
-  }
+  // Note: Side panel behavior is set at startup to open on left-click
+  console.log('AdReply: Side panel configured for left-click opening');
 });
 
 // Clean up when tabs are closed
@@ -422,47 +426,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 });
 
-// Handle extension icon click
-chrome.action.onClicked.addListener(async (tab) => {
-  console.log('AdReply: Extension icon clicked');
-  
-  try {
-    // Check if onboarding is needed
-    const { needsOnboarding } = await chrome.storage.local.get(['needsOnboarding']);
-    
-    if (needsOnboarding) {
-      console.log('AdReply: Opening onboarding wizard');
-      
-      // Open onboarding wizard in a new tab
-      await chrome.tabs.create({
-        url: chrome.runtime.getURL('ui/onboarding.html')
-      });
-      
-      // Clear the flag so we don't show it again
-      await chrome.storage.local.set({ needsOnboarding: false });
-    } else {
-      console.log('AdReply: Opening side panel');
-      
-      // Open side panel for existing users
-      if (chrome.sidePanel) {
-        await chrome.sidePanel.open({ windowId: tab.windowId });
-      } else {
-        console.error('AdReply: Side panel API not available');
-      }
-    }
-  } catch (error) {
-    console.error('AdReply: Error handling icon click:', error);
-    
-    // Fallback: try to open side panel
-    try {
-      if (chrome.sidePanel) {
-        await chrome.sidePanel.open({ windowId: tab.windowId });
-      }
-    } catch (fallbackError) {
-      console.error('AdReply: Fallback failed:', fallbackError);
-    }
-  }
-});
+// Note: Left-click now opens side panel automatically via setPanelBehavior
+// No need for manual onClicked listener - Chrome handles it natively
 
 console.log('AdReply: Background script initialized');
 

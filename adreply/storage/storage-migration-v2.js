@@ -389,6 +389,7 @@ class StorageMigrationV2 {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = StorageMigrationV2;
-} else {
+} else if (typeof window !== 'undefined') {
   window.StorageMigrationV2 = StorageMigrationV2;
 }
+// In service workers, the class is available globally without window

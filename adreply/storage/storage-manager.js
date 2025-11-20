@@ -10,16 +10,19 @@ class StorageManager {
   constructor() {
     this.indexedDB = new IndexedDBManager();
     this.chromeStorage = new ChromeStorageManager();
-    this.dataMigration = new (window.AdReplyModels?.DataMigration || DataMigration)();
     
-    // Data model classes
-    this.models = window.AdReplyModels || {
+    // In service workers, there's no window object, so access classes directly
+    const models = (typeof window !== 'undefined' && window.AdReplyModels) || {
       Template,
       GroupHistory,
       License,
       Settings,
-      AISettings
+      AISettings,
+      DataMigration
     };
+    
+    this.dataMigration = new models.DataMigration();
+    this.models = models;
     
     this.initialized = false;
   }
@@ -809,6 +812,7 @@ class StorageManager {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = StorageManager;
-} else {
+} else if (typeof window !== 'undefined') {
   window.StorageManager = StorageManager;
 }
+// In service workers, the class is available globally without window
